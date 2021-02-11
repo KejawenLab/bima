@@ -68,6 +68,10 @@ type (
 		Priority() int
 	}
 
+	Parser interface {
+		Parse() []string
+	}
+
 	Route interface {
 		Path() string
 		Handle(w http.ResponseWriter, r *http.Request)

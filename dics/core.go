@@ -22,6 +22,7 @@ import (
 	updates "github.com/crowdeco/bima/listeners/updates"
 	middlewares "github.com/crowdeco/bima/middlewares"
 	paginations "github.com/crowdeco/bima/paginations"
+	parsers "github.com/crowdeco/bima/parsers"
 	routes "github.com/crowdeco/bima/routes"
 	services "github.com/crowdeco/bima/services"
 	utils "github.com/crowdeco/bima/utils"
@@ -38,8 +39,24 @@ import (
 
 var Container = []dingo.Def{
 	{
-		Name:  "bima:config:parser",
-		Build: (*configs.Config)(nil),
+		Name:  "bima:config:parser:listener",
+		Build: (*parsers.Listeners)(nil),
+	},
+	{
+		Name:  "bima:config:parser:logger",
+		Build: (*parsers.Logger)(nil),
+	},
+	{
+		Name:  "bima:config:parser:middleware",
+		Build: (*parsers.Middleware)(nil),
+	},
+	{
+		Name:  "bima:config:parser:listener",
+		Build: (*parsers.Module)(nil),
+	},
+	{
+		Name:  "bima:config:parser:listener",
+		Build: (*parsers.Route)(nil),
 	},
 	{
 		Name:  "bima:config:user",
