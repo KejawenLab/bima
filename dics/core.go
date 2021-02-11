@@ -524,6 +524,10 @@ var Container = []dingo.Def{
 		Build: (*paginations.Pagination)(nil),
 	},
 	{
+		Name:  "core:pagination:request",
+		Build: (*paginations.Request)(nil),
+	},
+	{
 		Name:  "core:service:repository",
 		Build: (*services.Repository)(nil),
 		Params: dingo.Params{
