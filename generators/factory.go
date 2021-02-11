@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"reflect"
 
 	configs "github.com/crowdeco/bima/configs"
 	"github.com/crowdeco/bima/utils"
@@ -22,7 +23,7 @@ type Factory struct {
 }
 
 func (f *Factory) Generate(module *configs.ModuleTemplate) {
-	workDir, _ := os.Getwd()
+	workDir := reflect.TypeOf(f).PkgPath()
 	packageName := f.GetPackageName(workDir)
 	moduleName := f.Word.Camelcase(module.Name)
 	modulePlural := f.Pluralizer.Plural(moduleName)
