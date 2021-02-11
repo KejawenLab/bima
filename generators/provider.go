@@ -15,7 +15,7 @@ type Provider struct {
 }
 
 func (p *Provider) Generate(template *configs.Template, modulePath string, workDir string, templatePath string) {
-	path := fmt.Sprintf("%s/dics/provider.go", workDir)
+	path := fmt.Sprintf("%s/configs/provider.go", workDir)
 
 	file, _ := ioutil.ReadFile(path)
 	contents := strings.Split(string(file), "\n")
@@ -38,7 +38,7 @@ func (p *Provider) Generate(template *configs.Template, modulePath string, workD
 
 	if !skipImport {
 		contents[importIdx] = fmt.Sprintf(`    //%s
-    %s %q`, MODULE_IMPORT, template.ModuleLowercase, fmt.Sprintf("%s/%s/dics", template.PackageName, template.ModulePluralLowercase))
+    %s %q`, MODULE_IMPORT, template.ModuleLowercase, fmt.Sprintf("%s/%s/configs", template.PackageName, template.ModulePluralLowercase))
 	}
 
 	contents[moduleIdx] = fmt.Sprintf(`
