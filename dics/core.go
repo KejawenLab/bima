@@ -198,7 +198,7 @@ var Container = []dingo.Def{
 		Name:  "bima:generator:module",
 		Build: (*generators.Module)(nil),
 		Params: dingo.Params{
-			"Config": dingo.Service("bima:config:parser"),
+			"Config": dingo.Service("bima:config:parser:module"),
 		},
 	},
 	{
