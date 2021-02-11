@@ -38,7 +38,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var Core = []dingo.Def{
+var Container = []dingo.Def{
 	{
 		Name:  "core:config:parser",
 		Build: (*configs.Config)(nil),
