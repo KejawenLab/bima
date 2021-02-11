@@ -59,8 +59,8 @@ func (f *Factory) GetDefaultTemplatePath() string {
 	return TEMPLATE_PATH
 }
 
-func (f *Factory) GetPackageName(packagePath string) string {
-	mod, err := ioutil.ReadFile(fmt.Sprintf("%s/go.mod", packagePath))
+func (f *Factory) GetPackageName(workDir string) string {
+	mod, err := ioutil.ReadFile(fmt.Sprintf("%s/go.mod", workDir))
 	if err != nil {
 		panic(err)
 	}
