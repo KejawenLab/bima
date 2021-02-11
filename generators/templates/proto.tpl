@@ -3,7 +3,7 @@ syntax = "proto3";
 package grpcs;
 
 import "google/api/annotations.proto";
-import "pagination.proto";
+import "bima/pagination.proto";
 
 option go_package = ".;grpcs";
 
