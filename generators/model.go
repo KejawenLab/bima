@@ -11,8 +11,8 @@ import (
 type Model struct {
 }
 
-func (g *Model) Generate(template *configs.Template, modulePath string, workDir string, templatePath string) {
-	modelTemplate, _ := engine.ParseFiles(fmt.Sprintf("%s/%s/model.tpl", workDir, templatePath))
+func (g *Model) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
+	modelTemplate, _ := engine.ParseFiles(fmt.Sprintf("%s/%s/model.tpl", packagePath, templatePath))
 	modelPath := fmt.Sprintf("%s/models", modulePath)
 	os.MkdirAll(modelPath, 0755)
 

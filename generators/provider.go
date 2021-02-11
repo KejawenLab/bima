@@ -3,6 +3,7 @@ package generators
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strings"
 
 	configs "github.com/crowdeco/bima/configs"
@@ -14,7 +15,8 @@ const MODULE_REGISTER = "@modules:register"
 type Provider struct {
 }
 
-func (p *Provider) Generate(template *configs.Template, modulePath string, workDir string, templatePath string) {
+func (p *Provider) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
+	workDir, _ := os.Getwd()
 	path := fmt.Sprintf("%s/configs/provider.go", workDir)
 
 	file, _ := ioutil.ReadFile(path)

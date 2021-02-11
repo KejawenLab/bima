@@ -11,8 +11,8 @@ import (
 type Dic struct {
 }
 
-func (g *Dic) Generate(template *configs.Template, modulePath string, workDir string, templatePath string) {
-	dicTemplate, _ := engine.ParseFiles(fmt.Sprintf("%s/%s/dic.tpl", workDir, templatePath))
+func (g *Dic) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
+	dicTemplate, _ := engine.ParseFiles(fmt.Sprintf("%s/%s/dic.tpl", packagePath, templatePath))
 	dicPath := fmt.Sprintf("%s/dics", modulePath)
 	os.MkdirAll(dicPath, 0755)
 

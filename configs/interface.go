@@ -20,7 +20,7 @@ type (
 	}
 
 	Generator interface {
-		Generate(template *Template, modulePath string, workDir string, templatePath string)
+		Generate(template *Template, modulePath string, packagePath string, templatePath string)
 	}
 
 	Listener interface {

@@ -2,9 +2,10 @@ package generators
 
 import (
 	"fmt"
-	"go/build"
 	"io/ioutil"
 	"os"
+	"path/filepath"
+	"runtime"
 
 	configs "github.com/crowdeco/bima/configs"
 	"github.com/crowdeco/bima/utils"
@@ -12,7 +13,7 @@ import (
 	"golang.org/x/mod/modfile"
 )
 
-const TEMPLATE_PATH = "generators/templates"
+const TEMPLATE_PATH = "templates"
 
 type Factory struct {
 	Env        *configs.Env
@@ -23,14 +24,18 @@ type Factory struct {
 }
 
 func (f *Factory) Generate(module *configs.ModuleTemplate) {
-	ctx := build.Default
-	pkg, err := ctx.Import("github.com/crowdeco/bima", ".", build.FindOnly)
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("No caller information")
+	}
+
+	packagePath, err := filepath.Abs(filepath.Dir(filename))
 	if err != nil {
 		panic(err)
 	}
 
-	workDir := pkg.Dir
-	packageName := f.GetPackageName(workDir)
+	workDir, _ := os.Getwd()
+	packageName := f.GetPackageName(packagePath)
 	moduleName := f.Word.Camelcase(module.Name)
 	modulePlural := f.Pluralizer.Plural(moduleName)
 	modulePluralLowercase := f.Word.Underscore(modulePlural)
@@ -46,7 +51,7 @@ func (f *Factory) Generate(module *configs.ModuleTemplate) {
 
 	os.MkdirAll(modulePath, 0755)
 	for _, generator := range f.Generators {
-		generator.Generate(f.Template, modulePath, workDir, f.Env.TemplateLocation)
+		generator.Generate(f.Template, modulePath, packagePath, f.Env.TemplateLocation)
 	}
 }
 
@@ -54,8 +59,8 @@ func (f *Factory) GetDefaultTemplatePath() string {
 	return TEMPLATE_PATH
 }
 
-func (f *Factory) GetPackageName(workDir string) string {
-	mod, err := ioutil.ReadFile(fmt.Sprintf("%s/go.mod", workDir))
+func (f *Factory) GetPackageName(packagePath string) string {
+	mod, err := ioutil.ReadFile(fmt.Sprintf("%s/../go.mod", packagePath))
 	if err != nil {
 		panic(err)
 	}

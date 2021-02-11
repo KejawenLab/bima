@@ -11,8 +11,8 @@ import (
 type Server struct {
 }
 
-func (g *Server) Generate(template *configs.Template, modulePath string, workDir string, templatePath string) {
-	serverTemplate, _ := engine.ParseFiles(fmt.Sprintf("%s/%s/server.tpl", workDir, templatePath))
+func (g *Server) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
+	serverTemplate, _ := engine.ParseFiles(fmt.Sprintf("%s/%s/server.tpl", packagePath, templatePath))
 	serverFile, err := os.Create(fmt.Sprintf("%s/server.go", modulePath))
 	if err != nil {
 		panic(err)

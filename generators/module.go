@@ -14,8 +14,8 @@ type Module struct {
 	Config *configs.Config
 }
 
-func (g *Module) Generate(template *configs.Template, modulePath string, workDir string, templatePath string) {
-	moduleTemplate, _ := engine.ParseFiles(fmt.Sprintf("%s/%s/module.tpl", workDir, templatePath))
+func (g *Module) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
+	moduleTemplate, _ := engine.ParseFiles(fmt.Sprintf("%s/%s/module.tpl", packagePath, templatePath))
 	moduleFile, err := os.Create(fmt.Sprintf("%s/module.go", modulePath))
 	if err != nil {
 		panic(err)
