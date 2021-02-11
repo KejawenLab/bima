@@ -3,7 +3,7 @@ package {{.ModulePluralLowercase}}
 import (
     "context"
 
-	configs "{{.PackageName}}/configs"
+	configs "github.com/crowdeco/bima/configs"
 	grpcs "{{.PackageName}}/protos/builds"
 	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
     "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
