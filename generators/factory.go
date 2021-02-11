@@ -2,9 +2,9 @@ package generators
 
 import (
 	"fmt"
+	"go/build"
 	"io/ioutil"
 	"os"
-	"reflect"
 
 	configs "github.com/crowdeco/bima/configs"
 	"github.com/crowdeco/bima/utils"
@@ -23,7 +23,13 @@ type Factory struct {
 }
 
 func (f *Factory) Generate(module *configs.ModuleTemplate) {
-	workDir := reflect.TypeOf(f).PkgPath()
+	ctx := build.Default
+	pkg, err := ctx.Import("github.com/crowdeco/bima", ".", build.FindOnly)
+	if err != nil {
+		panic(err)
+	}
+
+	workDir := pkg.Dir
 	packageName := f.GetPackageName(workDir)
 	moduleName := f.Word.Camelcase(module.Name)
 	modulePlural := f.Pluralizer.Plural(moduleName)
