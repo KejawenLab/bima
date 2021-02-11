@@ -51,11 +51,11 @@ var Container = []dingo.Def{
 		Build: (*parsers.Middleware)(nil),
 	},
 	{
-		Name:  "bima:config:parser:listener",
+		Name:  "bima:config:parser:module",
 		Build: (*parsers.Module)(nil),
 	},
 	{
-		Name:  "bima:config:parser:listener",
+		Name:  "bima:config:parser:route",
 		Build: (*parsers.Route)(nil),
 	},
 	{
