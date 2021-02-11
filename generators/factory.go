@@ -35,7 +35,7 @@ func (f *Factory) Generate(module *configs.ModuleTemplate) {
 	}
 
 	workDir, _ := os.Getwd()
-	packageName := f.GetPackageName(packagePath)
+	packageName := f.GetPackageName(workDir)
 	moduleName := f.Word.Camelcase(module.Name)
 	modulePlural := f.Pluralizer.Plural(moduleName)
 	modulePluralLowercase := f.Word.Underscore(modulePlural)
@@ -60,7 +60,7 @@ func (f *Factory) GetDefaultTemplatePath() string {
 }
 
 func (f *Factory) GetPackageName(packagePath string) string {
-	mod, err := ioutil.ReadFile(fmt.Sprintf("%s/../go.mod", packagePath))
+	mod, err := ioutil.ReadFile(fmt.Sprintf("%s/go.mod", packagePath))
 	if err != nil {
 		panic(err)
 	}
