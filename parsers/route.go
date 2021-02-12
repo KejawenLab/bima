@@ -8,7 +8,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const ROUTES_FILE = "configs/modules.yaml"
+const ROUTES_FILE = "configs/routes.yaml"
 
 type Route struct {
 	Config []string `yaml:"routes"`
