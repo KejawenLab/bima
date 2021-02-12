@@ -51,7 +51,7 @@ func (r *Rest) Run(servers []configs.Server) {
 	fmt.Printf("Starting REST Multimedia Server on :%d...\n", r.Env.HtppPort)
 
 	util.Printf("✓ ")
-	fmt.Println("API Playlist is Ready at /api/docs...")
+	fmt.Println("Playlist API is Ready at /api/docs...")
 
 	http.ListenAndServe(fmt.Sprintf(":%d", r.Env.HtppPort), r.Middleware.Attach(r.Router.Handle(ctx, r.Server, conn)))
 }

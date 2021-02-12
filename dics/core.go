@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/ThreeDotsLabs/watermill"
 	amqp "github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
@@ -282,7 +283,8 @@ var Container = []dingo.Def{
 			util := color.New(color.FgCyan, color.Bold)
 
 			util.Printf("✓ ")
-			fmt.Println("Database configured...")
+			fmt.Printf("Database configured using '%s' driver...\n", env.DbDriver)
+			time.Sleep(100 * time.Millisecond)
 
 			return db.Connect(
 				env.DbHost,
@@ -315,6 +317,7 @@ var Container = []dingo.Def{
 
 			color.New(color.FgCyan, color.Bold).Printf("✓ ")
 			fmt.Println("Elasticsearch configured...")
+			time.Sleep(100 * time.Millisecond)
 
 			return client, nil
 		},
@@ -491,12 +494,20 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:log:logger",
 		Build: func() (*logrus.Logger, error) {
+			color.New(color.FgCyan, color.Bold).Printf("✓ ")
+			fmt.Println("Logger configured...")
+			time.Sleep(100 * time.Millisecond)
+
 			return logrus.New(), nil
 		},
 	},
 	{
 		Name: "bima:logger:extension:mongodb",
 		Build: func(env *configs.Env) (logrus.Hook, error) {
+			color.New(color.FgCyan, color.Bold).Printf("✓ ")
+			fmt.Println("MongoDB Logger Extension configured...")
+			time.Sleep(100 * time.Millisecond)
+
 			mongodb, err := mongodb.NewHooker(fmt.Sprintf("%s:%d", env.MongoDbHost, env.MongoDbPort), env.MongoDbName, "logs")
 			if err != nil {
 				return nil, err
@@ -516,6 +527,7 @@ var Container = []dingo.Def{
 		Build: func(env *configs.Env) (amqp.Config, error) {
 			color.New(color.FgCyan, color.Bold).Printf("✓ ")
 			fmt.Println("Pub/Sub configured...")
+			time.Sleep(100 * time.Millisecond)
 
 			return amqp.NewDurableQueueConfig(fmt.Sprintf("amqp://%s:%s@%s:%d/", env.AmqpUser, env.AmqpPassword, env.AmqpHost, env.AmqpPort)), nil
 		},
