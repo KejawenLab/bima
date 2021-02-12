@@ -8,7 +8,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const MIDDLEWARES_FILE = "configs/modules.yaml"
+const MIDDLEWARES_FILE = "configs/middlewares.yaml"
 
 type Middleware struct {
 	Config []string `yaml:"middlewares"`
