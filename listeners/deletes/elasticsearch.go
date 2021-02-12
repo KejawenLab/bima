@@ -5,7 +5,6 @@ import (
 
 	configs "github.com/crowdeco/bima/configs"
 	events "github.com/crowdeco/bima/events"
-	handlers "github.com/crowdeco/bima/handlers"
 	elastic "github.com/olivere/elastic/v7"
 )
 
@@ -26,7 +25,7 @@ func (d *Elasticsearch) Handle(event interface{}) {
 }
 
 func (d *Elasticsearch) Listen() string {
-	return handlers.AFTER_DELETE_EVENT
+	return events.AFTER_DELETE_EVENT
 }
 
 func (d *Elasticsearch) Priority() int {

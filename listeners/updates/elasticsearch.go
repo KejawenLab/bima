@@ -6,7 +6,6 @@ import (
 
 	configs "github.com/crowdeco/bima/configs"
 	events "github.com/crowdeco/bima/events"
-	handlers "github.com/crowdeco/bima/handlers"
 	elastic "github.com/olivere/elastic/v7"
 )
 
@@ -30,7 +29,7 @@ func (u *Elasticsearch) Handle(event interface{}) {
 }
 
 func (u *Elasticsearch) Listen() string {
-	return handlers.AFTER_UPDATE_EVENT
+	return events.AFTER_UPDATE_EVENT
 }
 
 func (u *Elasticsearch) Priority() int {

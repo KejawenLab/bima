@@ -5,7 +5,6 @@ import (
 
 	configs "github.com/crowdeco/bima/configs"
 	events "github.com/crowdeco/bima/events"
-	handlers "github.com/crowdeco/bima/handlers"
 	"github.com/olivere/elastic/v7"
 )
 
@@ -25,7 +24,7 @@ func (u *Filter) Handle(event interface{}) {
 }
 
 func (u *Filter) Listen() string {
-	return handlers.PAGINATION_EVENT
+	return events.PAGINATION_EVENT
 }
 
 func (u *Filter) Priority() int {

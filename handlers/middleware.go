@@ -5,9 +5,11 @@ import (
 	"sort"
 
 	configs "github.com/crowdeco/bima/configs"
+	events "github.com/crowdeco/bima/events"
 )
 
 type Middleware struct {
+	Dispatcher  *events.Dispatcher
 	Middlewares []configs.Middleware
 }
 
@@ -25,12 +27,20 @@ func (m *Middleware) Attach(handler http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		for _, middleware := range m.Middlewares {
-			stop := middleware.Attach(request, response)
+			stop := middleware.Attach(request)
 			if stop {
 				return
 			}
 		}
 
+		m.Dispatcher.Dispatch(events.BEFORE_REQUEST, &events.Request{
+			HttpRequest: request,
+		})
+
 		handler.ServeHTTP(response, request)
+
+		m.Dispatcher.Dispatch(events.AFTER_REQUEST, &events.Response{
+			ResponseWriter: response,
+		})
 	})
 }

@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"sort"
+	"time"
 
 	configs "github.com/crowdeco/bima/configs"
 )
@@ -18,6 +19,7 @@ func (a *Application) Run(servers []configs.Server) {
 	})
 
 	for _, application := range a.Applications {
+		time.Sleep(300 * time.Millisecond)
 		if application.IsBackground() {
 			go application.Run(servers)
 		} else {

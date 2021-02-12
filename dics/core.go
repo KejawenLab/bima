@@ -253,6 +253,9 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:handler:middleware",
 		Build: (*handlers.Middleware)(nil),
+		Params: dingo.Params{
+			"Dispatcher": dingo.Service("bima:event:dispatcher"),
+		},
 	},
 	{
 		Name:  "bima:logger:extension",

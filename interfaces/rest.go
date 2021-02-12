@@ -8,7 +8,7 @@ import (
 	configs "github.com/crowdeco/bima/configs"
 	handlers "github.com/crowdeco/bima/handlers"
 	"github.com/fatih/color"
-	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
 )
 

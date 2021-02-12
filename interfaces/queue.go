@@ -12,7 +12,7 @@ type Queue struct {
 
 func (q *Queue) Run(servers []configs.Server) {
 	color.New(color.FgCyan, color.Bold).Printf("✓ ")
-	fmt.Println("Waiters Ready...")
+	fmt.Println("Waiters Ready for Serving Messages...")
 
 	for _, server := range servers {
 		go server.RegisterQueueConsumer()

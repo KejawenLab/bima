@@ -5,7 +5,6 @@ import (
 
 	configs "github.com/crowdeco/bima/configs"
 	events "github.com/crowdeco/bima/events"
-	handlers "github.com/crowdeco/bima/handlers"
 )
 
 type CreatedBy struct {
@@ -21,7 +20,7 @@ func (c *CreatedBy) Handle(event interface{}) {
 }
 
 func (u *CreatedBy) Listen() string {
-	return handlers.BEFORE_CREATE_EVENT
+	return events.BEFORE_CREATE_EVENT
 }
 
 func (c *CreatedBy) Priority() int {

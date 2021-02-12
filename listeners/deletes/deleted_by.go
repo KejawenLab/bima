@@ -3,7 +3,6 @@ package deletes
 import (
 	configs "github.com/crowdeco/bima/configs"
 	events "github.com/crowdeco/bima/events"
-	handlers "github.com/crowdeco/bima/handlers"
 )
 
 type DeletedBy struct {
@@ -18,7 +17,7 @@ func (c *DeletedBy) Handle(event interface{}) {
 }
 
 func (u *DeletedBy) Listen() string {
-	return handlers.BEFORE_DELETE_EVENT
+	return events.BEFORE_DELETE_EVENT
 }
 
 func (c *DeletedBy) Priority() int {
