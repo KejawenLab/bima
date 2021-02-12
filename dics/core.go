@@ -511,6 +511,9 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:message:config",
 		Build: func(env *configs.Env) (amqp.Config, error) {
+			color.New(color.FgCyan, color.Bold).Printf("✓ ")
+			fmt.Println("Pub/Sub configured...")
+
 			return amqp.NewDurableQueueConfig(fmt.Sprintf("amqp://%s:%s@%s:%d/", env.AmqpUser, env.AmqpPassword, env.AmqpHost, env.AmqpPort)), nil
 		},
 	},
