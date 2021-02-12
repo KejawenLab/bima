@@ -276,6 +276,9 @@ var Container = []dingo.Def{
 				return nil, errors.New("Unknown Database Driver")
 			}
 
+			util := color.New(color.FgCyan, color.Bold)
+
+			util.Printf("✓ ")
 			fmt.Println("Database configured...")
 
 			return db.Connect(
@@ -307,6 +310,9 @@ var Container = []dingo.Def{
 				return nil, err
 			}
 
+			util := color.New(color.FgCyan, color.Bold)
+
+			util.Printf("✓ ")
 			fmt.Println("Elasticsearch configured...")
 
 			return client, nil
