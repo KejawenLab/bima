@@ -26,7 +26,7 @@ func (g *GRpc) Run(servers []configs.Server) {
 	}
 
 	color.New(color.FgCyan, color.Bold).Printf("✓ ")
-	fmt.Printf("Connecting gRPC Multimedia on :%d\n", g.Env.RpcPort)
+	fmt.Printf("Connecting gRPC Multimedia on :%d...\n", g.Env.RpcPort)
 
 	g.GRpc.Serve(l)
 }

@@ -24,7 +24,7 @@ func (r *Rest) Run(servers []configs.Server) {
 	util := color.New(color.FgCyan, color.Bold)
 
 	util.Printf("✓ ")
-	fmt.Printf("Starting REST Multimedia Server on :%d\n", r.Env.HtppPort)
+	fmt.Printf("Starting REST Multimedia Server on :%d...\n", r.Env.HtppPort)
 
 	ctx, cancel := context.WithCancel(r.Context)
 	defer cancel()
@@ -51,7 +51,7 @@ func (r *Rest) Run(servers []configs.Server) {
 	}()
 
 	util.Printf("✓ ")
-	fmt.Println("API Playlist is Ready at /api/docs")
+	fmt.Println("API Playlist is Ready at /api/docs...")
 
 	http.ListenAndServe(fmt.Sprintf(":%d", r.Env.HtppPort), r.Middleware.Attach(r.Router.Handle(ctx, r.Server, conn)))
 }
