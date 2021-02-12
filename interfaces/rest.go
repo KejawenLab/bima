@@ -3,11 +3,11 @@ package interfaces
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 
 	configs "github.com/crowdeco/bima/configs"
 	handlers "github.com/crowdeco/bima/handlers"
+	"github.com/fatih/color"
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
 )
@@ -21,7 +21,10 @@ type Rest struct {
 }
 
 func (r *Rest) Run(servers []configs.Server) {
-	log.Printf("Starting REST Server on :%d", r.Env.HtppPort)
+	util := color.New(color.FgCyan, color.Bold)
+
+	util.Printf("✓ ")
+	fmt.Printf("Starting REST Multimedia Server on :%d\n", r.Env.HtppPort)
 
 	ctx, cancel := context.WithCancel(r.Context)
 	defer cancel()
@@ -47,7 +50,8 @@ func (r *Rest) Run(servers []configs.Server) {
 		}()
 	}()
 
-	log.Println("API Documentation is ready at /api/docs")
+	util.Printf("✓ ")
+	fmt.Println("API Playlist is Ready at /api/docs")
 
 	http.ListenAndServe(fmt.Sprintf(":%d", r.Env.HtppPort), r.Middleware.Attach(r.Router.Handle(ctx, r.Server, conn)))
 }

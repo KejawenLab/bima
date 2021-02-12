@@ -6,6 +6,7 @@ import (
 	"net"
 
 	configs "github.com/crowdeco/bima/configs"
+	"github.com/fatih/color"
 	grpc "google.golang.org/grpc"
 )
 
@@ -24,7 +25,8 @@ func (g *GRpc) Run(servers []configs.Server) {
 		server.RegisterGRpc(g.GRpc)
 	}
 
-	log.Printf("Starting gRPC Server on :%d", g.Env.RpcPort)
+	color.New(color.FgCyan, color.Bold).Printf("✓ ")
+	fmt.Printf("Connecting gRPC Multimedia on :%d\n", g.Env.RpcPort)
 
 	g.GRpc.Serve(l)
 }

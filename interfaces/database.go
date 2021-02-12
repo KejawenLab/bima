@@ -1,16 +1,18 @@
 package interfaces
 
 import (
-	"log"
+	"fmt"
 
 	configs "github.com/crowdeco/bima/configs"
+	"github.com/fatih/color"
 )
 
 type Database struct {
 }
 
 func (d *Database) Run(servers []configs.Server) {
-	log.Printf("Starting DB Auto Migration")
+	color.New(color.FgCyan, color.Bold).Printf("✓ ")
+	fmt.Println("Serving DB Auto Migration Juice...")
 
 	for _, server := range servers {
 		server.RegisterAutoMigrate()

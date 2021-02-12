@@ -1,16 +1,18 @@
 package interfaces
 
 import (
-	"log"
+	"fmt"
 
 	configs "github.com/crowdeco/bima/configs"
+	"github.com/fatih/color"
 )
 
 type Queue struct {
 }
 
 func (q *Queue) Run(servers []configs.Server) {
-	log.Printf("Starting Queue Consumer")
+	color.New(color.FgCyan, color.Bold).Printf("✓ ")
+	fmt.Println("Waiters Ready...")
 
 	for _, server := range servers {
 		go server.RegisterQueueConsumer()

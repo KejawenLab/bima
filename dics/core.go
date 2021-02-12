@@ -310,9 +310,7 @@ var Container = []dingo.Def{
 				return nil, err
 			}
 
-			util := color.New(color.FgCyan, color.Bold)
-
-			util.Printf("✓ ")
+			color.New(color.FgCyan, color.Bold).Printf("✓ ")
 			fmt.Println("Elasticsearch configured...")
 
 			return client, nil
