@@ -64,7 +64,7 @@ type (
 	}
 
 	Router interface {
-		Handle(context context.Context, server *http.ServeMux, client *grpc.ClientConn) *http.ServeMux
+		Handle(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn)
 		Priority() int
 	}
 
@@ -74,7 +74,8 @@ type (
 
 	Route interface {
 		Path() string
-		Handle(w http.ResponseWriter, r *http.Request)
+		Method() string
+		Handle(w http.ResponseWriter, r *http.Request, params map[string]string)
 		SetClient(client *grpc.ClientConn)
 	}
 

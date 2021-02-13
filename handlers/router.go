@@ -6,6 +6,7 @@ import (
 	"sort"
 
 	configs "github.com/crowdeco/bima/configs"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )
 
@@ -18,9 +19,12 @@ func (r *Router) Handle(context context.Context, server *http.ServeMux, client *
 		return r.Routes[i].Priority() > r.Routes[j].Priority()
 	})
 
+	mux := runtime.NewServeMux()
 	for _, route := range r.Routes {
-		route.Handle(context, server, client)
+		route.Handle(context, mux, client)
 	}
+
+	server.Handle("/", mux)
 
 	return server
 }

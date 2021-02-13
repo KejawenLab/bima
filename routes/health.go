@@ -18,11 +18,15 @@ func (h *Health) Path() string {
 	return HEALTH_PATH
 }
 
+func (h *Health) Method() string {
+	return http.MethodGet
+}
+
 func (h *Health) SetClient(client *grpc.ClientConn) {
 	h.Client = client
 }
 
-func (h *Health) Handle(w http.ResponseWriter, r *http.Request) {
+func (h *Health) Handle(w http.ResponseWriter, r *http.Request, params map[string]string) {
 	w.Header().Set("Content-Type", "text/html")
 	s := h.Client.GetState()
 

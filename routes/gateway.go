@@ -2,7 +2,6 @@ package routes
 
 import (
 	"context"
-	"net/http"
 
 	configs "github.com/crowdeco/bima/configs"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -17,16 +16,10 @@ func (g *GRpcGateway) Register(servers []configs.Server) {
 	g.Servers = servers
 }
 
-func (g *GRpcGateway) Handle(ctx context.Context, server *http.ServeMux, client *grpc.ClientConn) *http.ServeMux {
-	mux := runtime.NewServeMux()
-
+func (g *GRpcGateway) Handle(ctx context.Context, server *runtime.ServeMux, client *grpc.ClientConn) {
 	for _, handler := range g.Servers {
-		handler.GRpcHandler(ctx, mux, client)
+		handler.GRpcHandler(ctx, server, client)
 	}
-
-	server.Handle("/", mux)
-
-	return server
 }
 
 func (a *GRpcGateway) Priority() int {
