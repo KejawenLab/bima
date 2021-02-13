@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/crowdeco/bima"
+	bima "github.com/crowdeco/bima"
 	configs "github.com/crowdeco/bima/configs"
 	events "github.com/crowdeco/bima/events"
 )
