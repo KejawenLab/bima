@@ -27,8 +27,6 @@ func (m *Middleware) Attach(handler http.Handler) http.Handler {
 	})
 
 	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
-		response.Header().Add("X-Bima-Version", bima.VERSION_STRING)
-
 		for _, middleware := range m.Middlewares {
 			stop := middleware.Attach(request)
 			if stop {
@@ -43,6 +41,8 @@ func (m *Middleware) Attach(handler http.Handler) http.Handler {
 		m.Dispatcher.Dispatch(events.RESPONSE_EVENT, &events.Response{
 			ResponseWriter: response,
 		})
+
+		response.Header().Add("X-Bima-Version", bima.VERSION_STRING)
 
 		handler.ServeHTTP(response, request)
 	})
