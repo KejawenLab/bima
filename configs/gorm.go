@@ -9,7 +9,7 @@ import (
 )
 
 type Base struct {
-	ID        string `gorm:"type:string;primaryKey;autoIncrement:false"`
+	Id        string `gorm:"type:string;primaryKey;autoIncrement:false"`
 	Counter   uint64 `gorm:"index;autoIncrement:true"`
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
@@ -44,7 +44,7 @@ func (b *Base) SetDeletedAt(time time.Time) {
 }
 
 func (b *Base) BeforeCreate(tx *gorm.DB) (err error) {
-	b.ID = uuid.New().String()
+	b.Id = uuid.New().String()
 
 	return nil
 }
