@@ -3,6 +3,7 @@ module github.com/crowdeco/bima
 go 1.14
 
 require (
+	github.com/NYTimes/gziphandler v1.1.1 // indirect
 	github.com/ThreeDotsLabs/watermill v1.1.1
 	github.com/ThreeDotsLabs/watermill-amqp v1.1.0
 	github.com/dustin/go-humanize v1.0.0
