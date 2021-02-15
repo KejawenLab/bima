@@ -606,10 +606,6 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:util:time",
-		Build: (*utils.Time)(nil),
-	},
-	{
 		Name: "bima:cachita:cache",
 		Build: func() (cachita.Cache, error) {
 			return cachita.Memory(), nil
