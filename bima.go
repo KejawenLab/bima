@@ -1,3 +1,3 @@
 package bima
 
-const VERSION_STRING = "v1.3.0"
+const VERSION_STRING = "v1.3.5"
