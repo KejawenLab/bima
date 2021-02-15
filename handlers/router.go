@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/NYTimes/gziphandler"
 	configs "github.com/crowdeco/bima/configs"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -25,7 +24,7 @@ func (r *Router) Handle(context context.Context, server *http.ServeMux, client *
 		route.Handle(context, mux, client)
 	}
 
-	server.Handle("/", gziphandler.GzipHandler(mux))
+	server.Handle("/", mux)
 
 	return server
 }
