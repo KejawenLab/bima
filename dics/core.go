@@ -227,6 +227,10 @@ var Container = []dingo.Def{
 		Build: (*drivers.PostgreSql)(nil),
 	},
 	{
+		Name:  "bima:database:driver:sqlserver",
+		Build: (*drivers.SqlServer)(nil),
+	},
+	{
 		Name: "bima:application",
 		Build: func(
 			database configs.Application,
@@ -268,6 +272,7 @@ var Container = []dingo.Def{
 			env *configs.Env,
 			mysql configs.Driver,
 			postgresql configs.Driver,
+			sqlserver configs.Driver,
 		) (*gorm.DB, error) {
 			var db configs.Driver
 
@@ -276,6 +281,8 @@ var Container = []dingo.Def{
 				db = mysql
 			case "postgresql":
 				db = postgresql
+			case "sqlserver":
+				db = sqlserver
 			default:
 				return nil, errors.New("Unknown Database Driver")
 			}
@@ -299,6 +306,7 @@ var Container = []dingo.Def{
 			"0": dingo.Service("bima:config:env"),
 			"1": dingo.Service("bima:database:driver:mysql"),
 			"2": dingo.Service("bima:database:driver:postgresql"),
+			"3": dingo.Service("bima:database:driver:sqlserver"),
 		},
 	},
 	{
