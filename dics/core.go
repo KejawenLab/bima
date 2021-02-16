@@ -106,6 +106,7 @@ var Container = []dingo.Def{
 			env := configs.Env{}
 
 			env.ServiceName = os.Getenv("APP_NAME")
+			env.ServiceHost = os.Getenv("APP_HOST")
 			env.Version = os.Getenv("APP_VERSION")
 			env.ApiVersion = os.Getenv("API_VERSION")
 			env.Debug, _ = strconv.ParseBool(os.Getenv("APP_DEBUG"))
@@ -157,6 +158,7 @@ var Container = []dingo.Def{
 			provider configs.Generator,
 			server configs.Generator,
 			validation configs.Generator,
+			swagger configs.Generator,
 			env *configs.Env,
 			pluralizer *pluralize.Client,
 			template *configs.Template,
@@ -175,6 +177,7 @@ var Container = []dingo.Def{
 					provider,
 					server,
 					validation,
+					swagger,
 				},
 			}, nil
 		},
@@ -186,6 +189,7 @@ var Container = []dingo.Def{
 			"4": dingo.Service("bima:generator:provider"),
 			"5": dingo.Service("bima:generator:server"),
 			"6": dingo.Service("bima:generator:validation"),
+			"7": dingo.Service("bima:generator:swagger"),
 		},
 	},
 	{
@@ -218,6 +222,10 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:generator:validation",
 		Build: (*generators.Validation)(nil),
+	},
+	{
+		Name:  "bima:generator:swagger",
+		Build: (*generators.Swagger)(nil),
 	},
 	{
 		Name:  "bima:database:driver:mysql",

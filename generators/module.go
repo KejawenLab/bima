@@ -31,7 +31,8 @@ func (g *Module) Generate(template *configs.Template, modulePath string, package
 		panic(err)
 	}
 
-	err = ioutil.WriteFile(parsers.MODULES_FILE, modules, 0644)
+	workDir, _ := os.Getwd()
+	err = ioutil.WriteFile(fmt.Sprintf("%s/%s", workDir, parsers.MODULES_FILE), modules, 0644)
 	if err != nil {
 		panic(err)
 	}
@@ -39,14 +40,14 @@ func (g *Module) Generate(template *configs.Template, modulePath string, package
 	moduleTemplate.Execute(moduleFile, template)
 }
 
-func (g *Module) makeUnique(slices []string) []string {
+func (g *Module) makeUnique(modules []string) []string {
 	occured := make(map[string]bool)
 	var result []string
-	for e := range slices {
-		if occured[slices[e]] != true {
-			occured[slices[e]] = true
+	for e := range modules {
+		if occured[modules[e]] != true {
+			occured[modules[e]] = true
 
-			result = append(result, slices[e])
+			result = append(result, modules[e])
 		}
 	}
 

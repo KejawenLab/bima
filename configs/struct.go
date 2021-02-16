@@ -14,6 +14,7 @@ type (
 		Version            string
 		ApiVersion         string
 		ServiceName        string
+		ServiceHost        string
 		DbHost             string
 		DbPort             int
 		DbUser             string
@@ -48,6 +49,11 @@ type (
 		ModulePlural          string
 		ModulePluralLowercase string
 		Columns               []*FieldTemplate
+	}
+
+	ModuleJson struct {
+		Name string `json:"name"`
+		Url  string `json:"url"`
 	}
 
 	ModuleTemplate struct {

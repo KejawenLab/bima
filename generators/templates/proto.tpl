@@ -3,9 +3,17 @@ syntax = "proto3";
 package grpcs;
 
 import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 import "bima/pagination.proto";
 
 option go_package = ".;grpcs";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+	info: {
+		title: "{{.Module}} Service";
+		version: "{{.ApiVersion}}";
+	};
+};
 
 message {{.Module}} {
     string id = 1;
