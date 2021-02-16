@@ -13,6 +13,10 @@ type Repository struct {
 	overridedData interface{}
 }
 
+func (r *Repository) Debug() {
+    r.Database = r.Database.Debug()
+}
+
 func (r *Repository) StartTransaction() {
 	r.dbPool = r.Database
 	r.Database = r.Database.Begin()
