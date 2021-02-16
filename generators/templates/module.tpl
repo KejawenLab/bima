@@ -6,56 +6,17 @@ import (
 	"fmt"
 	"net/http"
 
+    bima "github.com/crowdeco/bima"
 	configs "github.com/crowdeco/bima/configs"
-	events "github.com/crowdeco/bima/events"
-	handlers "github.com/crowdeco/bima/handlers"
-	paginations "github.com/crowdeco/bima/paginations"
 	grpcs "{{.PackageName}}/protos/builds"
 	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
 	validations "{{.PackageName}}/{{.ModulePluralLowercase}}/validations"
-	utils "github.com/crowdeco/bima/utils"
 	copier "github.com/jinzhu/copier"
-	elastic "github.com/olivere/elastic/v7"
 )
 
 type Module struct {
-	Context       context.Context
-	Elasticsearch *elastic.Client
-	Service       configs.Service
-	Handler       *handlers.Handler
-	Logger        *handlers.Logger
-	Messenger     *handlers.Messenger
-	Validator     *validations.{{.Module}}
-	Cache         *utils.Cache
-	Paginator     *paginations.Pagination
-	Request       *paginations.Request
-}
-
-func NewModule(
-	context context.Context,
-	elasticsearch *elastic.Client,
-	dispatcher *events.Dispatcher,
-	service configs.Service,
-	logger *handlers.Logger,
-	messenger *handlers.Messenger,
-	handler *handlers.Handler,
-	validator *validations.{{.Module}},
-	cache *utils.Cache,
-	paginator *paginations.Pagination,
-	request *paginations.Request,
-) *Module {
-	return &Module{
-		Context:       context,
-		Elasticsearch: elasticsearch,
-		Service:       service,
-		Handler:       handler,
-		Logger:        logger,
-		Messenger:     messenger,
-		Validator:     validator,
-		Cache:         cache,
-		Paginator:     paginator,
-		Request:       request,
-	}
+    *bima.Module
+	Validator *validations.{{.Module}}
 }
 
 func (m *Module) GetPaginated(c context.Context, r *grpcs.Pagination) (*grpcs.{{.Module}}PaginatedResponse, error) {

@@ -3,18 +3,16 @@ package {{.ModulePluralLowercase}}
 import (
     "context"
 
-	configs "github.com/crowdeco/bima/configs"
+	bima "github.com/crowdeco/bima"
 	grpcs "{{.PackageName}}/protos/builds"
 	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
     "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
-	"gorm.io/gorm"
 )
 
 type Server struct {
-	Env      *configs.Env
-	Module   *Module
-	Database *gorm.DB
+    *bima.Server
+	Module *Module
 }
 
 func (s *Server) RegisterGRpc(gs *grpc.Server) {

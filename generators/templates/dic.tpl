@@ -11,6 +11,9 @@ var {{.Module}} = []dingo.Def{
 	{
 		Name:  "module:{{.ModuleLowercase}}:model",
 		Build: (*models.{{.Module}})(nil),
+        Params: dingo.Params{
+			"Model": dingo.Service("bima:model"),
+		},
 	},
 	{
 		Name:  "module:{{.ModuleLowercase}}:validation",
@@ -20,23 +23,16 @@ var {{.Module}} = []dingo.Def{
 		Name:  "module:{{.ModuleLowercase}}",
 		Build: (*{{.ModulePluralLowercase}}.Module)(nil),
 		Params: dingo.Params{
-			"Context":       dingo.Service("bima:context:background"),
-			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
-			"Handler":       dingo.Service("bima:handler:handler"),
-			"Logger":        dingo.Service("bima:handler:logger"),
-			"Messenger":     dingo.Service("bima:handler:messager"),
-			"Validator":     dingo.Service("module:{{.ModuleLowercase}}:validation"),
-			"Cache":         dingo.Service("bima:cache:memory"),
-			"Paginator":     dingo.Service("bima:pagination:paginator"),
+			"Module":    dingo.Service("bima:module"),
+			"Validator": dingo.Service("module:{{.ModuleLowercase}}:validation"),
 		},
 	},
 	{
 		Name:  "module:{{.ModuleLowercase}}:server",
 		Build: (*{{.ModulePluralLowercase}}.Server)(nil),
 		Params: dingo.Params{
-			"Env":      dingo.Service("bima:config:env"),
-			"Module":   dingo.Service("module:{{.ModuleLowercase}}"),
-			"Database": dingo.Service("bima:connection:database"),
+			"Server": dingo.Service("bima:server"),
+			"Module": dingo.Service("module:{{.ModuleLowercase}}"),
 		},
 	},
 }

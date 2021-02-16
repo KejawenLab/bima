@@ -11,6 +11,7 @@ import (
 
 	"github.com/ThreeDotsLabs/watermill"
 	amqp "github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
+	"github.com/crowdeco/bima"
 	configs "github.com/crowdeco/bima/configs"
 	drivers "github.com/crowdeco/bima/configs/drivers"
 	events "github.com/crowdeco/bima/events"
@@ -606,6 +607,33 @@ var Container = []dingo.Def{
 		Name: "bima:cachita:cache",
 		Build: func() (cachita.Cache, error) {
 			return cachita.Memory(), nil
+		},
+	},
+	{
+		Name:  "bima:module",
+		Build: (*bima.Module)(nil),
+		Params: dingo.Params{
+			"Context":       dingo.Service("bima:context:background"),
+			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
+			"Handler":       dingo.Service("bima:handler:handler"),
+			"Logger":        dingo.Service("bima:handler:logger"),
+			"Messenger":     dingo.Service("bima:handler:messager"),
+			"Cache":         dingo.Service("bima:cache:memory"),
+			"Paginator":     dingo.Service("bima:pagination:paginator"),
+		},
+	},
+	{
+		Name:  "bima:server",
+		Build: (*bima.Server)(nil),
+		Params: dingo.Params{
+			"Env":      dingo.Service("bima:config:env"),
+			"Database": dingo.Service("bima:connection:database"),
+		},
+	},
+	{
+		Name: "bima:model",
+		Build: func() (*bima.Model, error) {
+			return &bima.Model{Base: configs.Base{}}, nil
 		},
 	},
 }

@@ -1,11 +1,11 @@
 package models
 
 import (
-	configs "github.com/crowdeco/bima/configs"
+	bima "github.com/crowdeco/bima"
 )
 
 type {{.Module}} struct {
-	configs.Base
+	*bima.Model
 {{range .Columns}}
     {{.Name}} {{.GolangType}}
 {{end}}
