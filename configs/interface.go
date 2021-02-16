@@ -80,7 +80,7 @@ type (
 	}
 
 	Middleware interface {
-		Attach(request *http.Request) bool
+		Attach(request *http.Request, response http.ResponseWriter) bool
 		Priority() int
 	}
 
