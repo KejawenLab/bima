@@ -22,7 +22,7 @@ func (g *Swagger) Generate(template *configs.Template, modulePath string, packag
 	json.Unmarshal(modules, &modulesJson)
 	modulesJson = append(modulesJson, configs.ModuleJson{
 		Name: template.Module,
-		Url:  fmt.Sprintf("%s.swagger.json", template.ModuleLowercase),
+		Url:  fmt.Sprintf("./%s.swagger.json", template.ModuleLowercase),
 	})
 
 	modulesJson = g.makeUnique(modulesJson)
