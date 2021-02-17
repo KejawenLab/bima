@@ -16,11 +16,11 @@ type Server struct {
 }
 
 func (s *Server) RegisterGRpc(gs *grpc.Server) {
-	grpcs.Register{{.ModulePlural}}Server(gs, s.Module)
+	grpcs.Register{{.Module}}sServer(gs, s.Module)
 }
 
 func (s *Server) GRpcHandler(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn) error {
-	return grpcs.Register{{.ModulePlural}}Handler(context, server, client)
+	return grpcs.Register{{.Module}}sHandler(context, server, client)
 }
 
 func (s *Server) RegisterAutoMigrate() {
