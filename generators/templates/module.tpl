@@ -194,7 +194,7 @@ func (m *Module) Consume() {
 func (m *Module) Populate() {
 	v := models.{{.Module}}{}
 
-	_, err := m.Elasticsearch.DeleteIndex(v.TableName()).Do(m.Context)
+	_, err := m.Elasticsearch.DeleteIndex(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).Do(m.Context)
 	if err != nil {
 		m.Logger.Error(fmt.Sprintf("%+v", err))
 	}
@@ -207,6 +207,6 @@ func (m *Module) Populate() {
 
 	for _, d := range records {
 		data, _ := json.Marshal(d)
-		m.Elasticsearch.Index().Index(v.TableName()).BodyJson(string(data)).Do(m.Context)
+		m.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceConicalName, v.TableName())).BodyJson(string(data)).Do(m.Context)
 	}
 }
