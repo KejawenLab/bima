@@ -191,7 +191,7 @@ func (m *Module) Delete(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 func (m *Module) Consume() {
 }
 
-func (m *Module) Populete() {
+func (m *Module) Populate() {
 	v := models.{{.Module}}{}
 
 	_, err := m.Elasticsearch.DeleteIndex(v.TableName()).Do(m.Context)
