@@ -14,7 +14,7 @@ type (
 		Version              string
 		ApiVersion           string
 		ServiceName          string
-		ServiceCononicalName string
+		ServiceCanonicalName string
 		ServiceHost          string
 		DbHost               string
 		DbPort               int

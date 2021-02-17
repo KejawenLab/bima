@@ -1,4 +1,4 @@
-package modules
+package dics
 
 import (
 	{{.ModulePluralLowercase}} "{{.PackageName}}/{{.ModulePluralLowercase}}"

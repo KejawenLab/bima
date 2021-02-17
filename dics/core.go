@@ -109,7 +109,7 @@ var Container = []dingo.Def{
 			env := configs.Env{}
 
 			env.ServiceName = os.Getenv("APP_NAME")
-			env.ServiceConicalName = word.Underscore(env.ServiceName)
+			env.ServiceCanonicalName = word.Underscore(env.ServiceName)
 			env.ServiceHost = os.Getenv("APP_HOST")
 			env.Version = os.Getenv("APP_VERSION")
 			env.ApiVersion = os.Getenv("API_VERSION")
