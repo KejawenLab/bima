@@ -21,13 +21,13 @@ func (u *Elasticsearch) Handle(event interface{}) {
 
 	m := e.Data.(configs.Model)
 	query := elastic.NewMatchQuery("Id", e.Id)
-	result, _ := u.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", u.Env.ServiceConicalName, m.TableName())).Query(query).Do(u.Context)
+	result, _ := u.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", u.Env.ServiceCanonicalName, m.TableName())).Query(query).Do(u.Context)
 	for _, hit := range result.Hits.Hits {
-		u.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", u.Env.ServiceConicalName, m.TableName())).Id(hit.Id).Do(u.Context)
+		u.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", u.Env.ServiceCanonicalName, m.TableName())).Id(hit.Id).Do(u.Context)
 	}
 
 	data, _ := json.Marshal(e.Data)
-	u.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", u.Env.ServiceConicalName, m.TableName())).BodyJson(string(data)).Do(u.Context)
+	u.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", u.Env.ServiceCanonicalName, m.TableName())).BodyJson(string(data)).Do(u.Context)
 }
 
 func (u *Elasticsearch) Listen() string {
