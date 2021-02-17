@@ -35,6 +35,6 @@ func (s *Server) RegisterQueueConsumer() {
 
 func (s *Server) RepopulateData() {
 	if s.Env.Debug {
-		s.Module.Populete()
+		s.Module.Populate()
 	}
 }
