@@ -11,7 +11,7 @@ import (
 
 	"github.com/ThreeDotsLabs/watermill"
 	amqp "github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
-	"github.com/crowdeco/bima"
+	bima "github.com/crowdeco/bima"
 	configs "github.com/crowdeco/bima/configs"
 	drivers "github.com/crowdeco/bima/configs/drivers"
 	events "github.com/crowdeco/bima/events"
@@ -102,10 +102,14 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:config:env",
-		Build: func(user *configs.User) (*configs.Env, error) {
+		Build: func(
+			user *configs.User,
+			word *utils.Word,
+		) (*configs.Env, error) {
 			env := configs.Env{}
 
 			env.ServiceName = os.Getenv("APP_NAME")
+			env.ServiceConicalName = word.Underscore(env.ServiceName)
 			env.ServiceHost = os.Getenv("APP_HOST")
 			env.Version = os.Getenv("APP_VERSION")
 			env.ApiVersion = os.Getenv("API_VERSION")
@@ -336,6 +340,7 @@ var Container = []dingo.Def{
 		Name:  "bima:listener:create:elasticsearch",
 		Build: (*creates.Elasticsearch)(nil),
 		Params: dingo.Params{
+			"Env":           dingo.Service("bima:config:env"),
 			"Context":       dingo.Service("bima:context:background"),
 			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
 		},
@@ -344,6 +349,7 @@ var Container = []dingo.Def{
 		Name:  "bima:listener:update:elasticsearch",
 		Build: (*updates.Elasticsearch)(nil),
 		Params: dingo.Params{
+			"Env":           dingo.Service("bima:config:env"),
 			"Context":       dingo.Service("bima:context:background"),
 			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
 		},
@@ -352,6 +358,7 @@ var Container = []dingo.Def{
 		Name:  "bima:listener:delete:elasticsearch",
 		Build: (*deletes.Elasticsearch)(nil),
 		Params: dingo.Params{
+			"Env":           dingo.Service("bima:config:env"),
 			"Context":       dingo.Service("bima:context:background"),
 			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
 		},
@@ -442,6 +449,7 @@ var Container = []dingo.Def{
 		Name:  "bima:handler:handler",
 		Build: (*handlers.Handler)(nil),
 		Params: dingo.Params{
+			"Env":           dingo.Service("bima:config:env"),
 			"Context":       dingo.Service("bima:context:background"),
 			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
 			"Dispatcher":    dingo.Service("bima:event:dispatcher"),

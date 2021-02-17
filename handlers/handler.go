@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 
+	configs "github.com/crowdeco/bima/configs"
 	events "github.com/crowdeco/bima/events"
 	paginations "github.com/crowdeco/bima/paginations"
 	adapter "github.com/crowdeco/bima/paginations/adapter"
@@ -11,6 +13,7 @@ import (
 )
 
 type Handler struct {
+	Env           *configs.Env
 	Context       context.Context
 	Elasticsearch *elastic.Client
 	Dispatcher    *events.Dispatcher
@@ -27,7 +30,7 @@ func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metada
 	})
 
 	var result []interface{}
-	adapter := adapter.NewElasticsearchAdapter(h.Context, h.Elasticsearch, paginator.Model, paginator.UseCounter, paginator.Counter, query)
+	adapter := adapter.NewElasticsearchAdapter(h.Context, h.Elasticsearch, fmt.Sprintf("%s_%s", h.Env.ServiceConicalName, paginator.Model), paginator.UseCounter, paginator.Counter, query)
 	paginator.Paginate(adapter)
 	paginator.Pager.Results(&result)
 	next := paginator.Page + 1
