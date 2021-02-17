@@ -207,6 +207,6 @@ func (m *Module) Populate() {
 
 	for _, d := range records {
 		data, _ := json.Marshal(d)
-		m.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceConicalName, v.TableName())).BodyJson(string(data)).Do(m.Context)
+		m.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).BodyJson(string(data)).Do(m.Context)
 	}
 }
