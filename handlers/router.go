@@ -15,7 +15,7 @@ type Router struct {
 }
 
 func (r *Router) Handle(context context.Context, server *http.ServeMux, client *grpc.ClientConn) *http.ServeMux {
-	sort.Slice(r.Routes, func(i, j int) bool {
+	sort.Slice(r.Routes, func(i int, j int) bool {
 		return r.Routes[i].Priority() > r.Routes[j].Priority()
 	})
 

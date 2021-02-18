@@ -1,5 +1,13 @@
 package events
 
+import (
+	"net/http"
+
+	paginations "github.com/crowdeco/bima/paginations"
+	services "github.com/crowdeco/bima/services"
+	elastic "github.com/olivere/elastic/v7"
+)
+
 const PAGINATION_EVENT = "event.pagination"
 const BEFORE_CREATE_EVENT = "event.before_create"
 const AFTER_CREATE_EVENT = "event.after_create"
@@ -9,3 +17,25 @@ const BEFORE_DELETE_EVENT = "event.before_delete"
 const AFTER_DELETE_EVENT = "event.after_delete"
 const REQUEST_EVENT = "event.request"
 const RESPONSE_EVENT = "event.response"
+
+type (
+	Model struct {
+		Data       interface{}
+		Id         string
+		Repository *services.Repository
+	}
+
+	Pagination struct {
+		Repository *services.Repository
+		Query      *elastic.BoolQuery
+		Filters    []paginations.Filter
+	}
+
+	Request struct {
+		HttpRequest *http.Request
+	}
+
+	Response struct {
+		ResponseWriter http.ResponseWriter
+	}
+)

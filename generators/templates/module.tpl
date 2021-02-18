@@ -194,13 +194,10 @@ func (m *Module) Consume() {
 func (m *Module) Populate() {
 	v := models.{{.Module}}{}
 
-	_, err := m.Elasticsearch.DeleteIndex(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).Do(m.Context)
-	if err != nil {
-		m.Logger.Error(fmt.Sprintf("%+v", err))
-	}
+	m.Elasticsearch.DeleteIndex(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).Do(m.Context)
 
 	var records []models.{{.Module}}
-	err = m.Handler.All(&records)
+	err := m.Handler.All(&records)
 	if err != nil {
 		m.Logger.Error(fmt.Sprintf("%+v", err))
 	}

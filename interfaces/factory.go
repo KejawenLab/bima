@@ -14,7 +14,7 @@ type (
 )
 
 func (a *Application) Run(servers []configs.Server) {
-	sort.Slice(a.Applications, func(i, j int) bool {
+	sort.Slice(a.Applications, func(i int, j int) bool {
 		return a.Applications[i].Priority() > a.Applications[j].Priority()
 	})
 

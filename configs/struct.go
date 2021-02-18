@@ -1,5 +1,7 @@
 package configs
 
+import "github.com/sirupsen/logrus"
+
 type (
 	User struct {
 		Id    string
@@ -70,4 +72,12 @@ type (
 		Index          int
 		IsRequired     bool
 	}
+
+	LoggerExtension struct {
+		Extensions []logrus.Hook
+	}
 )
+
+func (l *LoggerExtension) Register(extensions []logrus.Hook) {
+	l.Extensions = extensions
+}

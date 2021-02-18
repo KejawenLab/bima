@@ -37,7 +37,7 @@ func (f *Factory) Generate(module *configs.ModuleTemplate) {
 	workDir, _ := os.Getwd()
 	packageName := f.GetPackageName(workDir)
 	moduleName := f.Word.Camelcase(module.Name)
-	modulePlural := f.Pluralizer.Plural(moduleName)
+	modulePlural := f.Pluralizer.Plural(module.Name)
 	modulePluralLowercase := f.Word.Underscore(modulePlural)
 	modulePath := fmt.Sprintf("%s/%s", workDir, modulePluralLowercase)
 

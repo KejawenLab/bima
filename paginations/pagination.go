@@ -17,6 +17,28 @@ type (
 		Pager      paginator.Paginator
 		Model      string
 	}
+
+	Filter struct {
+		Field string
+		Value string
+	}
+
+	Metadata struct {
+		Record   int
+		Page     int
+		Previous int
+		Next     int
+		Limit    int
+		Total    int
+	}
+
+	Request struct {
+		Page    int32
+		Counter uint64
+		Limit   int32
+		Fields  []string
+		Values  []string
+	}
 )
 
 func (p *Pagination) Handle(request *Request) {
