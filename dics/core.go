@@ -269,7 +269,6 @@ var Container = []dingo.Def{
 		Build: (*handlers.Middleware)(nil),
 		Params: dingo.Params{
 			"Dispatcher": dingo.Service("bima:event:dispatcher"),
-			"Version":    dingo.Service("bima:middleware:version"),
 		},
 	},
 	{
@@ -487,10 +486,6 @@ var Container = []dingo.Def{
 		Params: dingo.Params{
 			"Logger": dingo.Service("bima:handler:logger"),
 		},
-	},
-	{
-		Name:  "bima:middleware:version",
-		Build: (*middlewares.Version)(nil),
 	},
 	{
 		Name:  "bima:router:mux",

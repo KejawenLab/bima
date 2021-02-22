@@ -11,15 +11,12 @@ import (
 type Middleware struct {
 	Dispatcher  *events.Dispatcher
 	Middlewares []configs.Middleware
-	Version     configs.Middleware
 }
 
 func (m *Middleware) Register(middlewares []configs.Middleware) {
 	sort.Slice(middlewares, func(i, j int) bool {
 		return middlewares[i].Priority() > middlewares[j].Priority()
 	})
-
-	m.Middlewares = append(middlewares, m.Version)
 }
 
 func (m *Middleware) Attach(handler http.Handler) http.Handler {
