@@ -181,6 +181,7 @@ func (m *Module) Delete(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 	}
 
     m.Handler.Delete(&v, r.Id)
+    m.Cache.Invalidate(r.Id)
 
 	return &grpcs.{{.Module}}Response{
 		Code: http.StatusNoContent,
