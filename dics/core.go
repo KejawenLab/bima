@@ -482,6 +482,13 @@ var Container = []dingo.Def{
 		},
 	},
 	{
+		Name:  "bima:middleware:recovery",
+		Build: (*middlewares.Recovery)(nil),
+		Params: dingo.Params{
+			"Logger": dingo.Service("bima:handler:logger"),
+		},
+	},
+	{
 		Name:  "bima:middleware:version",
 		Build: (*middlewares.Version)(nil),
 	},
