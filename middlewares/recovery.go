@@ -17,11 +17,11 @@ func (r *Recovery) Attach(request *http.Request, response http.ResponseWriter) b
 		if r != nil {
 			switch x := rc.(type) {
 			case string:
-				r.Logger.Fatal(x)
+				r.Logger.Error(x)
 			case error:
-				r.Logger.Fatal(x.Error())
+				r.Logger.Error(x.Error())
 			default:
-				r.Logger.Fatal("Unknown panic")
+				r.Logger.Error("Unknown panic")
 			}
 		}
 
