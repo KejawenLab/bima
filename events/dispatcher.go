@@ -32,7 +32,7 @@ func (d *Dispatcher) Dispatch(name string, event interface{}) error {
 	}
 
 	for _, listener := range d.Events[name] {
-		listener.Handle(event)
+		go listener.Handle(event)
 	}
 
 	return nil
