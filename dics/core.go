@@ -575,8 +575,8 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:message:consumer",
-		Build: func(config amqp.Config) (*amqp.Subscriber, error) {
-			consumer, err := amqp.NewSubscriber(config, watermill.NewStdLogger(false, false))
+		Build: func(env *configs.Env, config amqp.Config) (*amqp.Subscriber, error) {
+			consumer, err := amqp.NewSubscriber(config, watermill.NewStdLogger(env.Debug, env.Debug))
 			if err != nil {
 				return nil, err
 			}

@@ -24,15 +24,7 @@ func (l *Logger) Trace(message string) {
 			caller = detail.Name()
 		}
 
-		fields := logrus.Fields{
-			"ServiceName": l.Env.ServiceName,
-			"Debug":       true,
-			"Caller":      caller,
-			"File":        file,
-			"Line":        line,
-		}
-
-		go l.Logger.WithFields(fields).Trace(message)
+		go l.Logger.WithFields(l.fields(caller, file, line)).Trace(message)
 	}
 }
 
@@ -48,15 +40,7 @@ func (l *Logger) Debug(message string) {
 			caller = detail.Name()
 		}
 
-		fields := logrus.Fields{
-			"ServiceName": l.Env.ServiceName,
-			"Debug":       true,
-			"Caller":      caller,
-			"File":        file,
-			"Line":        line,
-		}
-
-		go l.Logger.WithFields(fields).Debug(message)
+		go l.Logger.WithFields(l.fields(caller, file, line)).Debug(message)
 	}
 }
 
@@ -72,15 +56,7 @@ func (l *Logger) Info(message string) {
 			caller = detail.Name()
 		}
 
-		fields := logrus.Fields{
-			"ServiceName": l.Env.ServiceName,
-			"Debug":       true,
-			"Caller":      caller,
-			"File":        file,
-			"Line":        line,
-		}
-
-		go l.Logger.WithFields(fields).Info(message)
+		go l.Logger.WithFields(l.fields(caller, file, line)).Info(message)
 	}
 }
 
@@ -96,15 +72,7 @@ func (l *Logger) Warning(message string) {
 			caller = detail.Name()
 		}
 
-		fields := logrus.Fields{
-			"ServiceName": l.Env.ServiceName,
-			"Debug":       true,
-			"Caller":      caller,
-			"File":        file,
-			"Line":        line,
-		}
-
-		go l.Logger.WithFields(fields).Warning(message)
+		go l.Logger.WithFields(l.fields(caller, file, line)).Warning(message)
 	}
 }
 
@@ -119,15 +87,7 @@ func (l *Logger) Error(message string) {
 		caller = detail.Name()
 	}
 
-	fields := logrus.Fields{
-		"ServiceName": l.Env.ServiceName,
-		"Debug":       l.Env.Debug,
-		"Caller":      caller,
-		"File":        file,
-		"Line":        line,
-	}
-
-	go l.Logger.WithFields(fields).Error(message)
+	go l.Logger.WithFields(l.fields(caller, file, line)).Error(message)
 }
 
 func (l *Logger) Fatal(message string) {
@@ -141,15 +101,7 @@ func (l *Logger) Fatal(message string) {
 		caller = detail.Name()
 	}
 
-	fields := logrus.Fields{
-		"ServiceName": l.Env.ServiceName,
-		"Debug":       l.Env.Debug,
-		"Caller":      caller,
-		"File":        file,
-		"Line":        line,
-	}
-
-	go l.Logger.WithFields(fields).Fatal(message)
+	go l.Logger.WithFields(l.fields(caller, file, line)).Fatal(message)
 }
 
 func (l *Logger) Panic(message string) {
@@ -163,13 +115,15 @@ func (l *Logger) Panic(message string) {
 		caller = detail.Name()
 	}
 
-	fields := logrus.Fields{
+	go l.Logger.WithFields(l.fields(caller, file, line)).Panic(message)
+}
+
+func (l *Logger) fields(caller string, file string, line int) logrus.Fields {
+	return logrus.Fields{
 		"ServiceName": l.Env.ServiceName,
 		"Debug":       l.Env.Debug,
 		"Caller":      caller,
 		"File":        file,
 		"Line":        line,
 	}
-
-	go l.Logger.WithFields(fields).Panic(message)
 }
