@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	configs "github.com/crowdeco/bima/configs"
@@ -17,6 +18,7 @@ type Handler struct {
 	Context       context.Context
 	Elasticsearch *elastic.Client
 	Dispatcher    *events.Dispatcher
+	Logger        *Logger
 	Repository    *services.Repository
 }
 
@@ -29,6 +31,12 @@ func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metada
 		Filters:    paginator.Filters,
 	})
 
+	if h.Env.Debug {
+		s, _ := query.Source()
+		m, _ := json.Marshal(s)
+		h.Logger.Info(fmt.Sprintf("Elasticsearch query: %s", string(m)))
+	}
+
 	var result []interface{}
 	adapter := adapter.NewElasticsearchAdapter(h.Context, h.Elasticsearch, fmt.Sprintf("%s_%s", h.Env.ServiceCanonicalName, paginator.Model), paginator.UseCounter, paginator.Counter, query)
 	paginator.Paginate(adapter)
@@ -38,6 +46,11 @@ func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metada
 
 	if paginator.Page*paginator.Limit > int(total) {
 		next = -1
+	}
+
+	if h.Env.Debug {
+		m, _ := json.Marshal(result)
+		h.Logger.Info(fmt.Sprintf("Elasticsearch result: %s", string(m)))
 	}
 
 	return paginations.Metadata{
@@ -59,9 +72,15 @@ func (h *Handler) Create(v interface{}) error {
 
 	err := h.Repository.Create(v)
 	if err != nil {
+		h.Logger.Error("Error when creating resource(s), Rolling back")
 		h.Repository.Rollback()
 
 		return err
+	}
+
+	if h.Env.Debug {
+		m, _ := json.Marshal(v)
+		h.Logger.Info(fmt.Sprintf("Elasticsearch result: %s", string(m)))
 	}
 
 	h.Dispatcher.Dispatch(events.AFTER_CREATE_EVENT, &events.Model{
@@ -83,9 +102,15 @@ func (h *Handler) Update(v interface{}, id string) error {
 
 	err := h.Repository.Update(v)
 	if err != nil {
+		h.Logger.Error("Error when creating resource(s), Rolling back")
 		h.Repository.Rollback()
 
 		return err
+	}
+
+	if h.Env.Debug {
+		m, _ := json.Marshal(v)
+		h.Logger.Info(fmt.Sprintf("Elasticsearch result: %s", string(m)))
 	}
 
 	h.Dispatcher.Dispatch(events.AFTER_UPDATE_EVENT, &events.Model{
@@ -116,9 +141,15 @@ func (h *Handler) Delete(v interface{}, id string) error {
 
 	err := h.Repository.Delete(v, id)
 	if err != nil {
+		h.Logger.Error("Error when creating resource(s), Rolling back")
 		h.Repository.Rollback()
 
 		return err
+	}
+
+	if h.Env.Debug {
+		m, _ := json.Marshal(v)
+		h.Logger.Info(fmt.Sprintf("Delete resources: %s", string(m)))
 	}
 
 	h.Dispatcher.Dispatch(events.AFTER_DELETE_EVENT, &events.Model{

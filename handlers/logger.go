@@ -32,7 +32,7 @@ func (l *Logger) Trace(message string) {
 			"Line":        line,
 		}
 
-		l.Logger.WithFields(fields).Trace(message)
+		go l.Logger.WithFields(fields).Trace(message)
 	}
 }
 
@@ -56,7 +56,7 @@ func (l *Logger) Debug(message string) {
 			"Line":        line,
 		}
 
-		l.Logger.WithFields(fields).Debug(message)
+		go l.Logger.WithFields(fields).Debug(message)
 	}
 }
 
@@ -80,7 +80,7 @@ func (l *Logger) Info(message string) {
 			"Line":        line,
 		}
 
-		l.Logger.WithFields(fields).Info(message)
+		go l.Logger.WithFields(fields).Info(message)
 	}
 }
 
@@ -104,7 +104,7 @@ func (l *Logger) Warning(message string) {
 			"Line":        line,
 		}
 
-		l.Logger.WithFields(fields).Warning(message)
+		go l.Logger.WithFields(fields).Warning(message)
 	}
 }
 
@@ -127,7 +127,7 @@ func (l *Logger) Error(message string) {
 		"Line":        line,
 	}
 
-	l.Logger.WithFields(fields).Error(message)
+	go l.Logger.WithFields(fields).Error(message)
 }
 
 func (l *Logger) Fatal(message string) {
@@ -149,7 +149,7 @@ func (l *Logger) Fatal(message string) {
 		"Line":        line,
 	}
 
-	l.Logger.WithFields(fields).Fatal(message)
+	go l.Logger.WithFields(fields).Fatal(message)
 }
 
 func (l *Logger) Panic(message string) {
@@ -171,5 +171,5 @@ func (l *Logger) Panic(message string) {
 		"Line":        line,
 	}
 
-	l.Logger.WithFields(fields).Panic(message)
+	go l.Logger.WithFields(fields).Panic(message)
 }

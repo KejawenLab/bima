@@ -342,6 +342,7 @@ var Container = []dingo.Def{
 			"Env":           dingo.Service("bima:config:env"),
 			"Context":       dingo.Service("bima:context:background"),
 			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
+			"Logger":        dingo.Service("bima:handler:logger"),
 		},
 	},
 	{
@@ -351,6 +352,7 @@ var Container = []dingo.Def{
 			"Env":           dingo.Service("bima:config:env"),
 			"Context":       dingo.Service("bima:context:background"),
 			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
+			"Logger":        dingo.Service("bima:handler:logger"),
 		},
 	},
 	{
@@ -360,6 +362,7 @@ var Container = []dingo.Def{
 			"Env":           dingo.Service("bima:config:env"),
 			"Context":       dingo.Service("bima:context:background"),
 			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
+			"Logger":        dingo.Service("bima:handler:logger"),
 		},
 	},
 	{
@@ -502,6 +505,9 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:routes:health",
 		Build: (*routes.Health)(nil),
+		Params: dingo.Params{
+			"Logger": dingo.Service("bima:handler:logger"),
+		},
 	},
 	{
 		Name: "bima:http:mux",

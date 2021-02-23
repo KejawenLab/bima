@@ -9,17 +9,15 @@ import (
 	paginator "github.com/vcraescu/go-paginator/v2"
 )
 
-type (
-	ElasticsearchAdapter struct {
-		context    context.Context
-		client     *elastic.Client
-		index      string
-		counter    uint64
-		useCounter bool
-		pageQuery  *elastic.BoolQuery
-		totalQuery *elastic.BoolQuery
-	}
-)
+type ElasticsearchAdapter struct {
+	context    context.Context
+	client     *elastic.Client
+	index      string
+	counter    uint64
+	useCounter bool
+	pageQuery  *elastic.BoolQuery
+	totalQuery *elastic.BoolQuery
+}
 
 func NewElasticsearchAdapter(context context.Context, client *elastic.Client, index string, useCounter bool, counter uint64, query *elastic.BoolQuery) paginator.Adapter {
 	totalQuery := elastic.NewBoolQuery()

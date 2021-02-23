@@ -2,10 +2,10 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/crowdeco/bima"
+	"github.com/crowdeco/bima/handlers"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 )
@@ -14,6 +14,7 @@ const HEALTH_PATH = "/health"
 
 type Health struct {
 	Client *grpc.ClientConn
+	Logger *handlers.Logger
 }
 
 func (h *Health) Path() string {
@@ -33,7 +34,8 @@ func (h *Health) Handle(w http.ResponseWriter, r *http.Request, params map[strin
 	s := h.Client.GetState()
 
 	if s != connectivity.Ready {
-		http.Error(w, fmt.Sprintf("gRPC server is %s", s), http.StatusBadGateway)
+		h.Logger.Error("gRPC server is down")
+		http.Error(w, "gRPC server is down", http.StatusBadGateway)
 
 		return
 	}

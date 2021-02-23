@@ -7,6 +7,7 @@ import (
 
 	configs "github.com/crowdeco/bima/configs"
 	events "github.com/crowdeco/bima/events"
+	handlers "github.com/crowdeco/bima/handlers"
 	elastic "github.com/olivere/elastic/v7"
 )
 
@@ -14,6 +15,7 @@ type Elasticsearch struct {
 	Env           *configs.Env
 	Context       context.Context
 	Elasticsearch *elastic.Client
+	Logger        *handlers.Logger
 }
 
 func (c *Elasticsearch) Handle(event interface{}) {
@@ -21,6 +23,8 @@ func (c *Elasticsearch) Handle(event interface{}) {
 
 	m := e.Data.(configs.Model)
 	data, _ := json.Marshal(e.Data)
+
+	c.Logger.Info(fmt.Sprintf("Sending data to elasticsearch: %s", string(data)))
 	c.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", c.Env.ServiceCanonicalName, m.TableName())).BodyJson(string(data)).Do(c.Context)
 }
 
