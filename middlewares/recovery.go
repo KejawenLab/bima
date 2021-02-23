@@ -24,7 +24,6 @@ func (r *Recovery) Attach(request *http.Request, response http.ResponseWriter) b
 				r.Logger.Error("Unknown panic")
 			}
 		}
-
 	}()
 
 	return false
