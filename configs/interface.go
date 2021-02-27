@@ -75,7 +75,7 @@ type (
 	Upgrade interface {
 		Upgrade()
 		Support() bool
-		Priority() int
+		Order() int
 	}
 
 	Route interface {

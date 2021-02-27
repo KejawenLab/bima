@@ -12,7 +12,7 @@ type Upgrade struct {
 
 func (u *Upgrade) Register(upgrades []configs.Upgrade) {
 	sort.Slice(upgrades, func(i int, j int) bool {
-		return upgrades[i].Priority() > upgrades[j].Priority()
+		return upgrades[i].Order() < upgrades[j].Order()
 	})
 
 	u.Upgrader = upgrades
