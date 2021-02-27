@@ -72,6 +72,12 @@ type (
 		Parse(dir string) []string
 	}
 
+	Upgrade interface {
+		Upgrade()
+		Support(version int) bool
+		Priority() int
+	}
+
 	Route interface {
 		Path() string
 		Method() string

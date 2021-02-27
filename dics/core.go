@@ -27,6 +27,7 @@ import (
 	parsers "github.com/crowdeco/bima/parsers"
 	routes "github.com/crowdeco/bima/routes"
 	services "github.com/crowdeco/bima/services"
+	"github.com/crowdeco/bima/upgrades"
 	utils "github.com/crowdeco/bima/utils"
 	"github.com/fatih/color"
 	"github.com/gadelkareem/cachita"
@@ -59,6 +60,10 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:config:parser:route",
 		Build: (*parsers.Route)(nil),
+	},
+	{
+		Name:  "bima:config:parser:upgrade",
+		Build: (*parsers.Upgrade)(nil),
 	},
 	{
 		Name:  "bima:config:user",
@@ -659,5 +664,9 @@ var Container = []dingo.Def{
 		Build: func() (*bima.Model, error) {
 			return &bima.Model{Base: configs.Base{}}, nil
 		},
+	},
+	{
+		Name:  "bima:upgrader",
+		Build: (*upgrades.Upgrade)(nil),
 	},
 }
