@@ -74,7 +74,7 @@ type (
 
 	Upgrade interface {
 		Upgrade()
-		Support(version int) bool
+		Support() bool
 		Priority() int
 	}
 

@@ -18,9 +18,9 @@ func (u *Upgrade) Register(upgrades []configs.Upgrade) {
 	u.Upgrader = upgrades
 }
 
-func (u *Upgrade) Run(version int) {
+func (u *Upgrade) Run() {
 	for _, v := range u.Upgrader {
-		if v.Support(version) {
+		if v.Support() {
 			v.Upgrade()
 		}
 	}
