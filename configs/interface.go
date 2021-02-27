@@ -69,7 +69,7 @@ type (
 	}
 
 	Parser interface {
-		Parse() []string
+		Parse(dir string) []string
 	}
 
 	Route interface {

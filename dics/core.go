@@ -131,7 +131,7 @@ var Container = []dingo.Def{
 
 			env.MongoDbHost = os.Getenv("MONGODB_HOST")
 			env.MongoDbPort, _ = strconv.Atoi(os.Getenv("MONGODB_PORT"))
-			env.MongoDbName = os.Getenv("MONGODB_NAME")
+			env.MongoDbName = "data_logs"
 
 			env.AmqpHost = os.Getenv("AMQP_HOST")
 			env.AmqpPort, _ = strconv.Atoi(os.Getenv("AMQP_PORT"))

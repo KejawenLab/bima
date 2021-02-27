@@ -3,9 +3,6 @@ package parsers
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
-	"path"
-	"regexp"
 
 	"gopkg.in/yaml.v2"
 )
@@ -16,17 +13,8 @@ type Logger struct {
 	Config []string `yaml:"loggers"`
 }
 
-func (l *Logger) Parse() []string {
-	workDir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
-	if ok, _ := regexp.MatchString(`tests$`, workDir); ok {
-		workDir = path.Dir(workDir)
-	}
-
-	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", workDir, LOGGERS_FILE))
+func (l *Logger) Parse(dir string) []string {
+	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", dir, LOGGERS_FILE))
 	if err != nil {
 		panic(err)
 	}

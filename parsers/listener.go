@@ -3,9 +3,6 @@ package parsers
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
-	"path"
-	"regexp"
 
 	"gopkg.in/yaml.v2"
 )
@@ -16,17 +13,8 @@ type Listeners struct {
 	Config []string `yaml:"listeners"`
 }
 
-func (l *Listeners) Parse() []string {
-	workDir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
-	if ok, _ := regexp.MatchString(`tests$`, workDir); ok {
-		workDir = path.Dir(workDir)
-	}
-
-	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", workDir, LISTENERS_FILE))
+func (l *Listeners) Parse(dir string) []string {
+	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", dir, LISTENERS_FILE))
 	if err != nil {
 		panic(err)
 	}

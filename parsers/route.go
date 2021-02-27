@@ -3,9 +3,6 @@ package parsers
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
-	"path"
-	"regexp"
 
 	"gopkg.in/yaml.v2"
 )
@@ -16,17 +13,8 @@ type Route struct {
 	Config []string `yaml:"routes"`
 }
 
-func (r *Route) Parse() []string {
-	workDir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
-	if ok, _ := regexp.MatchString(`tests$`, workDir); ok {
-		workDir = path.Dir(workDir)
-	}
-
-	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", workDir, ROUTES_FILE))
+func (r *Route) Parse(dir string) []string {
+	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", dir, ROUTES_FILE))
 	if err != nil {
 		panic(err)
 	}
