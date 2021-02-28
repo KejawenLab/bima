@@ -10,7 +10,6 @@ require (
 	github.com/fatih/color v1.10.0
 	github.com/gadelkareem/cachita v0.2.1
 	github.com/gertd/go-pluralize v0.1.7
-	github.com/google/go-cmp v0.5.4 // indirect
 	github.com/google/uuid v1.2.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.3.0
 	github.com/hashicorp/errwrap v1.1.0 // indirect
@@ -25,7 +24,6 @@ require (
 	github.com/sarulabs/dingo/v4 v4.0.2
 	github.com/sirupsen/logrus v1.8.0
 	github.com/streadway/amqp v1.0.0 // indirect
-	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/vcraescu/go-paginator/v2 v2.0.0
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/weekface/mgorus v0.0.0-20181029072001-239539fe10e4
@@ -39,7 +37,6 @@ require (
 	google.golang.org/grpc v1.36.0
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 // indirect
 	gopkg.in/yaml.v2 v2.4.0
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 	gorm.io/driver/mysql v1.0.4
 	gorm.io/driver/postgres v1.0.8
 	gorm.io/gorm v1.20.12
