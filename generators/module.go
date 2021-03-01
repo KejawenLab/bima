@@ -23,7 +23,7 @@ func (g *Module) Generate(template *configs.Template, modulePath string, package
 		panic(err)
 	}
 
-	g.Config.Parse(fmt.Sprintf("%s/configs", workDir))
+	g.Config.Parse(workDir)
 	g.Config.Config = append(g.Config.Config, fmt.Sprintf("module:%s", template.ModuleLowercase))
 	g.Config.Config = g.makeUnique(g.Config.Config)
 
