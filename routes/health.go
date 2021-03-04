@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/crowdeco/bima"
+	"github.com/crowdeco/bima/configs"
 	"github.com/crowdeco/bima/handlers"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
@@ -23,6 +24,10 @@ func (h *Health) Path() string {
 
 func (h *Health) Method() string {
 	return http.MethodGet
+}
+
+func (h *Health) Middlewares() []configs.Middleware {
+	return nil
 }
 
 func (h *Health) SetClient(client *grpc.ClientConn) {

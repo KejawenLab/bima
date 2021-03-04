@@ -26,6 +26,10 @@ func (a *ApiDoc) Method() string {
 func (a *ApiDoc) SetClient(client *grpc.ClientConn) {
 }
 
+func (a *ApiDoc) Middlewares() []configs.Middleware {
+	return nil
+}
+
 func (a *ApiDoc) Handle(w http.ResponseWriter, r *http.Request, params map[string]string) {
 	if a.Env.Debug {
 		regex := regexp.MustCompile(API_DOC_PATH)
