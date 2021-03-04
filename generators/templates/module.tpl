@@ -198,8 +198,6 @@ func (m *Module) Populate() {
     // Ubah sesuai kebutuhan jika diperlukan
     v := models.{{.Module}}{}
 
-	m.Elasticsearch.DeleteIndex(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).Do(m.Context)
-
 	var records []models.{{.Module}}
 	err := m.Handler.All(&records)
 	if err != nil {
