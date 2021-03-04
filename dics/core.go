@@ -128,7 +128,6 @@ var Container = []dingo.Def{
 			env.DbUser = os.Getenv("DB_USER")
 			env.DbPassword = os.Getenv("DB_PASSWORD")
 			env.DbName = os.Getenv("DB_NAME")
-			env.DbAutoMigrate, _ = strconv.ParseBool(os.Getenv("DB_AUTO_CREATE"))
 
 			env.ElasticsearchHost = os.Getenv("ELASTICSEARCH_HOST")
 			env.ElasticsearchPort, _ = strconv.Atoi(os.Getenv("ELASTICSEARCH_PORT"))

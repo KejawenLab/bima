@@ -194,8 +194,6 @@ func (m *Module) Consume() {
 }
 
 func (m *Module) Populate() {
-    // Ini hanyalah sekedar contoh repopulate/sync data dari database ke elasticsearch
-    // Ubah sesuai kebutuhan jika diperlukan
     v := models.{{.Module}}{}
 
 	var records []models.{{.Module}}

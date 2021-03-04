@@ -24,7 +24,6 @@ type (
 		DbPassword           string
 		DbName               string
 		DbDriver             string
-		DbAutoMigrate        bool
 		ElasticsearchHost    string
 		ElasticsearchPort    int
 		ElasticsearchIndex   string

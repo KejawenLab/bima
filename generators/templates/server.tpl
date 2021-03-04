@@ -24,7 +24,7 @@ func (s *Server) GRpcHandler(context context.Context, server *runtime.ServeMux, 
 }
 
 func (s *Server) RegisterAutoMigrate() {
-	if s.Env.DbAutoMigrate {
+	if s.Env.Debug {
 		s.Database.AutoMigrate(&models.{{.Module}}{})
 	}
 }
