@@ -15,7 +15,7 @@ func (d *Database) Run(servers []configs.Server) {
 	fmt.Println("Serving DB Auto Migration Juices...")
 
 	for _, server := range servers {
-		server.RegisterAutoMigrate()
+		go server.RegisterAutoMigrate()
 	}
 }
 

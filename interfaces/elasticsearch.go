@@ -15,7 +15,7 @@ func (e *Elasticsearch) Run(servers []configs.Server) {
 	fmt.Println("Refill Data on Elasticsearch Storage...")
 
 	for _, server := range servers {
-		server.RepopulateData()
+		go server.RepopulateData()
 	}
 }
 
