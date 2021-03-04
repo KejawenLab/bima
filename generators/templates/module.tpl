@@ -196,8 +196,6 @@ func (m *Module) Consume() {
 func (m *Module) Populate() {
     // Ini hanyalah sekedar contoh repopulate/sync data dari database ke elasticsearch
     // Ubah sesuai kebutuhan jika diperlukan
-    // Fungsi ini hanya dieksekusi pada development environment (debug = true) - @see: server.go
-
     v := models.{{.Module}}{}
 
 	m.Elasticsearch.DeleteIndex(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).Do(m.Context)
