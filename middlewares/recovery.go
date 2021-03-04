@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"fmt"
 	"net/http"
 
 	configs "github.com/crowdeco/bima/configs"
@@ -21,7 +22,7 @@ func (r *Recovery) Attach(request *http.Request, response http.ResponseWriter) b
 			case error:
 				r.Logger.Error(x.Error())
 			default:
-				r.Logger.Error("Unknown panic")
+				r.Logger.Error(fmt.Sprintf("%+v\n", x))
 			}
 		}
 	}()
