@@ -13,6 +13,7 @@ type Base struct {
 	Counter   uint64 `gorm:"index;autoIncrement:true"`
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
+	SyncedAt  sql.NullTime
 	CreatedBy sql.NullString
 	UpdatedBy sql.NullString
 	DeletedAt gorm.DeletedAt
@@ -37,6 +38,10 @@ func (b *Base) SetCreatedAt(time time.Time) {
 
 func (b *Base) SetUpdatedAt(time time.Time) {
 	b.UpdatedAt = sql.NullTime{Time: time, Valid: true}
+}
+
+func (b *Base) SetSyncedAt(time time.Time) {
+	b.SyncedAt = sql.NullTime{Time: time, Valid: true}
 }
 
 func (b *Base) SetDeletedAt(time time.Time) {

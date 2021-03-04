@@ -1,4 +1,4 @@
-package Repositorys
+package services
 
 import (
 	configs "github.com/crowdeco/bima/configs"
@@ -14,7 +14,7 @@ type Repository struct {
 }
 
 func (r *Repository) Debug() {
-    r.Database = r.Database.Debug()
+	r.Database = r.Database.Debug()
 }
 
 func (r *Repository) StartTransaction() {
@@ -46,6 +46,14 @@ func (r *Repository) Bind(v interface{}, id string) error {
 
 func (r *Repository) All(v interface{}) error {
 	return r.Database.Find(v).Error
+}
+
+func (r *Repository) FindBy(creteria map[string]interface{}, v interface{}) error {
+	return r.Database.Where(creteria).Find(v).Error
+}
+
+func (r *Repository) FindByClausal(v interface{}, clausal string, parameters ...interface{}) error {
+	return r.Database.Where(clausal, parameters...).Find(v).Error
 }
 
 func (r *Repository) Delete(v interface{}, id string) error {

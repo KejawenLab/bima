@@ -11,13 +11,12 @@ import (
 	"gorm.io/gorm"
 )
 
-const VERSION_STRING = "v1.8.7"
+const VERSION_STRING = "v1.9.0"
 
 type (
 	Module struct {
 		Context       context.Context
 		Elasticsearch *elastic.Client
-		Service       configs.Service
 		Handler       *handlers.Handler
 		Logger        *handlers.Logger
 		Messenger     *handlers.Messenger

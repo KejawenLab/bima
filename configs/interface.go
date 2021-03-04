@@ -36,18 +36,9 @@ type (
 		SetDeletedBy(user *User)
 		SetCreatedAt(time time.Time)
 		SetUpdatedAt(time time.Time)
+		SetSyncedAt(time time.Time)
 		SetDeletedAt(time time.Time)
 		IsSoftDelete() bool
-	}
-
-	Service interface {
-		Name() string
-		OverrideData(value interface{})
-		Create(value interface{}) error
-		Update(value interface{}, id string) error
-		Bind(value interface{}, id string) error
-		All(value interface{}) error
-		Delete(value interface{}, id string) error
 	}
 
 	Module interface {
