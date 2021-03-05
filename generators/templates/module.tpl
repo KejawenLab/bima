@@ -197,7 +197,7 @@ func (m *Module) Populate() {
     v := models.{{.Module}}{}
 
 	var records []models.{{.Module}}
-	err := m.Handler.All(&records)
+	err := m.Handler.Repository.FindByClausal(&records, "synced_at <= ?", time.Now().Add(-5*time.Minute))
 	if err != nil {
 		m.Logger.Error(fmt.Sprintf("%+v", err))
 	}

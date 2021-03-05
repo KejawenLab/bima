@@ -75,8 +75,24 @@ type (
 	LoggerExtension struct {
 		Extensions []logrus.Hook
 	}
+
+	Type struct {
+		Map map[string]string
+	}
 )
 
 func (l *LoggerExtension) Register(extensions []logrus.Hook) {
 	l.Extensions = extensions
+}
+
+func (t *Type) List() map[string]string {
+	return t.Map
+}
+
+func (t *Type) Value(key string) string {
+	if value, ok := t.Map[key]; ok {
+		return value
+	}
+
+	return ""
 }

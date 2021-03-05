@@ -3,6 +3,8 @@ package drivers
 import (
 	"fmt"
 	"log"
+	"os"
+	"time"
 
 	driver "gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -20,11 +22,26 @@ func (d *PostgreSql) Connect(host string, port int, user string, password string
 	if debug {
 		db, err = gorm.Open(driver.Open(conn), &gorm.Config{
 			SkipDefaultTransaction: true,
+			Logger: logger.New(
+				log.New(os.Stdout, "\r\n", log.LstdFlags),
+				logger.Config{
+					SlowThreshold: time.Second,
+					LogLevel:      logger.Info,
+					Colorful:      false,
+				},
+			),
 		})
 	} else {
 		db, err = gorm.Open(driver.Open(conn), &gorm.Config{
-			Logger:                 logger.Default.LogMode(logger.Silent),
 			SkipDefaultTransaction: true,
+			Logger: logger.New(
+				log.New(os.Stdout, "\r\n", log.LstdFlags),
+				logger.Config{
+					SlowThreshold: time.Second,
+					LogLevel:      logger.Info,
+					Colorful:      false,
+				},
+			),
 		})
 	}
 
