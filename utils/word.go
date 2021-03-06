@@ -7,12 +7,10 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-type (
-	Word struct {
-	}
-)
+type Word struct {
+}
 
-func (w *Word) Underscore(words string) string {
+func (w Word) Underscore(words string) string {
 	words = strings.ToLower(words)
 
 	expr := regexp.MustCompile("[[:space:][:blank:]]")
@@ -30,6 +28,6 @@ func (w *Word) Underscore(words string) string {
 	return words
 }
 
-func (w *Word) Camelcase(word string) string {
+func (w Word) Camelcase(word string) string {
 	return strcase.ToCamel(word)
 }

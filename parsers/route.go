@@ -13,7 +13,7 @@ type Route struct {
 	Config []string `yaml:"routes"`
 }
 
-func (r *Route) Parse(dir string) []string {
+func (r Route) Parse(dir string) []string {
 	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", dir, ROUTES_FILE))
 	if err != nil {
 		panic(err)

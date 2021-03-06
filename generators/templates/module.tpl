@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+    "time"
 
     bima "github.com/crowdeco/bima"
 	configs "github.com/crowdeco/bima/configs"
@@ -12,6 +13,7 @@ import (
 	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
 	validations "{{.PackageName}}/{{.ModulePluralLowercase}}/validations"
 	copier "github.com/jinzhu/copier"
+    elastic "github.com/olivere/elastic/v7"
 )
 
 type Module struct {

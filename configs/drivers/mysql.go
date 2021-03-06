@@ -38,7 +38,7 @@ func (d *Mysql) Connect(host string, port int, user string, password string, dbn
 				log.New(os.Stdout, "\r\n", log.LstdFlags),
 				logger.Config{
 					SlowThreshold: 200 * time.Microsecond,
-					LogLevel:      logger.Silent,
+					LogLevel:      logger.Warn,
 					Colorful:      false,
 				},
 			),

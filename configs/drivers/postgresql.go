@@ -38,7 +38,7 @@ func (d *PostgreSql) Connect(host string, port int, user string, password string
 				log.New(os.Stdout, "\r\n", log.LstdFlags),
 				logger.Config{
 					SlowThreshold: 200 * time.Millisecond,
-					LogLevel:      logger.Info,
+					LogLevel:      logger.Warn,
 					Colorful:      false,
 				},
 			),

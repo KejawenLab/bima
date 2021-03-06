@@ -13,7 +13,7 @@ type Logger struct {
 	Config []string `yaml:"loggers"`
 }
 
-func (l *Logger) Parse(dir string) []string {
+func (l Logger) Parse(dir string) []string {
 	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", dir, LOGGERS_FILE))
 	if err != nil {
 		panic(err)

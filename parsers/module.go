@@ -13,7 +13,7 @@ type Module struct {
 	Config []string `yaml:"modules"`
 }
 
-func (m *Module) Parse(dir string) []string {
+func (m Module) Parse(dir string) []string {
 	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", dir, MODULES_FILE))
 	if err != nil {
 		panic(err)

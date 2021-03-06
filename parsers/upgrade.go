@@ -13,7 +13,7 @@ type Upgrade struct {
 	Config []string `yaml:"upgrades"`
 }
 
-func (u *Upgrade) Parse(dir string) []string {
+func (u Upgrade) Parse(dir string) []string {
 	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", dir, UPGRADE_FILE))
 	if err != nil {
 		panic(err)

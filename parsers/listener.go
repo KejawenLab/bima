@@ -13,7 +13,7 @@ type Listeners struct {
 	Config []string `yaml:"listeners"`
 }
 
-func (l *Listeners) Parse(dir string) []string {
+func (l Listeners) Parse(dir string) []string {
 	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", dir, LISTENERS_FILE))
 	if err != nil {
 		panic(err)
