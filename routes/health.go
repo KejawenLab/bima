@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/crowdeco/bima"
-	"github.com/crowdeco/bima/configs"
-	"github.com/crowdeco/bima/handlers"
+	"github.com/crowdeco/bima/v2/configs"
+	"github.com/crowdeco/bima/v2/handlers"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 )

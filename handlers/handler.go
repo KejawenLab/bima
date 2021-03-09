@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 
-	configs "github.com/crowdeco/bima/configs"
-	events "github.com/crowdeco/bima/events"
-	paginations "github.com/crowdeco/bima/paginations"
-	adapter "github.com/crowdeco/bima/paginations/adapter"
-	services "github.com/crowdeco/bima/services"
+	configs "github.com/crowdeco/bima/v2/configs"
+	events "github.com/crowdeco/bima/v2/events"
+	paginations "github.com/crowdeco/bima/v2/paginations"
+	adapter "github.com/crowdeco/bima/v2/paginations/adapter"
+	services "github.com/crowdeco/bima/v2/services"
 	elastic "github.com/olivere/elastic/v7"
 )
 

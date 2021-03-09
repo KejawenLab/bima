@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"sort"
 
-	configs "github.com/crowdeco/bima/configs"
-	events "github.com/crowdeco/bima/events"
+	configs "github.com/crowdeco/bima/v2/configs"
+	events "github.com/crowdeco/bima/v2/events"
 )
 
 type Middleware struct {

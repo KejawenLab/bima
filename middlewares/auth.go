@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	configs "github.com/crowdeco/bima/configs"
+	configs "github.com/crowdeco/bima/v2/configs"
 )
 
 type Auth struct {

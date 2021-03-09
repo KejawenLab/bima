@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/crowdeco/bima/configs"
+	"github.com/crowdeco/bima/v2/configs"
 	"google.golang.org/grpc"
 )
 

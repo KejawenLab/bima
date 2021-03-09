@@ -1,7 +1,7 @@
 package services
 
 import (
-	configs "github.com/crowdeco/bima/configs"
+	configs "github.com/crowdeco/bima/v2/configs"
 	"gorm.io/gorm"
 )
 

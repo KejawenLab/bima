@@ -6,8 +6,8 @@ import (
 	"os"
 	engine "text/template"
 
-	configs "github.com/crowdeco/bima/configs"
-	"github.com/crowdeco/bima/parsers"
+	configs "github.com/crowdeco/bima/v2/configs"
+	"github.com/crowdeco/bima/v2/parsers"
 	"gopkg.in/yaml.v2"
 )
 

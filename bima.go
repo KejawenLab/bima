@@ -3,16 +3,16 @@ package bima
 import (
 	"context"
 
-	configs "github.com/crowdeco/bima/configs"
-	handlers "github.com/crowdeco/bima/handlers"
-	paginations "github.com/crowdeco/bima/paginations"
-	utils "github.com/crowdeco/bima/utils"
+	configs "github.com/crowdeco/bima/v2/configs"
+	handlers "github.com/crowdeco/bima/v2/handlers"
+	paginations "github.com/crowdeco/bima/v2/paginations"
+	utils "github.com/crowdeco/bima/v2/utils"
 	elastic "github.com/olivere/elastic/v7"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
-const VERSION_STRING = "v2.0.1"
+const VERSION_STRING = "v2.0.2"
 
 type (
 	Module struct {

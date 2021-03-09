@@ -3,7 +3,7 @@ package handlers
 import (
 	"runtime"
 
-	configs "github.com/crowdeco/bima/configs"
+	configs "github.com/crowdeco/bima/v2/configs"
 	logrus "github.com/sirupsen/logrus"
 )
 

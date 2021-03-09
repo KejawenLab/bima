@@ -5,7 +5,7 @@ import (
 	"log"
 	"net"
 
-	configs "github.com/crowdeco/bima/configs"
+	configs "github.com/crowdeco/bima/v2/configs"
 	"github.com/fatih/color"
 	grpc "google.golang.org/grpc"
 )
