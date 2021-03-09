@@ -1,7 +1,7 @@
 package models
 
 import (
-	bima "github.com/crowdeco/bima"
+	bima "github.com/crowdeco/bima/v2"
 )
 
 type {{.Module}} struct {

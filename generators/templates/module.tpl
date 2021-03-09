@@ -7,7 +7,7 @@ import (
 	"net/http"
     "time"
 
-    bima "github.com/crowdeco/bima"
+    bima "github.com/crowdeco/bima/v2"
 	configs "github.com/crowdeco/bima/v2/configs"
 	grpcs "{{.PackageName}}/protos/builds"
 	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
