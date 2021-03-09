@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"plugin"
 
-	bima "github.com/crowdeco/bima"
+	bima "github.com/crowdeco/bima/v2"
 	configs "github.com/crowdeco/bima/v2/configs"
 	"github.com/sirupsen/logrus"
 )
