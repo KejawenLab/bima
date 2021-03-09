@@ -25,6 +25,7 @@ import (
 	middlewares "github.com/crowdeco/bima/middlewares"
 	paginations "github.com/crowdeco/bima/paginations"
 	parsers "github.com/crowdeco/bima/parsers"
+	"github.com/crowdeco/bima/plugins"
 	routes "github.com/crowdeco/bima/routes"
 	services "github.com/crowdeco/bima/services"
 	"github.com/crowdeco/bima/upgrades"
@@ -667,5 +668,9 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:upgrader",
 		Build: (*upgrades.Upgrade)(nil),
+	},
+	{
+		Name:  "bima:plugin",
+		Build: (*plugins.Plugin)(nil),
 	},
 }

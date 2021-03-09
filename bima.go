@@ -8,10 +8,11 @@ import (
 	paginations "github.com/crowdeco/bima/paginations"
 	utils "github.com/crowdeco/bima/utils"
 	elastic "github.com/olivere/elastic/v7"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
-const VERSION_STRING = "v1.10.6"
+const VERSION_STRING = "v2.0.0"
 
 type (
 	Module struct {
@@ -32,5 +33,15 @@ type (
 	Server struct {
 		Env      *configs.Env
 		Database *gorm.DB
+	}
+
+	Plugin interface {
+		GetRoutes() []configs.Route
+		GetLoggers() []logrus.Hook
+		GetMiddlewares() []configs.Middleware
+		GetListeners() []configs.Listener
+		GetServers() []configs.Server
+		GetUpgrades() []configs.Upgrade
+		GetVersion() string
 	}
 )
