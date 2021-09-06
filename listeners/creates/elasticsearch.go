@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	configs "github.com/crowdeco/bima/v2/configs"
-	events "github.com/crowdeco/bima/v2/events"
-	handlers "github.com/crowdeco/bima/v2/handlers"
+	configs "github.com/Kejawenlab/bima/v2/configs"
+	events "github.com/Kejawenlab/bima/v2/events"
+	handlers "github.com/Kejawenlab/bima/v2/handlers"
 	elastic "github.com/olivere/elastic/v7"
 )
 

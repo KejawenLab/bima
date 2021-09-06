@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	configs "github.com/crowdeco/bima/v2/configs"
-	"github.com/crowdeco/bima/v2/handlers"
+	configs "github.com/Kejawenlab/bima/v2/configs"
+	"github.com/Kejawenlab/bima/v2/handlers"
 )
 
 type Recovery struct {

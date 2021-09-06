@@ -3,7 +3,7 @@ package routes
 import (
 	"context"
 
-	configs "github.com/crowdeco/bima/v2/configs"
+	configs "github.com/Kejawenlab/bima/v2/configs"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	configs "github.com/crowdeco/bima/v2/configs"
-	handlers "github.com/crowdeco/bima/v2/handlers"
+	configs "github.com/Kejawenlab/bima/v2/configs"
+	handlers "github.com/Kejawenlab/bima/v2/handlers"
 	"github.com/fatih/color"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"

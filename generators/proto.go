@@ -5,7 +5,7 @@ import (
 	"os"
 	engine "text/template"
 
-	configs "github.com/crowdeco/bima/v2/configs"
+	configs "github.com/Kejawenlab/bima/v2/configs"
 )
 
 type Proto struct {

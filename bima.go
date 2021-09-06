@@ -3,10 +3,10 @@ package bima
 import (
 	"context"
 
-	configs "github.com/crowdeco/bima/v2/configs"
-	handlers "github.com/crowdeco/bima/v2/handlers"
-	paginations "github.com/crowdeco/bima/v2/paginations"
-	utils "github.com/crowdeco/bima/v2/utils"
+	configs "github.com/Kejawenlab/bima/v2/configs"
+	handlers "github.com/Kejawenlab/bima/v2/handlers"
+	paginations "github.com/Kejawenlab/bima/v2/paginations"
+	utils "github.com/Kejawenlab/bima/v2/utils"
 	elastic "github.com/olivere/elastic/v7"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"

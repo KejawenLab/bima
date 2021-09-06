@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	configs "github.com/crowdeco/bima/v2/configs"
+	configs "github.com/Kejawenlab/bima/v2/configs"
 	cachita "github.com/gadelkareem/cachita"
 )
 

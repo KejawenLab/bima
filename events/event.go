@@ -3,8 +3,8 @@ package events
 import (
 	"net/http"
 
-	paginations "github.com/crowdeco/bima/v2/paginations"
-	services "github.com/crowdeco/bima/v2/services"
+	paginations "github.com/Kejawenlab/bima/v2/paginations"
+	services "github.com/Kejawenlab/bima/v2/services"
 	elastic "github.com/olivere/elastic/v7"
 )
 

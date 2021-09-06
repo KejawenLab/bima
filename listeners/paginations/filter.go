@@ -3,8 +3,8 @@ package paginations
 import (
 	"fmt"
 
-	configs "github.com/crowdeco/bima/v2/configs"
-	events "github.com/crowdeco/bima/v2/events"
+	configs "github.com/Kejawenlab/bima/v2/configs"
+	events "github.com/Kejawenlab/bima/v2/events"
 	"github.com/olivere/elastic/v7"
 )
 

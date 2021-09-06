@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/crowdeco/bima/v2"
-	"github.com/crowdeco/bima/v2/configs"
-	"github.com/crowdeco/bima/v2/handlers"
+	"github.com/Kejawenlab/bima/v2"
+	"github.com/Kejawenlab/bima/v2/configs"
+	"github.com/Kejawenlab/bima/v2/handlers"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 )
