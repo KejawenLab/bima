@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sort"
 
-	"github.com/Kejawenlab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/configs"
 )
 
 type Dispatcher struct {

@@ -7,8 +7,8 @@ import (
 	"net/http"
     "time"
 
-    bima "github.com/Kejawenlab/bima/v2"
-	configs "github.com/Kejawenlab/bima/v2/configs"
+    bima "github.com/KejawenLab/bima/v2"
+	configs "github.com/KejawenLab/bima/v2/configs"
 	grpcs "{{.PackageName}}/protos/builds"
 	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
 	validations "{{.PackageName}}/{{.ModulePluralLowercase}}/validations"

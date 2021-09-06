@@ -1,7 +1,7 @@
 package services
 
 import (
-	configs "github.com/Kejawenlab/bima/v2/configs"
+	configs "github.com/KejawenLab/bima/v2/configs"
 	"gorm.io/gorm"
 )
 

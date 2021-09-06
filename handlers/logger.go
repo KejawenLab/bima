@@ -3,7 +3,7 @@ package handlers
 import (
 	"runtime"
 
-	configs "github.com/Kejawenlab/bima/v2/configs"
+	configs "github.com/KejawenLab/bima/v2/configs"
 	logrus "github.com/sirupsen/logrus"
 )
 

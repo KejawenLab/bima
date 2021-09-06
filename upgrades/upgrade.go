@@ -3,7 +3,7 @@ package upgrades
 import (
 	"sort"
 
-	"github.com/Kejawenlab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/configs"
 )
 
 type Upgrade struct {

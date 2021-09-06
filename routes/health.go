@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/Kejawenlab/bima/v2"
-	"github.com/Kejawenlab/bima/v2/configs"
-	"github.com/Kejawenlab/bima/v2/handlers"
+	"github.com/KejawenLab/bima/v2"
+	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/handlers"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 )

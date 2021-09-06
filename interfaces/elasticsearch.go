@@ -3,7 +3,7 @@ package interfaces
 import (
 	"fmt"
 
-	configs "github.com/Kejawenlab/bima/v2/configs"
+	configs "github.com/KejawenLab/bima/v2/configs"
 	"github.com/fatih/color"
 )
 

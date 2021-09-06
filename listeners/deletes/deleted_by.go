@@ -1,8 +1,8 @@
 package deletes
 
 import (
-	configs "github.com/Kejawenlab/bima/v2/configs"
-	events "github.com/Kejawenlab/bima/v2/events"
+	configs "github.com/KejawenLab/bima/v2/configs"
+	events "github.com/KejawenLab/bima/v2/events"
 )
 
 type DeletedBy struct {

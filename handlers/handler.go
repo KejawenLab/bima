@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 
-	configs "github.com/Kejawenlab/bima/v2/configs"
-	events "github.com/Kejawenlab/bima/v2/events"
-	paginations "github.com/Kejawenlab/bima/v2/paginations"
-	adapter "github.com/Kejawenlab/bima/v2/paginations/adapter"
-	services "github.com/Kejawenlab/bima/v2/services"
+	configs "github.com/KejawenLab/bima/v2/configs"
+	events "github.com/KejawenLab/bima/v2/events"
+	paginations "github.com/KejawenLab/bima/v2/paginations"
+	adapter "github.com/KejawenLab/bima/v2/paginations/adapter"
+	services "github.com/KejawenLab/bima/v2/services"
 	elastic "github.com/olivere/elastic/v7"
 )
 

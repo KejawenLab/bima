@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	configs "github.com/Kejawenlab/bima/v2/configs"
+	configs "github.com/KejawenLab/bima/v2/configs"
 )
 
 const MODULES_FILE = "swaggers/modules.json"

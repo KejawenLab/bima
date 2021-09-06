@@ -6,8 +6,8 @@ import (
 	"os"
 	engine "text/template"
 
-	configs "github.com/Kejawenlab/bima/v2/configs"
-	"github.com/Kejawenlab/bima/v2/parsers"
+	configs "github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/parsers"
 	"gopkg.in/yaml.v2"
 )
 
