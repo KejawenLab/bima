@@ -11,23 +11,25 @@ import (
 
 	"github.com/ThreeDotsLabs/watermill"
 	amqp "github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
-	bima "github.com/crowdeco/bima"
-	configs "github.com/crowdeco/bima/configs"
-	drivers "github.com/crowdeco/bima/configs/drivers"
-	events "github.com/crowdeco/bima/events"
-	generators "github.com/crowdeco/bima/generators"
-	handlers "github.com/crowdeco/bima/handlers"
-	interfaces "github.com/crowdeco/bima/interfaces"
-	creates "github.com/crowdeco/bima/listeners/creates"
-	deletes "github.com/crowdeco/bima/listeners/deletes"
-	filters "github.com/crowdeco/bima/listeners/paginations"
-	updates "github.com/crowdeco/bima/listeners/updates"
-	middlewares "github.com/crowdeco/bima/middlewares"
-	paginations "github.com/crowdeco/bima/paginations"
-	parsers "github.com/crowdeco/bima/parsers"
-	routes "github.com/crowdeco/bima/routes"
-	services "github.com/crowdeco/bima/services"
-	utils "github.com/crowdeco/bima/utils"
+	bima "github.com/crowdeco/bima/v2"
+	configs "github.com/crowdeco/bima/v2/configs"
+	drivers "github.com/crowdeco/bima/v2/configs/drivers"
+	events "github.com/crowdeco/bima/v2/events"
+	generators "github.com/crowdeco/bima/v2/generators"
+	handlers "github.com/crowdeco/bima/v2/handlers"
+	interfaces "github.com/crowdeco/bima/v2/interfaces"
+	creates "github.com/crowdeco/bima/v2/listeners/creates"
+	deletes "github.com/crowdeco/bima/v2/listeners/deletes"
+	filters "github.com/crowdeco/bima/v2/listeners/paginations"
+	updates "github.com/crowdeco/bima/v2/listeners/updates"
+	middlewares "github.com/crowdeco/bima/v2/middlewares"
+	paginations "github.com/crowdeco/bima/v2/paginations"
+	parsers "github.com/crowdeco/bima/v2/parsers"
+	plugins "github.com/crowdeco/bima/v2/plugins"
+	routes "github.com/crowdeco/bima/v2/routes"
+	services "github.com/crowdeco/bima/v2/services"
+	upgrades "github.com/crowdeco/bima/v2/upgrades"
+	utils "github.com/crowdeco/bima/v2/utils"
 	"github.com/fatih/color"
 	"github.com/gadelkareem/cachita"
 	"github.com/gertd/go-pluralize"
@@ -59,6 +61,10 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:config:parser:route",
 		Build: (*parsers.Route)(nil),
+	},
+	{
+		Name:  "bima:config:parser:upgrade",
+		Build: (*parsers.Upgrade)(nil),
 	},
 	{
 		Name:  "bima:config:user",
@@ -123,7 +129,6 @@ var Container = []dingo.Def{
 			env.DbUser = os.Getenv("DB_USER")
 			env.DbPassword = os.Getenv("DB_PASSWORD")
 			env.DbName = os.Getenv("DB_NAME")
-			env.DbAutoMigrate, _ = strconv.ParseBool(os.Getenv("DB_AUTO_CREATE"))
 
 			env.ElasticsearchHost = os.Getenv("ELASTICSEARCH_HOST")
 			env.ElasticsearchPort, _ = strconv.Atoi(os.Getenv("ELASTICSEARCH_PORT"))
@@ -131,7 +136,7 @@ var Container = []dingo.Def{
 
 			env.MongoDbHost = os.Getenv("MONGODB_HOST")
 			env.MongoDbPort, _ = strconv.Atoi(os.Getenv("MONGODB_PORT"))
-			env.MongoDbName = os.Getenv("MONGODB_NAME")
+			env.MongoDbName = "data_logs"
 
 			env.AmqpHost = os.Getenv("AMQP_HOST")
 			env.AmqpPort, _ = strconv.Atoi(os.Getenv("AMQP_PORT"))
@@ -659,5 +664,13 @@ var Container = []dingo.Def{
 		Build: func() (*bima.Model, error) {
 			return &bima.Model{Base: configs.Base{}}, nil
 		},
+	},
+	{
+		Name:  "bima:upgrader",
+		Build: (*upgrades.Upgrade)(nil),
+	},
+	{
+		Name:  "bima:plugin",
+		Build: (*plugins.Plugin)(nil),
 	},
 }

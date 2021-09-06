@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	configs "github.com/crowdeco/bima/configs"
+	configs "github.com/crowdeco/bima/v2/configs"
 )
 
 const MODULES_FILE = "swaggers/modules.json"

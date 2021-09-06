@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sort"
 
-	"github.com/crowdeco/bima/configs"
+	"github.com/crowdeco/bima/v2/configs"
 )
 
 type Dispatcher struct {
@@ -32,7 +32,7 @@ func (d *Dispatcher) Dispatch(name string, event interface{}) error {
 	}
 
 	for _, listener := range d.Events[name] {
-		go listener.Handle(event)
+		listener.Handle(event)
 	}
 
 	return nil

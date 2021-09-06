@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"runtime"
 
-	configs "github.com/crowdeco/bima/configs"
-	"github.com/crowdeco/bima/utils"
+	configs "github.com/crowdeco/bima/v2/configs"
+	"github.com/crowdeco/bima/v2/utils"
 	"github.com/gertd/go-pluralize"
 	"golang.org/x/mod/modfile"
 )

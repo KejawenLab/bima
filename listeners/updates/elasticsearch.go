@@ -4,10 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
-	configs "github.com/crowdeco/bima/configs"
-	events "github.com/crowdeco/bima/events"
-	handlers "github.com/crowdeco/bima/handlers"
+	configs "github.com/crowdeco/bima/v2/configs"
+	events "github.com/crowdeco/bima/v2/events"
+	handlers "github.com/crowdeco/bima/v2/handlers"
 	elastic "github.com/olivere/elastic/v7"
 )
 
@@ -34,6 +35,9 @@ func (u *Elasticsearch) Handle(event interface{}) {
 
 	u.Logger.Info(fmt.Sprintf("Sending data to elasticsearch: %s", string(data)))
 	u.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", u.Env.ServiceCanonicalName, m.TableName())).BodyJson(string(data)).Do(u.Context)
+
+	m.SetSyncedAt(time.Now())
+	e.Repository.Update(m)
 }
 
 func (u *Elasticsearch) Listen() string {

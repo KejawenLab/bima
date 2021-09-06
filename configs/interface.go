@@ -36,18 +36,9 @@ type (
 		SetDeletedBy(user *User)
 		SetCreatedAt(time time.Time)
 		SetUpdatedAt(time time.Time)
+		SetSyncedAt(time time.Time)
 		SetDeletedAt(time time.Time)
 		IsSoftDelete() bool
-	}
-
-	Service interface {
-		Name() string
-		OverrideData(value interface{})
-		Create(value interface{}) error
-		Update(value interface{}, id string) error
-		Bind(value interface{}, id string) error
-		All(value interface{}) error
-		Delete(value interface{}, id string) error
 	}
 
 	Module interface {
@@ -69,7 +60,13 @@ type (
 	}
 
 	Parser interface {
-		Parse() []string
+		Parse(dir string) []string
+	}
+
+	Upgrade interface {
+		Upgrade()
+		Support() bool
+		Order() int
 	}
 
 	Route interface {
@@ -77,6 +74,7 @@ type (
 		Method() string
 		Handle(w http.ResponseWriter, r *http.Request, params map[string]string)
 		SetClient(client *grpc.ClientConn)
+		Middlewares() []Middleware
 	}
 
 	Middleware interface {

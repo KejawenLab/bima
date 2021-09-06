@@ -5,13 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+    "time"
 
-    bima "github.com/crowdeco/bima"
-	configs "github.com/crowdeco/bima/configs"
+    bima "github.com/crowdeco/bima/v2"
+	configs "github.com/crowdeco/bima/v2/configs"
 	grpcs "{{.PackageName}}/protos/builds"
 	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
 	validations "{{.PackageName}}/{{.ModulePluralLowercase}}/validations"
 	copier "github.com/jinzhu/copier"
+    elastic "github.com/olivere/elastic/v7"
 )
 
 type Module struct {
@@ -116,6 +118,7 @@ func (m *Module) Update(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 	}
 
     v.Id = r.Id
+    v.Counter = hold.Counter
 	v.SetCreatedBy(&configs.User{Id: hold.CreatedBy.String})
 	v.SetCreatedAt(hold.CreatedAt.Time)
 	err = m.Handler.Update(&v, v.Id)
@@ -194,18 +197,31 @@ func (m *Module) Consume() {
 }
 
 func (m *Module) Populate() {
-	v := models.{{.Module}}{}
-
-	m.Elasticsearch.DeleteIndex(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).Do(m.Context)
+    v := models.{{.Module}}{}
 
 	var records []models.{{.Module}}
-	err := m.Handler.All(&records)
+	err := m.Handler.Repository.FindByClausal(&records, "synced_at <= ?", time.Now().Add(-5*time.Minute))
 	if err != nil {
 		m.Logger.Error(fmt.Sprintf("%+v", err))
 	}
 
 	for _, d := range records {
 		data, _ := json.Marshal(d)
-		m.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).BodyJson(string(data)).Do(m.Context)
+		if d.SyncedAt.Valid {
+			query := elastic.NewMatchQuery("Id", d.Id)
+
+			result, _ := m.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).Query(query).Do(m.Context)
+			for _, hit := range result.Hits.Hits {
+				m.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).Id(hit.Id).Do(m.Context)
+			}
+
+			data, _ := json.Marshal(d)
+			m.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).BodyJson(string(data)).Do(m.Context)
+		} else {
+			m.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).BodyJson(string(data)).Do(m.Context)
+		}
+
+		d.SetSyncedAt(time.Now())
+		m.Handler.Repository.Update(d)
 	}
 }

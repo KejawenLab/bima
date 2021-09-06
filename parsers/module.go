@@ -3,7 +3,6 @@ package parsers
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 
 	"gopkg.in/yaml.v2"
 )
@@ -14,13 +13,8 @@ type Module struct {
 	Config []string `yaml:"modules"`
 }
 
-func (m *Module) Parse() []string {
-	workDir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
-	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", workDir, MODULES_FILE))
+func (m Module) Parse(dir string) []string {
+	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", dir, MODULES_FILE))
 	if err != nil {
 		panic(err)
 	}

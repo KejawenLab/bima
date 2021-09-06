@@ -6,8 +6,8 @@ import (
 	"os"
 	engine "text/template"
 
-	configs "github.com/crowdeco/bima/configs"
-	"github.com/crowdeco/bima/parsers"
+	configs "github.com/crowdeco/bima/v2/configs"
+	"github.com/crowdeco/bima/v2/parsers"
 	"gopkg.in/yaml.v2"
 )
 
@@ -16,13 +16,14 @@ type Module struct {
 }
 
 func (g *Module) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
+	workDir, _ := os.Getwd()
 	moduleTemplate, _ := engine.ParseFiles(fmt.Sprintf("%s/%s/module.tpl", packagePath, templatePath))
 	moduleFile, err := os.Create(fmt.Sprintf("%s/module.go", modulePath))
 	if err != nil {
 		panic(err)
 	}
 
-	g.Config.Parse()
+	g.Config.Parse(workDir)
 	g.Config.Config = append(g.Config.Config, fmt.Sprintf("module:%s", template.ModuleLowercase))
 	g.Config.Config = g.makeUnique(g.Config.Config)
 
@@ -31,7 +32,6 @@ func (g *Module) Generate(template *configs.Template, modulePath string, package
 		panic(err)
 	}
 
-	workDir, _ := os.Getwd()
 	err = ioutil.WriteFile(fmt.Sprintf("%s/%s", workDir, parsers.MODULES_FILE), modules, 0644)
 	if err != nil {
 		panic(err)

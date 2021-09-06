@@ -4,14 +4,12 @@ import (
 	"sort"
 	"time"
 
-	configs "github.com/crowdeco/bima/configs"
+	configs "github.com/crowdeco/bima/v2/configs"
 )
 
-type (
-	Application struct {
-		Applications []configs.Application
-	}
-)
+type Application struct {
+	Applications []configs.Application
+}
 
 func (a *Application) Run(servers []configs.Server) {
 	sort.Slice(a.Applications, func(i int, j int) bool {

@@ -3,10 +3,11 @@ package deletes
 import (
 	"context"
 	"fmt"
+	"time"
 
-	configs "github.com/crowdeco/bima/configs"
-	events "github.com/crowdeco/bima/events"
-	handlers "github.com/crowdeco/bima/handlers"
+	configs "github.com/crowdeco/bima/v2/configs"
+	events "github.com/crowdeco/bima/v2/events"
+	handlers "github.com/crowdeco/bima/v2/handlers"
 	elastic "github.com/olivere/elastic/v7"
 )
 
@@ -28,6 +29,9 @@ func (d *Elasticsearch) Handle(event interface{}) {
 	for _, hit := range result.Hits.Hits {
 		d.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", d.Env.ServiceCanonicalName, m.TableName())).Id(hit.Id).Do(d.Context)
 	}
+
+	m.SetSyncedAt(time.Now())
+	e.Repository.Update(m)
 }
 
 func (d *Elasticsearch) Listen() string {

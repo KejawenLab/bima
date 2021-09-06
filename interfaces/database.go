@@ -3,7 +3,7 @@ package interfaces
 import (
 	"fmt"
 
-	configs "github.com/crowdeco/bima/configs"
+	configs "github.com/crowdeco/bima/v2/configs"
 	"github.com/fatih/color"
 )
 
@@ -15,7 +15,7 @@ func (d *Database) Run(servers []configs.Server) {
 	fmt.Println("Serving DB Auto Migration Juices...")
 
 	for _, server := range servers {
-		server.RegisterAutoMigrate()
+		go server.RegisterAutoMigrate()
 	}
 }
 

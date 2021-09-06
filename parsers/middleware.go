@@ -3,7 +3,6 @@ package parsers
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 
 	"gopkg.in/yaml.v2"
 )
@@ -14,13 +13,8 @@ type Middleware struct {
 	Config []string `yaml:"middlewares"`
 }
 
-func (m *Middleware) Parse() []string {
-	workDir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
-	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", workDir, MIDDLEWARES_FILE))
+func (m Middleware) Parse(dir string) []string {
+	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", dir, MIDDLEWARES_FILE))
 	if err != nil {
 		panic(err)
 	}

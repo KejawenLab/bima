@@ -3,21 +3,21 @@ package bima
 import (
 	"context"
 
-	configs "github.com/crowdeco/bima/configs"
-	handlers "github.com/crowdeco/bima/handlers"
-	paginations "github.com/crowdeco/bima/paginations"
-	utils "github.com/crowdeco/bima/utils"
+	configs "github.com/crowdeco/bima/v2/configs"
+	handlers "github.com/crowdeco/bima/v2/handlers"
+	paginations "github.com/crowdeco/bima/v2/paginations"
+	utils "github.com/crowdeco/bima/v2/utils"
 	elastic "github.com/olivere/elastic/v7"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
-const VERSION_STRING = "v1.7.4"
+const VERSION_STRING = "v2.0.5"
 
 type (
 	Module struct {
 		Context       context.Context
 		Elasticsearch *elastic.Client
-		Service       configs.Service
 		Handler       *handlers.Handler
 		Logger        *handlers.Logger
 		Messenger     *handlers.Messenger
@@ -33,5 +33,15 @@ type (
 	Server struct {
 		Env      *configs.Env
 		Database *gorm.DB
+	}
+
+	Plugin interface {
+		GetRoutes() []configs.Route
+		GetLoggers() []logrus.Hook
+		GetMiddlewares() []configs.Middleware
+		GetListeners() []configs.Listener
+		GetServers() []configs.Server
+		GetUpgrades() []configs.Upgrade
+		GetVersion() string
 	}
 )

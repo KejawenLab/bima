@@ -3,7 +3,7 @@ package {{.ModulePluralLowercase}}
 import (
     "context"
 
-	bima "github.com/crowdeco/bima"
+	bima "github.com/crowdeco/bima/v2"
 	grpcs "{{.PackageName}}/protos/builds"
 	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
     "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -24,7 +24,7 @@ func (s *Server) GRpcHandler(context context.Context, server *runtime.ServeMux, 
 }
 
 func (s *Server) RegisterAutoMigrate() {
-	if s.Env.DbAutoMigrate {
+	if s.Env.Debug {
 		s.Database.AutoMigrate(&models.{{.Module}}{})
 	}
 }
@@ -34,7 +34,5 @@ func (s *Server) RegisterQueueConsumer() {
 }
 
 func (s *Server) RepopulateData() {
-	if s.Env.Debug {
-		s.Module.Populate()
-	}
+	s.Module.Populate()
 }
