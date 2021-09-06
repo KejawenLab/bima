@@ -1,4 +1,4 @@
-module github.com/crowdeco/bima/v2
+module github.com/Kejawenlab/bima/v2
 
 go 1.14
 
