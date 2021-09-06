@@ -19,7 +19,7 @@ import (
 type Module struct {
     *bima.Module
 	Validator *validations.{{.Module}}
-    grpcs.UnimplementedGreeterServer
+    grpcs.Unimplemented{{.Module}}Server
 }
 
 func (m *Module) GetPaginated(c context.Context, r *grpcs.Pagination) (*grpcs.{{.Module}}PaginatedResponse, error) {
