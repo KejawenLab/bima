@@ -47,8 +47,9 @@ func (h *Health) Handle(w http.ResponseWriter, r *http.Request, params map[strin
 
 	payload := map[string]string{
 		"version": bima.VERSION_STRING,
-		"x_x":     "01001011 01100101 01101010 01100001 01110111 01100101 01101110 01001100 01100001 01100010",
-		"v_v":     "01001101 01110101 01101000 01100001 01101101 01100001 01100100 00100000 01010011 01110101 01110010 01111001 01100001 00100000 01001001 01101011 01110011 01100001 01101110 01110101 01100100 01101001 01101110",
+		"name":    "Bima",
+		"author":  "Muhamad Surya Iksanudin<surya.iksanudin@gmail.com>",
+		"link":    "https://github.com/KejawenLab/skeleton",
 	}
 
 	json.NewEncoder(w).Encode(payload)

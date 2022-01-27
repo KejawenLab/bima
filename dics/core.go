@@ -23,10 +23,8 @@ import (
 	middlewares "github.com/KejawenLab/bima/v2/middlewares"
 	paginations "github.com/KejawenLab/bima/v2/paginations"
 	parsers "github.com/KejawenLab/bima/v2/parsers"
-	plugins "github.com/KejawenLab/bima/v2/plugins"
 	routes "github.com/KejawenLab/bima/v2/routes"
 	services "github.com/KejawenLab/bima/v2/services"
-	upgrades "github.com/KejawenLab/bima/v2/upgrades"
 	utils "github.com/KejawenLab/bima/v2/utils"
 	"github.com/ThreeDotsLabs/watermill"
 	amqp "github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
@@ -664,13 +662,5 @@ var Container = []dingo.Def{
 		Build: func() (*bima.Model, error) {
 			return &bima.Model{Base: configs.Base{}}, nil
 		},
-	},
-	{
-		Name:  "bima:upgrader",
-		Build: (*upgrades.Upgrade)(nil),
-	},
-	{
-		Name:  "bima:plugin",
-		Build: (*plugins.Plugin)(nil),
 	},
 }

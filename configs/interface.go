@@ -63,12 +63,6 @@ type (
 		Parse(dir string) []string
 	}
 
-	Upgrade interface {
-		Upgrade()
-		Support() bool
-		Order() int
-	}
-
 	Route interface {
 		Path() string
 		Method() string
