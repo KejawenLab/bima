@@ -112,44 +112,61 @@ var Container = []dingo.Def{
 		) (*configs.Env, error) {
 			env := configs.Env{}
 
-			env.ServiceName = os.Getenv("APP_NAME")
-			env.ServiceCanonicalName = word.Underscore(env.ServiceName)
-			env.ServiceHost = os.Getenv("APP_HOST")
 			env.Version = os.Getenv("APP_VERSION")
 			env.ApiVersion = os.Getenv("API_VERSION")
 			env.Debug, _ = strconv.ParseBool(os.Getenv("APP_DEBUG"))
 			env.HtppPort, _ = strconv.Atoi(os.Getenv("APP_PORT"))
 			env.RpcPort, _ = strconv.Atoi(os.Getenv("GRPC_PORT"))
 
-			env.DbDriver = os.Getenv("DB_DRIVER")
-			env.DbHost = os.Getenv("DB_HOST")
-			env.DbPort, _ = strconv.Atoi(os.Getenv("DB_PORT"))
-			env.DbUser = os.Getenv("DB_USER")
-			env.DbPassword = os.Getenv("DB_PASSWORD")
-			env.DbName = os.Getenv("DB_NAME")
+			sName := os.Getenv("APP_NAME")
+			env.Service = configs.Service{
+				Name:           sName,
+				ConnonicalName: word.Underscore(sName),
+				Host:           os.Getenv("APP_HOST"),
+			}
 
-			env.ElasticsearchHost = os.Getenv("ELASTICSEARCH_HOST")
-			env.ElasticsearchPort, _ = strconv.Atoi(os.Getenv("ELASTICSEARCH_PORT"))
-			env.ElasticsearchIndex = env.DbName
+			dbPort, _ := strconv.Atoi(os.Getenv("DB_PORT"))
+			env.Db = configs.Db{
+				Host:     os.Getenv("DB_HOST"),
+				Port:     dbPort,
+				User:     os.Getenv("DB_USER"),
+				Password: os.Getenv("DB_PASSWORD"),
+				Name:     os.Getenv("DB_NAME"),
+				Driver:   os.Getenv("DB_DRIVER"),
+			}
 
-			env.MongoDbHost = os.Getenv("MONGODB_HOST")
-			env.MongoDbPort, _ = strconv.Atoi(os.Getenv("MONGODB_PORT"))
-			env.MongoDbName = "data_logs"
+			esPort, _ := strconv.Atoi(os.Getenv("ELASTICSEARCH_PORT"))
+			env.Elasticsearch = configs.Elasticsearch{
+				Host:  os.Getenv("ELASTICSEARCH_HOST"),
+				Port:  esPort,
+				Index: env.Db.Name,
+			}
 
-			env.AmqpHost = os.Getenv("AMQP_HOST")
-			env.AmqpPort, _ = strconv.Atoi(os.Getenv("AMQP_PORT"))
-			env.AmqpUser = os.Getenv("AMQP_USER")
-			env.AmqpPassword = os.Getenv("AMQP_PASSWORD")
+			mgdbPort, _ := strconv.Atoi(os.Getenv("MONGODB_PORT"))
+			env.MongoDb = configs.MongoDb{
+				Host:     os.Getenv("MONGODB_HOST"),
+				Port:     mgdbPort,
+				Database: "data_logs",
+			}
 
-			env.HeaderUserId = os.Getenv("HEADER_USER_ID")
-			env.HeaderUserEmail = os.Getenv("HEADER_USER_EMAIL")
-			env.HeaderUserRole = os.Getenv("HEADER_USER_ROLE")
-			env.MaximumRole, _ = strconv.Atoi(os.Getenv("MAXIMUM_ROLE"))
+			amqpPort, _ := strconv.Atoi(os.Getenv("AMQP_PORT"))
+			env.Amqp = configs.Amqp{
+				Host:     os.Getenv("AMQP_HOST"),
+				Port:     amqpPort,
+				User:     os.Getenv("AMQP_USER"),
+				Password: os.Getenv("AMQP_PASSWORD"),
+			}
+
+			maxRole, _ := strconv.Atoi(os.Getenv("AUTH_HEADER_MAX_ROLE"))
+			env.AuthHeader = configs.AuthHeader{
+				Id:      os.Getenv("AUTH_HEADER_ID"),
+				Email:   os.Getenv("AUTH_HEADER_EMAIL"),
+				Role:    os.Getenv("AUTH_HEADER_ROLE"),
+				MaxRole: maxRole,
+			}
 
 			env.CacheLifetime, _ = strconv.Atoi(os.Getenv("CACHE_LIFETIME"))
-
 			env.User = user
-
 			env.TemplateLocation = generators.TEMPLATE_PATH
 
 			return &env, nil
@@ -287,27 +304,27 @@ var Container = []dingo.Def{
 		) (*gorm.DB, error) {
 			var db configs.Driver
 
-			switch env.DbDriver {
+			switch env.Db.Driver {
 			case "mysql":
 				db = mysql
 			case "postgresql":
 				db = postgresql
 			default:
-				return nil, errors.New("Unknown Database Driver")
+				return nil, errors.New("Unknown database driver")
 			}
 
 			util := color.New(color.FgCyan, color.Bold)
 
 			util.Printf("✓ ")
-			fmt.Printf("Database configured using '%s' driver...\n", env.DbDriver)
+			fmt.Printf("Database configured using '%s' driver...\n", env.Db.Driver)
 			time.Sleep(100 * time.Millisecond)
 
 			return db.Connect(
-				env.DbHost,
-				env.DbPort,
-				env.DbUser,
-				env.DbPassword,
-				env.DbName,
+				env.Db.Host,
+				env.Db.Port,
+				env.Db.User,
+				env.Db.Password,
+				env.Db.Name,
 				env.Debug,
 			), nil
 		},
@@ -321,7 +338,7 @@ var Container = []dingo.Def{
 		Name: "bima:connection:elasticsearch",
 		Build: func(env *configs.Env) (*elastic.Client, error) {
 			client, err := elastic.NewClient(
-				elastic.SetURL(fmt.Sprintf("%s:%d", env.ElasticsearchHost, env.ElasticsearchPort)),
+				elastic.SetURL(fmt.Sprintf("%s:%d", env.Elasticsearch.Host, env.Elasticsearch.Port)),
 				elastic.SetSniff(false),
 				elastic.SetHealthcheck(false),
 				elastic.SetGzip(true),
@@ -541,7 +558,7 @@ var Container = []dingo.Def{
 			fmt.Println("MongoDB Logger Extension configured...")
 			time.Sleep(100 * time.Millisecond)
 
-			mongodb, err := mongodb.NewHooker(fmt.Sprintf("%s:%d", env.MongoDbHost, env.MongoDbPort), env.MongoDbName, "logs")
+			mongodb, err := mongodb.NewHooker(fmt.Sprintf("%s:%d", env.MongoDb.Host, env.MongoDb.Port), env.MongoDb.Database, "logs")
 			if err != nil {
 				return nil, err
 			}
@@ -562,7 +579,7 @@ var Container = []dingo.Def{
 			fmt.Println("Pub/Sub configured...")
 			time.Sleep(100 * time.Millisecond)
 
-			return amqp.NewDurableQueueConfig(fmt.Sprintf("amqp://%s:%s@%s:%d/", env.AmqpUser, env.AmqpPassword, env.AmqpHost, env.AmqpPort)), nil
+			return amqp.NewDurableQueueConfig(fmt.Sprintf("amqp://%s:%s@%s:%d/", env.Amqp.User, env.Amqp.Password, env.Amqp.Host, env.Amqp.Port)), nil
 		},
 	},
 	{

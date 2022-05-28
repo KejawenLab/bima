@@ -38,7 +38,7 @@ func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metada
 	}
 
 	var result []interface{}
-	adapter := adapter.NewElasticsearchAdapter(h.Context, h.Elasticsearch, fmt.Sprintf("%s_%s", h.Env.ServiceCanonicalName, paginator.Model), paginator.UseCounter, paginator.Counter, query)
+	adapter := adapter.NewElasticsearchAdapter(h.Context, h.Elasticsearch, fmt.Sprintf("%s_%s", h.Env.Service.ConnonicalName, paginator.Model), paginator.UseCounter, paginator.Counter, query)
 	paginator.Paginate(adapter)
 	paginator.Pager.Results(&result)
 	next := paginator.Page + 1

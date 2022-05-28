@@ -120,7 +120,7 @@ func (l *Logger) Panic(message string) {
 
 func (l *Logger) fields(caller string, file string, line int) logrus.Fields {
 	return logrus.Fields{
-		"ServiceName": l.Env.ServiceName,
+		"ServiceName": l.Env.Service.Name,
 		"Debug":       l.Env.Debug,
 		"Caller":      caller,
 		"File":        file,

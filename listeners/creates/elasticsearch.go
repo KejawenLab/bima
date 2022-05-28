@@ -25,7 +25,7 @@ func (c *Elasticsearch) Handle(event interface{}) {
 	m := e.Data.(configs.Model)
 	data, _ := json.Marshal(e.Data)
 
-	c.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", c.Env.ServiceCanonicalName, m.TableName())).BodyJson(string(data)).Do(c.Context)
+	c.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", c.Env.Service.ConnonicalName, m.TableName())).BodyJson(string(data)).Do(c.Context)
 
 	m.SetSyncedAt(time.Now())
 	e.Repository.Update(m)

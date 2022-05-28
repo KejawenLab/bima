@@ -12,11 +12,11 @@ type Auth struct {
 }
 
 func (a *Auth) Attach(request *http.Request, response http.ResponseWriter) bool {
-	a.Env.User.Id = request.Header.Get(a.Env.HeaderUserId)
-	a.Env.User.Email = request.Header.Get(a.Env.HeaderUserEmail)
-	a.Env.User.Role, _ = strconv.Atoi(request.Header.Get(a.Env.HeaderUserRole))
+	a.Env.User.Id = request.Header.Get(a.Env.AuthHeader.Id)
+	a.Env.User.Email = request.Header.Get(a.Env.AuthHeader.Email)
+	a.Env.User.Role, _ = strconv.Atoi(request.Header.Get(a.Env.AuthHeader.Role))
 
-	if a.Env.User.Role == 0 || a.Env.User.Role > a.Env.MaximumRole {
+	if a.Env.User.Role == 0 || a.Env.User.Role > a.Env.AuthHeader.MaxRole {
 		http.Error(response, "Unauthorization", http.StatusUnauthorized)
 
 		return true
