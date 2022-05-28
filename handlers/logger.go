@@ -8,8 +8,9 @@ import (
 )
 
 type Logger struct {
-	Env    *configs.Env
-	Logger *logrus.Logger
+	RequestID string
+	Env       *configs.Env
+	Logger    *logrus.Logger
 }
 
 func (l *Logger) Trace(message string) {
@@ -120,6 +121,7 @@ func (l *Logger) Panic(message string) {
 
 func (l *Logger) fields(caller string, file string, line int) logrus.Fields {
 	return logrus.Fields{
+		"RequestID":   l.RequestID,
 		"ServiceName": l.Env.Service.Name,
 		"Debug":       l.Env.Debug,
 		"Caller":      caller,

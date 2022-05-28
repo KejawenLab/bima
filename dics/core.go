@@ -507,6 +507,13 @@ var Container = []dingo.Def{
 		},
 	},
 	{
+		Name:  "bima:middleware:requestid",
+		Build: (*middlewares.RequestID)(nil),
+		Params: dingo.Params{
+			"Logger": dingo.Service("bima:handler:logger"),
+		},
+	},
+	{
 		Name:  "bima:router:mux",
 		Build: (*routes.MuxRouter)(nil),
 	},
