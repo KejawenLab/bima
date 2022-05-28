@@ -61,10 +61,6 @@ var Container = []dingo.Def{
 		Build: (*parsers.Route)(nil),
 	},
 	{
-		Name:  "bima:config:parser:upgrade",
-		Build: (*parsers.Upgrade)(nil),
-	},
-	{
 		Name:  "bima:config:user",
 		Build: (*configs.User)(nil),
 	},
