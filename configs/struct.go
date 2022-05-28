@@ -44,10 +44,11 @@ type (
 	}
 
 	AuthHeader struct {
-		Id      string
-		Email   string
-		Role    string
-		MaxRole int
+		Id        string
+		Email     string
+		Role      string
+		Whitelist string
+		MaxRole   int
 	}
 
 	Env struct {

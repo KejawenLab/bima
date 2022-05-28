@@ -155,10 +155,11 @@ var Container = []dingo.Def{
 
 			maxRole, _ := strconv.Atoi(os.Getenv("AUTH_HEADER_MAX_ROLE"))
 			env.AuthHeader = configs.AuthHeader{
-				Id:      os.Getenv("AUTH_HEADER_ID"),
-				Email:   os.Getenv("AUTH_HEADER_EMAIL"),
-				Role:    os.Getenv("AUTH_HEADER_ROLE"),
-				MaxRole: maxRole,
+				Id:        os.Getenv("AUTH_HEADER_ID"),
+				Email:     os.Getenv("AUTH_HEADER_EMAIL"),
+				Role:      os.Getenv("AUTH_HEADER_ROLE"),
+				Whitelist: os.Getenv("AUTH_HEADER_WHITELIST"),
+				MaxRole:   maxRole,
 			}
 
 			env.CacheLifetime, _ = strconv.Atoi(os.Getenv("CACHE_LIFETIME"))
