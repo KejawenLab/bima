@@ -1,21 +1,25 @@
 package paginations
 
 import (
+	"context"
 	"strings"
 
 	paginator "github.com/vcraescu/go-paginator/v2"
 )
 
 type (
+	Adapter interface {
+		CreateAdapter(ctx context.Context, paginator Pagination) paginator.Adapter
+	}
+
 	Pagination struct {
-		Limit      int
-		Page       int
-		UseCounter bool
-		Counter    uint64
-		Filters    []Filter
-		Search     string
-		Pager      paginator.Paginator
-		Model      string
+		Limit   int
+		Page    int
+		Filters []Filter
+		Search  string
+		Pager   paginator.Paginator
+		Model   interface{}
+		Table   string
 	}
 
 	Filter struct {
@@ -33,11 +37,10 @@ type (
 	}
 
 	Request struct {
-		Page    int32
-		Counter uint64
-		Limit   int32
-		Fields  []string
-		Values  []string
+		Page   int32
+		Limit  int32
+		Fields []string
+		Values []string
 	}
 )
 
@@ -57,11 +60,6 @@ func (p *Pagination) Handle(request *Request) {
 				p.Filters = append(p.Filters, Filter{Field: strings.Title(v), Value: request.Values[k]})
 			}
 		}
-	}
-
-	if request.Counter > 0 {
-		p.UseCounter = true
-		p.Counter = request.Counter
 	}
 
 	p.Limit = int(request.Limit)

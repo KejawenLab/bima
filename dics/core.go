@@ -22,6 +22,7 @@ import (
 	updates "github.com/KejawenLab/bima/v2/listeners/updates"
 	middlewares "github.com/KejawenLab/bima/v2/middlewares"
 	paginations "github.com/KejawenLab/bima/v2/paginations"
+	"github.com/KejawenLab/bima/v2/paginations/adapter"
 	parsers "github.com/KejawenLab/bima/v2/parsers"
 	routes "github.com/KejawenLab/bima/v2/routes"
 	services "github.com/KejawenLab/bima/v2/services"
@@ -405,7 +406,11 @@ var Container = []dingo.Def{
 	},
 	{
 		Name:  "bima:listener:filter:elasticsearch",
-		Build: (*filters.Filter)(nil),
+		Build: (*filters.ElasticsearchFilter)(nil),
+	},
+	{
+		Name:  "bima:listener:filter:gorm",
+		Build: (*filters.GormFilter)(nil),
 	},
 	{
 		Name:  "bima:interface:database",
@@ -462,17 +467,6 @@ var Container = []dingo.Def{
 			"Logger":    dingo.Service("bima:handler:logger"),
 			"Publisher": dingo.Service("bima:message:publisher"),
 			"Consumer":  dingo.Service("bima:message:consumer"),
-		},
-	},
-	{
-		Name:  "bima:handler:handler",
-		Build: (*handlers.Handler)(nil),
-		Params: dingo.Params{
-			"Env":           dingo.Service("bima:config:env"),
-			"Context":       dingo.Service("bima:context:background"),
-			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
-			"Dispatcher":    dingo.Service("bima:event:dispatcher"),
-			"Repository":    dingo.Service("bima:service:repository"),
 		},
 	},
 	{
@@ -611,6 +605,27 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:pagination:paginator",
 		Build: (*paginations.Pagination)(nil),
+	},
+	{
+		Name:  "bima:pagination:adapter:gorm",
+		Build: (*adapter.GormAdapter)(nil),
+		Params: dingo.Params{
+			"Env":        dingo.Service("bima:config:env"),
+			"Logger":     dingo.Service("bima:handler:logger"),
+			"Repository": dingo.Service("bima:service:repository"),
+			"Dispatcher": dingo.Service("bima:event:dispatcher"),
+		},
+	},
+	{
+		Name:  "bima:pagination:adapter:elasticsearch",
+		Build: (*adapter.ElasticsearchAdapter)(nil),
+		Params: dingo.Params{
+			"Env":        dingo.Service("bima:config:env"),
+			"Logger":     dingo.Service("bima:handler:logger"),
+			"Repository": dingo.Service("bima:service:repository"),
+			"Client":     dingo.Service("bima:connection:elasticsearch"),
+			"Dispatcher": dingo.Service("bima:event:dispatcher"),
+		},
 	},
 	{
 		Name:  "bima:pagination:request",

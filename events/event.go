@@ -6,6 +6,7 @@ import (
 	paginations "github.com/KejawenLab/bima/v2/paginations"
 	services "github.com/KejawenLab/bima/v2/services"
 	elastic "github.com/olivere/elastic/v7"
+	"gorm.io/gorm"
 )
 
 const PAGINATION_EVENT = "event.pagination"
@@ -25,9 +26,15 @@ type (
 		Repository *services.Repository
 	}
 
-	Pagination struct {
+	ElasticsearchPagination struct {
 		Repository *services.Repository
 		Query      *elastic.BoolQuery
+		Filters    []paginations.Filter
+	}
+
+	GormPagination struct {
+		Repository *services.Repository
+		Query      *gorm.DB
 		Filters    []paginations.Filter
 	}
 

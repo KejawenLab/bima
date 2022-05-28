@@ -26,7 +26,8 @@ func (m *Module) GetPaginated(c context.Context, r *grpcs.Pagination) (*grpcs.{{
 	m.Logger.Info(fmt.Sprintf("%+v", r))
 	records := []*grpcs.{{.Module}}{}
 	model := models.{{.Module}}{}
-	m.Paginator.Model = model.TableName()
+	m.Paginator.Model = model
+	m.Paginator.Table = model.TableName()
 
     copier.Copy(m.Request, r)
 	m.Paginator.Handle(m.Request)
@@ -210,15 +211,15 @@ func (m *Module) Populate() {
 		if d.SyncedAt.Valid {
 			query := elastic.NewMatchQuery("Id", d.Id)
 
-			result, _ := m.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).Query(query).Do(m.Context)
+			result, _ := m.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", m.Handler.Env.Service.ConnonicalName, v.TableName())).Query(query).Do(m.Context)
 			for _, hit := range result.Hits.Hits {
-				m.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).Id(hit.Id).Do(m.Context)
+				m.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", m.Handler.Env.Service.ConnonicalName, v.TableName())).Id(hit.Id).Do(m.Context)
 			}
 
 			data, _ := json.Marshal(d)
-			m.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).BodyJson(string(data)).Do(m.Context)
+			m.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", m.Handler.Env.Service.ConnonicalName, v.TableName())).BodyJson(string(data)).Do(m.Context)
 		} else {
-			m.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", m.Handler.Env.ServiceCanonicalName, v.TableName())).BodyJson(string(data)).Do(m.Context)
+			m.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", m.Handler.Env.Service.ConnonicalName, v.TableName())).BodyJson(string(data)).Do(m.Context)
 		}
 
 		d.SetSyncedAt(time.Now())

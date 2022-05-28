@@ -8,37 +8,21 @@ import (
 	configs "github.com/KejawenLab/bima/v2/configs"
 	events "github.com/KejawenLab/bima/v2/events"
 	paginations "github.com/KejawenLab/bima/v2/paginations"
-	adapter "github.com/KejawenLab/bima/v2/paginations/adapter"
 	services "github.com/KejawenLab/bima/v2/services"
-	elastic "github.com/olivere/elastic/v7"
 )
 
 type Handler struct {
-	Env           *configs.Env
-	Context       context.Context
-	Elasticsearch *elastic.Client
-	Dispatcher    *events.Dispatcher
-	Logger        *Logger
-	Repository    *services.Repository
+	Env        *configs.Env
+	Context    context.Context
+	Dispatcher *events.Dispatcher
+	Logger     *Logger
+	Repository *services.Repository
+	Adapter    paginations.Adapter
 }
 
-func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metadata, []interface{}) {
-	query := elastic.NewBoolQuery()
-
-	h.Dispatcher.Dispatch(events.PAGINATION_EVENT, &events.Pagination{
-		Repository: h.Repository,
-		Query:      query,
-		Filters:    paginator.Filters,
-	})
-
-	if h.Env.Debug {
-		s, _ := query.Source()
-		m, _ := json.Marshal(s)
-		h.Logger.Info(fmt.Sprintf("Elasticsearch query: %s", string(m)))
-	}
-
-	var result []interface{}
-	adapter := adapter.NewElasticsearchAdapter(h.Context, h.Elasticsearch, fmt.Sprintf("%s_%s", h.Env.Service.ConnonicalName, paginator.Model), paginator.UseCounter, paginator.Counter, query)
+func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metadata, []map[string]interface{}) {
+	var result []map[string]interface{}
+	adapter := h.Adapter.CreateAdapter(h.Context, paginator)
 	paginator.Paginate(adapter)
 	paginator.Pager.Results(&result)
 	next := paginator.Page + 1
@@ -46,11 +30,6 @@ func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metada
 
 	if paginator.Page*paginator.Limit > int(total) {
 		next = -1
-	}
-
-	if h.Env.Debug {
-		m, _ := json.Marshal(result)
-		h.Logger.Info(fmt.Sprintf("Elasticsearch result: %s", string(m)))
 	}
 
 	return paginations.Metadata{
