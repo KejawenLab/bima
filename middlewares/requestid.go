@@ -17,7 +17,7 @@ type RequestID struct {
 func (r *RequestID) Attach(request *http.Request, response http.ResponseWriter) bool {
 	reqID := fmt.Sprintf("%x", sha1.Sum([]byte(time.Now().Format(time.RFC3339))))
 
-	request.Header.Set("X-Request-Id", reqID)
+	response.Header().Add("X-Request-Id", reqID)
 	r.Logger.RequestID = reqID
 
 	return false
