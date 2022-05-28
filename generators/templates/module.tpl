@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-    "time"
 
     bima "github.com/KejawenLab/bima/v2"
 	configs "github.com/KejawenLab/bima/v2/configs"
@@ -13,7 +12,6 @@ import (
 	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
 	validations "{{.PackageName}}/{{.ModulePluralLowercase}}/validations"
 	copier "github.com/jinzhu/copier"
-    elastic "github.com/olivere/elastic/v7"
 )
 
 type Module struct {
@@ -198,6 +196,7 @@ func (m *Module) Consume() {
 }
 
 func (m *Module) Populate() {
+	/**
     v := models.{{.Module}}{}
 
 	var records []models.{{.Module}}
@@ -225,4 +224,5 @@ func (m *Module) Populate() {
 		d.SetSyncedAt(time.Now())
 		m.Handler.Repository.Update(d)
 	}
+	**/
 }
