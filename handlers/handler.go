@@ -8,7 +8,6 @@ import (
 	configs "github.com/KejawenLab/bima/v2/configs"
 	events "github.com/KejawenLab/bima/v2/events"
 	paginations "github.com/KejawenLab/bima/v2/paginations"
-	services "github.com/KejawenLab/bima/v2/services"
 )
 
 type Handler struct {
@@ -16,7 +15,7 @@ type Handler struct {
 	Context    context.Context
 	Dispatcher *events.Dispatcher
 	Logger     *Logger
-	Repository *services.Repository
+	Repository configs.Repository
 	Adapter    paginations.Adapter
 }
 

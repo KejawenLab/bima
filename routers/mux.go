@@ -1,4 +1,4 @@
-package routes
+package routers
 
 import (
 	"context"
@@ -20,20 +20,16 @@ func (m *MuxRouter) Register(routes []configs.Route) {
 func (m *MuxRouter) Handle(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn) {
 	for _, v := range m.Routes {
 		v.SetClient(client)
-		if len(v.Middlewares()) > 0 {
-			server.HandlePath(v.Method(), v.Path(), func(w http.ResponseWriter, r *http.Request, params map[string]string) {
-				for _, m := range v.Middlewares() {
-					stop := m.Attach(r, w)
-					if stop {
-						return
-					}
+		server.HandlePath(v.Method(), v.Path(), func(w http.ResponseWriter, r *http.Request, params map[string]string) {
+			for _, m := range v.Middlewares() {
+				stop := m.Attach(r, w)
+				if stop {
+					return
 				}
+			}
 
-				v.Handle(w, r, params)
-			})
-		} else {
-			server.HandlePath(v.Method(), v.Path(), v.Handle)
-		}
+			v.Handle(w, r, params)
+		})
 	}
 }
 

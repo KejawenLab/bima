@@ -8,33 +8,7 @@ import (
 	"github.com/olivere/elastic/v7"
 )
 
-type (
-	ElasticsearchFilter struct {
-	}
-
-	GormFilter struct {
-	}
-)
-
-func (u *GormFilter) Handle(event interface{}) {
-	e, ok := event.(*events.GormPagination)
-	if !ok {
-		return
-	}
-
-	query := e.Query
-	filters := e.Filters
-	for _, v := range filters {
-		query.Where(fmt.Sprintf("%s LIKE ?", v.Field), fmt.Sprintf("%%%s%%", v.Value))
-	}
-}
-
-func (u *GormFilter) Listen() string {
-	return events.PAGINATION_EVENT
-}
-
-func (u *GormFilter) Priority() int {
-	return configs.HIGEST_PRIORITY + 1
+type ElasticsearchFilter struct {
 }
 
 func (u *ElasticsearchFilter) Handle(event interface{}) {

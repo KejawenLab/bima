@@ -22,8 +22,9 @@ import (
 	updates "github.com/KejawenLab/bima/v2/listeners/updates"
 	middlewares "github.com/KejawenLab/bima/v2/middlewares"
 	paginations "github.com/KejawenLab/bima/v2/paginations"
-	"github.com/KejawenLab/bima/v2/paginations/adapter"
+	adapter "github.com/KejawenLab/bima/v2/paginations/adapter"
 	parsers "github.com/KejawenLab/bima/v2/parsers"
+	routers "github.com/KejawenLab/bima/v2/routers"
 	routes "github.com/KejawenLab/bima/v2/routes"
 	services "github.com/KejawenLab/bima/v2/services"
 	utils "github.com/KejawenLab/bima/v2/utils"
@@ -35,7 +36,6 @@ import (
 	elastic "github.com/olivere/elastic/v7"
 	"github.com/sarulabs/dingo/v4"
 	"github.com/sirupsen/logrus"
-	mongodb "github.com/weekface/mgorus"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 )
@@ -283,10 +283,17 @@ var Container = []dingo.Def{
 		Build: (*events.Dispatcher)(nil),
 	},
 	{
-		Name:  "bima:handler:middleware",
-		Build: (*handlers.Middleware)(nil),
+		Name: "bima:handler:middleware",
+		Build: func(dipatcher *events.Dispatcher) (*handlers.Middleware, error) {
+			middleware := handlers.Middleware{
+				Dispatcher: dipatcher,
+			}
+			middleware.Add(&middlewares.Header{})
+
+			return &middleware, nil
+		},
 		Params: dingo.Params{
-			"Dispatcher": dingo.Service("bima:event:dispatcher"),
+			"0": dingo.Service("bima:event:dispatcher"),
 		},
 	},
 	{
@@ -510,11 +517,11 @@ var Container = []dingo.Def{
 	},
 	{
 		Name:  "bima:router:mux",
-		Build: (*routes.MuxRouter)(nil),
+		Build: (*routers.MuxRouter)(nil),
 	},
 	{
 		Name:  "bima:router:gateway",
-		Build: (*routes.GRpcGateway)(nil),
+		Build: (*routers.GRpcGateway)(nil),
 	},
 	{
 		Name:  "bima:routes:api-doc",
@@ -547,21 +554,6 @@ var Container = []dingo.Def{
 			time.Sleep(100 * time.Millisecond)
 
 			return logrus.New(), nil
-		},
-	},
-	{
-		Name: "bima:logger:extension:mongodb",
-		Build: func(env *configs.Env) (logrus.Hook, error) {
-			color.New(color.FgCyan, color.Bold).Printf("✓ ")
-			fmt.Println("MongoDB Logger Extension configured...")
-			time.Sleep(100 * time.Millisecond)
-
-			mongodb, err := mongodb.NewHooker(fmt.Sprintf("%s:%d", env.MongoDb.Host, env.MongoDb.Port), env.MongoDb.Database, "logs")
-			if err != nil {
-				return nil, err
-			}
-
-			return mongodb, nil
 		},
 	},
 	{

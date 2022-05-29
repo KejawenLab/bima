@@ -19,6 +19,21 @@ type (
 		Connect(host string, port int, user string, password string, dbname string, debug bool) *gorm.DB
 	}
 
+	Repository interface {
+		Debug()
+		StartTransaction()
+		Commit()
+		Rollback()
+		Create(v interface{}) error
+		Update(v interface{}) error
+		Bind(v interface{}, id string) error
+		All(v interface{}) error
+		FindBy(creteria map[string]interface{}, v interface{}) error
+		FindByClausal(v interface{}, clausal string, parameters ...interface{}) error
+		Delete(v interface{}, id string) error
+		OverrideData(v interface{})
+	}
+
 	Generator interface {
 		Generate(template *Template, modulePath string, packagePath string, templatePath string)
 	}

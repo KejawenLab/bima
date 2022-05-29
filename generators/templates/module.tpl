@@ -8,10 +8,11 @@ import (
 
     bima "github.com/KejawenLab/bima/v2"
 	configs "github.com/KejawenLab/bima/v2/configs"
+	copier "github.com/jinzhu/copier"
+    elastic "github.com/olivere/elastic/v7"
 	grpcs "{{.PackageName}}/protos/builds"
 	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
 	validations "{{.PackageName}}/{{.ModulePluralLowercase}}/validations"
-	copier "github.com/jinzhu/copier"
 )
 
 type Module struct {
@@ -196,7 +197,6 @@ func (m *Module) Consume() {
 }
 
 func (m *Module) Populate() {
-	/**
     v := models.{{.Module}}{}
 
 	var records []models.{{.Module}}
@@ -210,10 +210,12 @@ func (m *Module) Populate() {
 		if d.SyncedAt.Valid {
 			query := elastic.NewMatchQuery("Id", d.Id)
 
-			result, _ := m.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", m.Handler.Env.Service.ConnonicalName, v.TableName())).Query(query).Do(m.Context)
-			for _, hit := range result.Hits.Hits {
-				m.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", m.Handler.Env.Service.ConnonicalName, v.TableName())).Id(hit.Id).Do(m.Context)
-			}
+			result, err := m.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", m.Handler.Env.Service.ConnonicalName, v.TableName())).Query(query).Do(m.Context)
+            if err == nil {
+                for _, hit := range result.Hits.Hits {
+                    m.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", m.Handler.Env.Service.ConnonicalName, v.TableName())).Id(hit.Id).Do(m.Context)
+                }
+            }
 
 			data, _ := json.Marshal(d)
 			m.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", m.Handler.Env.Service.ConnonicalName, v.TableName())).BodyJson(string(data)).Do(m.Context)
@@ -224,5 +226,4 @@ func (m *Module) Populate() {
 		d.SetSyncedAt(time.Now())
 		m.Handler.Repository.Update(d)
 	}
-	**/
 }

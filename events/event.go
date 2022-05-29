@@ -3,8 +3,8 @@ package events
 import (
 	"net/http"
 
+	"github.com/KejawenLab/bima/v2/configs"
 	paginations "github.com/KejawenLab/bima/v2/paginations"
-	services "github.com/KejawenLab/bima/v2/services"
 	elastic "github.com/olivere/elastic/v7"
 	"gorm.io/gorm"
 )
@@ -23,17 +23,17 @@ type (
 	Model struct {
 		Data       interface{}
 		Id         string
-		Repository *services.Repository
+		Repository configs.Repository
 	}
 
 	ElasticsearchPagination struct {
-		Repository *services.Repository
+		Repository configs.Repository
 		Query      *elastic.BoolQuery
 		Filters    []paginations.Filter
 	}
 
 	GormPagination struct {
-		Repository *services.Repository
+		Repository configs.Repository
 		Query      *gorm.DB
 		Filters    []paginations.Filter
 	}
