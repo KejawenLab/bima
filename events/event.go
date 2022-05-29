@@ -27,15 +27,13 @@ type (
 	}
 
 	ElasticsearchPagination struct {
-		Repository configs.Repository
-		Query      *elastic.BoolQuery
-		Filters    []paginations.Filter
+		Query   *elastic.BoolQuery
+		Filters []paginations.Filter
 	}
 
 	GormPagination struct {
-		Repository configs.Repository
-		Query      *gorm.DB
-		Filters    []paginations.Filter
+		Query   *gorm.DB
+		Filters []paginations.Filter
 	}
 
 	Request struct {

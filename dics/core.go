@@ -24,9 +24,9 @@ import (
 	paginations "github.com/KejawenLab/bima/v2/paginations"
 	adapter "github.com/KejawenLab/bima/v2/paginations/adapter"
 	parsers "github.com/KejawenLab/bima/v2/parsers"
+	"github.com/KejawenLab/bima/v2/repositories"
 	routers "github.com/KejawenLab/bima/v2/routers"
 	routes "github.com/KejawenLab/bima/v2/routes"
-	services "github.com/KejawenLab/bima/v2/services"
 	utils "github.com/KejawenLab/bima/v2/utils"
 	"github.com/ThreeDotsLabs/watermill"
 	amqp "github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
@@ -603,8 +603,7 @@ var Container = []dingo.Def{
 		Build: (*adapter.GormAdapter)(nil),
 		Params: dingo.Params{
 			"Env":        dingo.Service("bima:config:env"),
-			"Logger":     dingo.Service("bima:handler:logger"),
-			"Repository": dingo.Service("bima:service:repository"),
+			"Database":   dingo.Service("bima:connection:database"),
 			"Dispatcher": dingo.Service("bima:event:dispatcher"),
 		},
 	},
@@ -613,8 +612,6 @@ var Container = []dingo.Def{
 		Build: (*adapter.ElasticsearchAdapter)(nil),
 		Params: dingo.Params{
 			"Env":        dingo.Service("bima:config:env"),
-			"Logger":     dingo.Service("bima:handler:logger"),
-			"Repository": dingo.Service("bima:service:repository"),
 			"Client":     dingo.Service("bima:connection:elasticsearch"),
 			"Dispatcher": dingo.Service("bima:event:dispatcher"),
 		},
@@ -625,7 +622,7 @@ var Container = []dingo.Def{
 	},
 	{
 		Name:  "bima:service:repository",
-		Build: (*services.Repository)(nil),
+		Build: (*repositories.GormRepository)(nil),
 		Params: dingo.Params{
 			"Env":      dingo.Service("bima:config:env"),
 			"Database": dingo.Service("bima:connection:database"),

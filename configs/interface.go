@@ -15,15 +15,14 @@ const HIGEST_PRIORITY = 255
 const LOWEST_PRIORITY = -255
 
 type (
+	Transaction func(Repository) error
+
 	Driver interface {
 		Connect(host string, port int, user string, password string, dbname string, debug bool) *gorm.DB
 	}
 
 	Repository interface {
-		Debug()
-		StartTransaction()
-		Commit()
-		Rollback()
+		Transaction(Transaction) error
 		Create(v interface{}) error
 		Update(v interface{}) error
 		Bind(v interface{}, id string) error

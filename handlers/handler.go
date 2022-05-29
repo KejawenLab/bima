@@ -42,63 +42,56 @@ func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metada
 }
 
 func (h *Handler) Create(v interface{}) error {
-	h.Repository.StartTransaction()
-	h.Dispatcher.Dispatch(events.BEFORE_CREATE_EVENT, &events.Model{
-		Data:       v,
-		Repository: h.Repository,
+	return h.Repository.Transaction(func(r configs.Repository) error {
+		h.Dispatcher.Dispatch(events.BEFORE_CREATE_EVENT, &events.Model{
+			Data:       v,
+			Repository: r,
+		})
+
+		err := r.Create(v)
+		if err != nil {
+			h.Logger.Error("Error when creating resource(s), Rolling back")
+
+			return err
+		}
+
+		if h.Env.Debug {
+			m, _ := json.Marshal(v)
+			h.Logger.Info(fmt.Sprintf("Elasticsearch result: %s", string(m)))
+		}
+
+		h.Dispatcher.Dispatch(events.AFTER_CREATE_EVENT, &events.Model{
+			Data:       v,
+			Repository: r,
+		})
+
+		return nil
 	})
-
-	err := h.Repository.Create(v)
-	if err != nil {
-		h.Logger.Error("Error when creating resource(s), Rolling back")
-		h.Repository.Rollback()
-
-		return err
-	}
-
-	if h.Env.Debug {
-		m, _ := json.Marshal(v)
-		h.Logger.Info(fmt.Sprintf("Elasticsearch result: %s", string(m)))
-	}
-
-	h.Dispatcher.Dispatch(events.AFTER_CREATE_EVENT, &events.Model{
-		Data:       v,
-		Repository: h.Repository,
-	})
-	h.Repository.Commit()
-
-	return nil
 }
 
 func (h *Handler) Update(v interface{}, id string) error {
-	h.Repository.StartTransaction()
-	h.Dispatcher.Dispatch(events.BEFORE_UPDATE_EVENT, &events.Model{
-		Id:         id,
-		Data:       v,
-		Repository: h.Repository,
+	return h.Repository.Transaction(func(r configs.Repository) error {
+		h.Dispatcher.Dispatch(events.BEFORE_UPDATE_EVENT, &events.Model{
+			Id:         id,
+			Data:       v,
+			Repository: r,
+		})
+
+		err := r.Update(v)
+		if err != nil {
+			h.Logger.Error("Error when creating resource(s), Rolling back")
+
+			return err
+		}
+
+		h.Dispatcher.Dispatch(events.AFTER_UPDATE_EVENT, &events.Model{
+			Id:         id,
+			Data:       v,
+			Repository: r,
+		})
+
+		return nil
 	})
-
-	err := h.Repository.Update(v)
-	if err != nil {
-		h.Logger.Error("Error when creating resource(s), Rolling back")
-		h.Repository.Rollback()
-
-		return err
-	}
-
-	if h.Env.Debug {
-		m, _ := json.Marshal(v)
-		h.Logger.Info(fmt.Sprintf("Elasticsearch result: %s", string(m)))
-	}
-
-	h.Dispatcher.Dispatch(events.AFTER_UPDATE_EVENT, &events.Model{
-		Id:         id,
-		Data:       v,
-		Repository: h.Repository,
-	})
-	h.Repository.Commit()
-
-	return nil
 }
 
 func (h *Handler) Bind(v interface{}, id string) error {
@@ -110,32 +103,26 @@ func (h *Handler) All(v interface{}) error {
 }
 
 func (h *Handler) Delete(v interface{}, id string) error {
-	h.Repository.StartTransaction()
-	h.Dispatcher.Dispatch(events.BEFORE_DELETE_EVENT, &events.Model{
-		Id:         id,
-		Data:       v,
-		Repository: h.Repository,
+	return h.Repository.Transaction(func(r configs.Repository) error {
+		h.Dispatcher.Dispatch(events.BEFORE_DELETE_EVENT, &events.Model{
+			Id:         id,
+			Data:       v,
+			Repository: r,
+		})
+
+		err := r.Delete(v, id)
+		if err != nil {
+			h.Logger.Error("Error when creating resource(s), Rolling back")
+
+			return err
+		}
+
+		h.Dispatcher.Dispatch(events.AFTER_DELETE_EVENT, &events.Model{
+			Id:         id,
+			Data:       v,
+			Repository: r,
+		})
+
+		return nil
 	})
-
-	err := h.Repository.Delete(v, id)
-	if err != nil {
-		h.Logger.Error("Error when creating resource(s), Rolling back")
-		h.Repository.Rollback()
-
-		return err
-	}
-
-	if h.Env.Debug {
-		m, _ := json.Marshal(v)
-		h.Logger.Info(fmt.Sprintf("Delete resources: %s", string(m)))
-	}
-
-	h.Dispatcher.Dispatch(events.AFTER_DELETE_EVENT, &events.Model{
-		Id:         id,
-		Data:       v,
-		Repository: h.Repository,
-	})
-	h.Repository.Commit()
-
-	return nil
 }

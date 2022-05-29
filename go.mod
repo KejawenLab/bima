@@ -16,12 +16,14 @@ require (
 	github.com/iancoleman/strcase v0.2.0
 	github.com/jackc/pgproto3/v2 v2.0.7 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
+	github.com/kamva/mgm/v3 v3.4.1
 	github.com/mediocregopher/radix/v3 v3.8.0 // indirect
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/sarulabs/dingo/v4 v4.0.2
 	github.com/sirupsen/logrus v1.8.1
 	github.com/vcraescu/go-paginator/v2 v2.0.0
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
+	go.mongodb.org/mongo-driver v1.9.1
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
 	golang.org/x/mod v0.4.1
 	golang.org/x/net v0.0.0-20220526153639-5463443f8c37 // indirect

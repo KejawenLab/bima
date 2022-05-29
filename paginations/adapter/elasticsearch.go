@@ -8,9 +8,7 @@ import (
 
 	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/events"
-	"github.com/KejawenLab/bima/v2/handlers"
 	"github.com/KejawenLab/bima/v2/paginations"
-	"github.com/KejawenLab/bima/v2/services"
 	elastic "github.com/olivere/elastic/v7"
 	paginator "github.com/vcraescu/go-paginator/v2"
 )
@@ -18,10 +16,8 @@ import (
 type (
 	ElasticsearchAdapter struct {
 		Env        *configs.Env
-		Logger     *handlers.Logger
 		Client     *elastic.Client
 		Dispatcher *events.Dispatcher
-		Repository *services.Repository
 	}
 
 	ElasticsearchPaginator struct {
@@ -36,9 +32,8 @@ type (
 func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator paginations.Pagination) paginator.Adapter {
 	query := elastic.NewBoolQuery()
 	es.Dispatcher.Dispatch(events.PAGINATION_EVENT, &events.ElasticsearchPagination{
-		Repository: es.Repository,
-		Query:      query,
-		Filters:    paginator.Filters,
+		Query:   query,
+		Filters: paginator.Filters,
 	})
 
 	return newElasticsearchPaginator(ctx, es.Client, fmt.Sprintf("%s_%s", es.Env.Service.ConnonicalName, paginator.Table), query)
