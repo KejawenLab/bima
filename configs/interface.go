@@ -38,7 +38,7 @@ type (
 	}
 
 	Listener interface {
-		Handle(event interface{})
+		Handle(event interface{}) interface{}
 		Listen() string
 		Priority() int
 	}

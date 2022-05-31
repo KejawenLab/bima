@@ -11,10 +11,10 @@ import (
 type ElasticsearchFilter struct {
 }
 
-func (u *ElasticsearchFilter) Handle(event interface{}) {
+func (u *ElasticsearchFilter) Handle(event interface{}) interface{} {
 	e, ok := event.(*events.ElasticsearchPagination)
 	if !ok {
-		return
+		return event
 	}
 
 	query := e.Query
@@ -24,6 +24,8 @@ func (u *ElasticsearchFilter) Handle(event interface{}) {
 		q.Boost(1.0)
 		query.Must(q)
 	}
+
+	return e
 }
 
 func (u *ElasticsearchFilter) Listen() string {
