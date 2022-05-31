@@ -15,9 +15,10 @@ import (
 )
 
 type Middleware struct {
-	Dispatcher  *events.Dispatcher
-	Middlewares []configs.Middleware
-	Logger      *Logger
+	Dispatcher     *events.Dispatcher
+	Middlewares    []configs.Middleware
+	MuxMiddlewares []func(http.Handler) http.Handler
+	Logger         *Logger
 }
 
 func (m *Middleware) Register(middlewares []configs.Middleware) {
@@ -69,7 +70,11 @@ func (m *Middleware) Attach(handler http.Handler) http.Handler {
 		m.Logger.Fatal(err.Error())
 	}
 
-	gzipEncoder, err := pgzip.New(pgzip.Options{Level: 6})
+	gzipEncoder, err := pgzip.New(pgzip.Options{
+		Level:     pgzip.DefaultCompression,
+		BlockSize: 1 << 20,
+		Blocks:    4,
+	})
 	if err != nil {
 		m.Logger.Fatal(err.Error())
 	}
@@ -87,5 +92,10 @@ func (m *Middleware) Attach(handler http.Handler) http.Handler {
 		m.Logger.Fatal(err.Error())
 	}
 
-	return compress(internal)
+	last := compress(internal)
+	for _, middleware := range m.MuxMiddlewares {
+		last = middleware(last)
+	}
+
+	return last
 }
