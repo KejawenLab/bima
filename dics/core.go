@@ -111,9 +111,14 @@ var Container = []dingo.Def{
 
 			env.Version = os.Getenv("APP_VERSION")
 			env.ApiVersion = os.Getenv("API_VERSION")
+			env.RequestIDHeader = os.Getenv("REQUEST_ID_HEADER")
 			env.Debug, _ = strconv.ParseBool(os.Getenv("APP_DEBUG"))
 			env.HtppPort, _ = strconv.Atoi(os.Getenv("APP_PORT"))
 			env.RpcPort, _ = strconv.Atoi(os.Getenv("GRPC_PORT"))
+
+			if env.RequestIDHeader == "" {
+				env.RequestIDHeader = "X-Request-Id"
+			}
 
 			sName := os.Getenv("APP_NAME")
 			env.Service = configs.Service{
@@ -284,9 +289,10 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:handler:middleware",
-		Build: func(dipatcher *events.Dispatcher) (*handlers.Middleware, error) {
+		Build: func(dipatcher *events.Dispatcher, logger *handlers.Logger) (*handlers.Middleware, error) {
 			middleware := handlers.Middleware{
 				Dispatcher: dipatcher,
+				Logger:     logger,
 			}
 			middleware.Add(&middlewares.Header{})
 
@@ -294,6 +300,7 @@ var Container = []dingo.Def{
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:event:dispatcher"),
+			"1": dingo.Service("bima:handler:logger"),
 		},
 	},
 	{
@@ -431,8 +438,9 @@ var Container = []dingo.Def{
 		Name:  "bima:interface:grpc",
 		Build: (*interfaces.GRpc)(nil),
 		Params: dingo.Params{
-			"Env":  dingo.Service("bima:config:env"),
-			"GRpc": dingo.Service("bima:grpc:server"),
+			"Env":    dingo.Service("bima:config:env"),
+			"GRpc":   dingo.Service("bima:grpc:server"),
+			"Logger": dingo.Service("bima:handler:logger"),
 		},
 	},
 	{

@@ -12,12 +12,16 @@ import (
 
 type RequestID struct {
 	Logger *handlers.Logger
+	Env    *configs.Env
 }
 
 func (r *RequestID) Attach(request *http.Request, response http.ResponseWriter) bool {
-	reqID := fmt.Sprintf("%x", sha1.Sum([]byte(time.Now().Format(time.RFC3339))))
+	reqID := request.Header.Get(r.Env.RequestIDHeader)
+	if reqID == "" {
+		reqID = fmt.Sprintf("%x", sha1.Sum([]byte(time.Now().Format(time.RFC3339))))
+	}
 
-	response.Header().Add("X-Request-Id", reqID)
+	response.Header().Add(r.Env.RequestIDHeader, reqID)
 	r.Logger.RequestID = reqID
 
 	return false

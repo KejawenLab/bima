@@ -66,6 +66,7 @@ type (
 		CacheLifetime    int
 		User             *User
 		TemplateLocation string
+		RequestIDHeader  string
 	}
 
 	Template struct {

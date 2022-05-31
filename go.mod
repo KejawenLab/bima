@@ -3,6 +3,7 @@ module github.com/KejawenLab/bima/v2
 go 1.16
 
 require (
+	github.com/CAFxX/httpcompression v0.0.8
 	github.com/ThreeDotsLabs/watermill v1.2.0-rc.10
 	github.com/ThreeDotsLabs/watermill-amqp v1.1.4
 	github.com/dustin/go-humanize v1.0.0

@@ -2,23 +2,24 @@ package interfaces
 
 import (
 	"fmt"
-	"log"
 	"net"
 
 	configs "github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/handlers"
 	"github.com/fatih/color"
 	grpc "google.golang.org/grpc"
 )
 
 type GRpc struct {
-	Env  *configs.Env
-	GRpc *grpc.Server
+	Env    *configs.Env
+	GRpc   *grpc.Server
+	Logger *handlers.Logger
 }
 
 func (g *GRpc) Run(servers []configs.Server) {
 	l, err := net.Listen("tcp", fmt.Sprintf(":%d", g.Env.RpcPort))
 	if err != nil {
-		log.Fatalf("Port %d is not available. %v", g.Env.RpcPort, err)
+		g.Logger.Fatal(fmt.Sprintf("Port %d is not available. %v", g.Env.RpcPort, err))
 	}
 
 	for _, server := range servers {

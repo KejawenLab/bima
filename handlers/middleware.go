@@ -6,11 +6,18 @@ import (
 
 	configs "github.com/KejawenLab/bima/v2/configs"
 	events "github.com/KejawenLab/bima/v2/events"
+
+	"github.com/CAFxX/httpcompression"
+	"github.com/CAFxX/httpcompression/contrib/andybalholm/brotli"
+	"github.com/CAFxX/httpcompression/contrib/compress/zlib"
+	"github.com/CAFxX/httpcompression/contrib/klauspost/pgzip"
+	"github.com/CAFxX/httpcompression/contrib/klauspost/zstd"
 )
 
 type Middleware struct {
 	Dispatcher  *events.Dispatcher
 	Middlewares []configs.Middleware
+	Logger      *Logger
 }
 
 func (m *Middleware) Register(middlewares []configs.Middleware) {
@@ -28,7 +35,7 @@ func (m *Middleware) Attach(handler http.Handler) http.Handler {
 		return m.Middlewares[i].Priority() > m.Middlewares[j].Priority()
 	})
 
-	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+	internal := http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		for _, middleware := range m.Middlewares {
 			stop := middleware.Attach(request, response)
 			if stop {
@@ -46,4 +53,39 @@ func (m *Middleware) Attach(handler http.Handler) http.Handler {
 
 		handler.ServeHTTP(response, request)
 	})
+
+	deflateEncoder, err := zlib.New(zlib.Options{})
+	if err != nil {
+		m.Logger.Fatal(err.Error())
+	}
+
+	zstdEncoder, err := zstd.New()
+	if err != nil {
+		m.Logger.Fatal(err.Error())
+	}
+
+	brotliEncoder, err := brotli.New(brotli.Options{})
+	if err != nil {
+		m.Logger.Fatal(err.Error())
+	}
+
+	gzipEncoder, err := pgzip.New(pgzip.Options{Level: 6})
+	if err != nil {
+		m.Logger.Fatal(err.Error())
+	}
+
+	compress, err := httpcompression.Adapter(
+		httpcompression.Compressor(brotli.Encoding, 3, brotliEncoder),
+		httpcompression.Compressor(pgzip.Encoding, 2, gzipEncoder),
+		httpcompression.Compressor(zlib.Encoding, 1, deflateEncoder),
+		httpcompression.Compressor(zstd.Encoding, 0, zstdEncoder),
+		httpcompression.Prefer(httpcompression.PreferServer),
+		httpcompression.MinSize(165),
+	)
+
+	if err != nil {
+		m.Logger.Fatal(err.Error())
+	}
+
+	return compress(internal)
 }
