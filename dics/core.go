@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -37,6 +38,7 @@ import (
 	elastic "github.com/olivere/elastic/v7"
 	"github.com/sarulabs/dingo/v4"
 	"github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
@@ -139,9 +141,17 @@ var Container = []dingo.Def{
 				Driver:   os.Getenv("DB_DRIVER"),
 			}
 
-			err := mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s:%d", env.Db.User, env.Db.Password, env.Db.Host, env.Db.Port)))
+			err := mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s:%d", env.Db.User, env.Db.Password, env.Db.Host, env.Db.Port)).SetMonitor(&event.CommandMonitor{
+				Started: func(_ context.Context, evt *event.CommandStartedEvent) {
+					log.Print(evt.Command)
+				},
+			}))
 			if err != nil {
-				mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s", env.Db.Host)))
+				err = mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s", env.Db.Host)).SetMonitor(&event.CommandMonitor{
+					Started: func(_ context.Context, evt *event.CommandStartedEvent) {
+						log.Print(evt.Command)
+					},
+				}))
 			}
 
 			if err != nil {
@@ -439,6 +449,10 @@ var Container = []dingo.Def{
 		Build: (*filters.GormFilter)(nil),
 	},
 	{
+		Name:  "bima:listener:filter:mongo",
+		Build: (*filters.MongoDbFilter)(nil),
+	},
+	{
 		Name:  "bima:interface:database",
 		Build: (*interfaces.Database)(nil),
 	},
@@ -637,6 +651,14 @@ var Container = []dingo.Def{
 		},
 	},
 	{
+		Name:  "bima:pagination:adapter:mongo",
+		Build: (*adapter.MongodbAdapter)(nil),
+		Params: dingo.Params{
+			"Env":        dingo.Service("bima:config:env"),
+			"Dispatcher": dingo.Service("bima:event:dispatcher"),
+		},
+	},
+	{
 		Name:  "bima:pagination:request",
 		Build: (*paginations.Request)(nil),
 	},
@@ -646,6 +668,13 @@ var Container = []dingo.Def{
 		Params: dingo.Params{
 			"Env":      dingo.Service("bima:config:env"),
 			"Database": dingo.Service("bima:connection:database"),
+		},
+	},
+	{
+		Name:  "bima:service:repository:mongo",
+		Build: (*repositories.MongoRepository)(nil),
+		Params: dingo.Params{
+			"Env": dingo.Service("bima:config:env"),
 		},
 	},
 	{

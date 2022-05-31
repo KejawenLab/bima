@@ -10,10 +10,10 @@ import (
 type GormFilter struct {
 }
 
-func (u *GormFilter) Handle(event interface{}) {
+func (u *GormFilter) Handle(event interface{}) interface{} {
 	e, ok := event.(*events.GormPagination)
 	if !ok {
-		return
+		return event
 	}
 
 	query := e.Query
@@ -21,6 +21,8 @@ func (u *GormFilter) Handle(event interface{}) {
 	for _, v := range filters {
 		query.Where(fmt.Sprintf("%s LIKE ?", v.Field), fmt.Sprintf("%%%s%%", v.Value))
 	}
+
+	return e
 }
 
 func (u *GormFilter) Listen() string {

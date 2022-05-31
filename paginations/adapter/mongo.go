@@ -23,6 +23,7 @@ type (
 		index      string
 		pageQuery  *mgm.Collection
 		totalQuery *mgm.Collection
+		filter     bson.M
 	}
 )
 
@@ -34,27 +35,28 @@ func (mg *MongodbAdapter) CreateAdapter(ctx context.Context, paginator paginatio
 
 	query := mgm.Coll(model)
 	event := events.MongodbPagination{
-		Query:   query,
-		Filters: paginator.Filters,
+		Query:         query,
+		Filters:       paginator.Filters,
+		MongoDbFilter: bson.M{},
 	}
 	mg.Dispatcher.Dispatch(events.PAGINATION_EVENT, &event)
 
-	return newMongodbPaginator(ctx, event.Query)
+	return newMongodbPaginator(ctx, event.Query, event.MongoDbFilter)
 }
 
-func newMongodbPaginator(context context.Context, query *mgm.Collection) paginator.Adapter {
-	var totalQuery *mgm.Collection
-	*totalQuery = *query
+func newMongodbPaginator(context context.Context, query *mgm.Collection, filter bson.M) paginator.Adapter {
+	var totalQuery *mgm.Collection = query
 
 	return &mongodbPaginator{
 		context:    context,
 		pageQuery:  query,
 		totalQuery: totalQuery,
+		filter:     filter,
 	}
 }
 
 func (mg *mongodbPaginator) Nums() (int64, error) {
-	return mg.totalQuery.CountDocuments(mg.context, bson.D{})
+	return mg.totalQuery.CountDocuments(mg.context, mg.filter)
 }
 
 func (mg *mongodbPaginator) Slice(offset int, length int, data interface{}) error {
@@ -65,7 +67,7 @@ func (mg *mongodbPaginator) Slice(offset int, length int, data interface{}) erro
 		Limit: &limit,
 	}
 
-	mg.pageQuery.SimpleFind(data, bson.D{}, options)
+	mg.pageQuery.SimpleFind(data, mg.filter, options)
 
 	return nil
 }

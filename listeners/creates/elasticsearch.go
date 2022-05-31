@@ -19,9 +19,8 @@ type Elasticsearch struct {
 	Logger        *handlers.Logger
 }
 
-func (c *Elasticsearch) Handle(event interface{}) {
+func (c *Elasticsearch) Handle(event interface{}) interface{} {
 	e := event.(*events.Model)
-
 	m := e.Data.(configs.Model)
 	data, _ := json.Marshal(e.Data)
 
@@ -29,6 +28,8 @@ func (c *Elasticsearch) Handle(event interface{}) {
 
 	m.SetSyncedAt(time.Now())
 	e.Repository.Update(m)
+
+	return e
 }
 
 func (u *Elasticsearch) Listen() string {

@@ -11,12 +11,15 @@ type UpdatedBy struct {
 	Env *configs.Env
 }
 
-func (c *UpdatedBy) Handle(event interface{}) {
+func (c *UpdatedBy) Handle(event interface{}) interface{} {
 	e := event.(*events.Model)
 	data := e.Data.(configs.Model)
+
 	data.SetUpdatedBy(c.Env.User)
 	data.SetUpdatedAt(time.Now())
 	e.Repository.OverrideData(data)
+
+	return e
 }
 
 func (u *UpdatedBy) Listen() string {

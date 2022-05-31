@@ -9,11 +9,14 @@ type DeletedBy struct {
 	Env *configs.Env
 }
 
-func (c *DeletedBy) Handle(event interface{}) {
+func (c *DeletedBy) Handle(event interface{}) interface{} {
 	e := event.(*events.Model)
 	data := e.Data.(configs.Model)
+
 	data.SetDeletedBy(c.Env.User)
 	e.Repository.OverrideData(data)
+
+	return e
 }
 
 func (u *DeletedBy) Listen() string {

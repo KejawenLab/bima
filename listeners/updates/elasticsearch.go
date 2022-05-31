@@ -19,10 +19,10 @@ type Elasticsearch struct {
 	Logger        *handlers.Logger
 }
 
-func (u *Elasticsearch) Handle(event interface{}) {
+func (u *Elasticsearch) Handle(event interface{}) interface{} {
 	e := event.(*events.Model)
-
 	m := e.Data.(configs.Model)
+
 	query := elastic.NewMatchQuery("Id", e.Id)
 
 	u.Logger.Info(fmt.Sprintf("Deleting data in elasticsearch with ID: %s", string(e.Id)))
@@ -38,6 +38,8 @@ func (u *Elasticsearch) Handle(event interface{}) {
 
 	m.SetSyncedAt(time.Now())
 	e.Repository.Update(m)
+
+	return e
 }
 
 func (u *Elasticsearch) Listen() string {
