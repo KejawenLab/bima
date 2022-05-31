@@ -1,8 +1,20 @@
 package configs
 
-import "github.com/sirupsen/logrus"
+import (
+	"net/http"
+
+	"github.com/sirupsen/logrus"
+)
 
 type (
+	MuxMiddlewares func(http.Handler) http.Handler
+
+	Filter struct {
+		Field    string
+		Operator string
+		Value    interface{}
+	}
+
 	User struct {
 		Id    string
 		Email string

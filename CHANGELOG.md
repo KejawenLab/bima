@@ -1,5 +1,9 @@
+# v2.2.8
+
+[FEATURE] support mongodb
+
 # v2.2.7
-[FIX] fix compress middleware
+[FIX] Fix compress middleware
 
 # v2.2.6
 

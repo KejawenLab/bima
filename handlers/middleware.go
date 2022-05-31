@@ -17,7 +17,7 @@ import (
 type Middleware struct {
 	Dispatcher     *events.Dispatcher
 	Middlewares    []configs.Middleware
-	MuxMiddlewares []func(http.Handler) http.Handler
+	MuxMiddlewares []configs.MuxMiddlewares
 	Logger         *Logger
 }
 

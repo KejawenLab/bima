@@ -5,6 +5,7 @@ import (
 
 	"github.com/KejawenLab/bima/v2/configs"
 	paginations "github.com/KejawenLab/bima/v2/paginations"
+	"github.com/kamva/mgm/v3"
 	elastic "github.com/olivere/elastic/v7"
 	"gorm.io/gorm"
 )
@@ -28,6 +29,11 @@ type (
 
 	ElasticsearchPagination struct {
 		Query   *elastic.BoolQuery
+		Filters []paginations.Filter
+	}
+
+	MongodbPagination struct {
+		Query   *mgm.Collection
 		Filters []paginations.Filter
 	}
 

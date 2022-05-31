@@ -19,10 +19,11 @@ type GormAdapter struct {
 
 func (g *GormAdapter) CreateAdapter(ctx context.Context, paginator paginations.Pagination) paginator.Adapter {
 	query := g.Database.Model(paginator.Model)
-	g.Dispatcher.Dispatch(events.PAGINATION_EVENT, &events.GormPagination{
+	event := events.GormPagination{
 		Query:   query,
 		Filters: paginator.Filters,
-	})
+	}
+	g.Dispatcher.Dispatch(events.PAGINATION_EVENT, &event)
 
-	return adapter.NewGORMAdapter(query)
+	return adapter.NewGORMAdapter(event.Query)
 }
