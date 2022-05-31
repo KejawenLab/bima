@@ -20,7 +20,7 @@ type (
 		Dispatcher *events.Dispatcher
 	}
 
-	ElasticsearchPaginator struct {
+	elasticsearchPaginator struct {
 		context    context.Context
 		client     *elastic.Client
 		index      string
@@ -31,19 +31,20 @@ type (
 
 func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator paginations.Pagination) paginator.Adapter {
 	query := elastic.NewBoolQuery()
-	es.Dispatcher.Dispatch(events.PAGINATION_EVENT, &events.ElasticsearchPagination{
+	event := events.ElasticsearchPagination{
 		Query:   query,
 		Filters: paginator.Filters,
-	})
+	}
+	es.Dispatcher.Dispatch(events.PAGINATION_EVENT, &event)
 
-	return newElasticsearchPaginator(ctx, es.Client, fmt.Sprintf("%s_%s", es.Env.Service.ConnonicalName, paginator.Table), query)
+	return newElasticsearchPaginator(ctx, es.Client, fmt.Sprintf("%s_%s", es.Env.Service.ConnonicalName, paginator.Table), event.Query)
 }
 
 func newElasticsearchPaginator(context context.Context, client *elastic.Client, index string, query *elastic.BoolQuery) paginator.Adapter {
 	var totalQuery *elastic.BoolQuery
 	*totalQuery = *query
 
-	return &ElasticsearchPaginator{
+	return &elasticsearchPaginator{
 		context:    context,
 		client:     client,
 		index:      index,
@@ -52,7 +53,7 @@ func newElasticsearchPaginator(context context.Context, client *elastic.Client, 
 	}
 }
 
-func (es *ElasticsearchPaginator) Nums() (int64, error) {
+func (es *elasticsearchPaginator) Nums() (int64, error) {
 	result, err := es.client.Search().Index(es.index).IgnoreUnavailable(true).Query(es.totalQuery).Do(es.context)
 	if err != nil {
 		log.Printf("%s", err.Error())
@@ -62,7 +63,7 @@ func (es *ElasticsearchPaginator) Nums() (int64, error) {
 	return result.TotalHits(), nil
 }
 
-func (es *ElasticsearchPaginator) Slice(offset int, length int, data interface{}) error {
+func (es *elasticsearchPaginator) Slice(offset int, length int, data interface{}) error {
 	result, err := es.client.Search().Index(es.index).IgnoreUnavailable(true).Query(es.pageQuery).From(offset).Size(length).Do(es.context)
 	if err != nil {
 		log.Printf("%s", err.Error())

@@ -33,9 +33,11 @@ import (
 	"github.com/fatih/color"
 	"github.com/gadelkareem/cachita"
 	"github.com/gertd/go-pluralize"
+	"github.com/kamva/mgm/v3"
 	elastic "github.com/olivere/elastic/v7"
 	"github.com/sarulabs/dingo/v4"
 	"github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 )
@@ -135,6 +137,15 @@ var Container = []dingo.Def{
 				Password: os.Getenv("DB_PASSWORD"),
 				Name:     os.Getenv("DB_NAME"),
 				Driver:   os.Getenv("DB_DRIVER"),
+			}
+
+			err := mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s:%d", env.Db.User, env.Db.Password, env.Db.Host, env.Db.Port)))
+			if err != nil {
+				mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s", env.Db.Host)))
+			}
+
+			if err != nil {
+				return nil, err
 			}
 
 			esPort, _ := strconv.Atoi(os.Getenv("ELASTICSEARCH_PORT"))
@@ -314,22 +325,23 @@ var Container = []dingo.Def{
 			mysql configs.Driver,
 			postgresql configs.Driver,
 		) (*gorm.DB, error) {
+			util := color.New(color.FgCyan, color.Bold)
 			var db configs.Driver
+
+			util.Printf("✓ ")
+			fmt.Printf("Database configured using '%s' driver...\n", env.Db.Driver)
+			time.Sleep(100 * time.Millisecond)
 
 			switch env.Db.Driver {
 			case "mysql":
 				db = mysql
 			case "postgresql":
 				db = postgresql
+			case "mongo":
+				return nil, nil
 			default:
 				return nil, errors.New("Unknown database driver")
 			}
-
-			util := color.New(color.FgCyan, color.Bold)
-
-			util.Printf("✓ ")
-			fmt.Printf("Database configured using '%s' driver...\n", env.Db.Driver)
-			time.Sleep(100 * time.Millisecond)
 
 			return db.Connect(
 				env.Db.Host,
@@ -629,7 +641,7 @@ var Container = []dingo.Def{
 		Build: (*paginations.Request)(nil),
 	},
 	{
-		Name:  "bima:service:repository",
+		Name:  "bima:service:repository:gorm",
 		Build: (*repositories.GormRepository)(nil),
 		Params: dingo.Params{
 			"Env":      dingo.Service("bima:config:env"),

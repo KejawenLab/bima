@@ -200,7 +200,11 @@ func (m *Module) Populate() {
     v := models.{{.Module}}{}
 
 	var records []models.{{.Module}}
-	err := m.Handler.Repository.FindByClausal(&records, "synced_at <= ?", time.Now().Add(-5*time.Minute))
+	err := m.Handler.Repository.FindBy(&records, configs.Filter{
+        Field:    "synced_at",
+        Operator: "<=",
+        Value:    time.Now().Add(-5*time.Minute),
+    })
 	if err != nil {
 		m.Logger.Error(fmt.Sprintf("%+v", err))
 	}

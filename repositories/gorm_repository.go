@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"fmt"
+
 	configs "github.com/KejawenLab/bima/v2/configs"
 	"gorm.io/gorm"
 )
@@ -8,8 +10,13 @@ import (
 type GormRepository struct {
 	dbPool        *gorm.DB
 	overridedData interface{}
+	model         string
 	Env           *configs.Env
 	Database      *gorm.DB
+}
+
+func (r *GormRepository) Model(model string) {
+	r.model = model
 }
 
 func (r *GormRepository) Transaction(f configs.Transaction) error {
@@ -46,12 +53,13 @@ func (r *GormRepository) All(v interface{}) error {
 	return r.Database.Find(v).Error
 }
 
-func (r *GormRepository) FindBy(creteria map[string]interface{}, v interface{}) error {
-	return r.Database.Where(creteria).Find(v).Error
-}
+func (r *GormRepository) FindBy(v interface{}, filters ...configs.Filter) error {
+	db := r.Database
+	for _, f := range filters {
+		db = db.Where(fmt.Sprintf("%s %s ?", f.Field, f.Operator), f.Value)
+	}
 
-func (r *GormRepository) FindByClausal(v interface{}, clausal string, parameters ...interface{}) error {
-	return r.Database.Where(clausal, parameters...).Find(v).Error
+	return db.Find(v).Error
 }
 
 func (r *GormRepository) Delete(v interface{}, id string) error {
