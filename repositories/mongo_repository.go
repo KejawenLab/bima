@@ -6,6 +6,7 @@ import (
 	configs "github.com/KejawenLab/bima/v2/configs"
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -31,7 +32,7 @@ func (r *MongoRepository) Transaction(f configs.Transaction) error {
 }
 
 func (r *MongoRepository) Create(v interface{}) error {
-	model, ok := r.bind(v).(mgm.Model)
+	model, ok := v.(mgm.Model)
 	if !ok {
 		return errors.New("Invalid model")
 	}
@@ -40,7 +41,7 @@ func (r *MongoRepository) Create(v interface{}) error {
 }
 
 func (r *MongoRepository) Update(v interface{}) error {
-	model, ok := r.bind(v).(mgm.Model)
+	model, ok := v.(mgm.Model)
 	if !ok {
 		return errors.New("Invalid model")
 	}
@@ -54,7 +55,7 @@ func (r *MongoRepository) Bind(v interface{}, id string) error {
 		return errors.New("Invalid model")
 	}
 
-	return mgm.Coll(model).FindByID(model.GetID(), model)
+	return mgm.Coll(model).FindByID(id, model)
 }
 
 func (r *MongoRepository) All(v interface{}) error {
@@ -79,19 +80,8 @@ func (r *MongoRepository) Delete(v interface{}, id string) error {
 		return errors.New("Invalid model")
 	}
 
-	model.SetID(id)
+	objectID, _ := primitive.ObjectIDFromHex(id)
+	model.SetID(objectID)
 
 	return mgm.Coll(model).Delete(model)
-}
-
-func (r *MongoRepository) OverrideData(v interface{}) {
-	r.overridedData = v
-}
-
-func (r *MongoRepository) bind(v interface{}) interface{} {
-	if r.overridedData != nil {
-		v = r.overridedData
-	}
-
-	return v
 }

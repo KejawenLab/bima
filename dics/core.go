@@ -420,27 +420,6 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:listener:create:created_by",
-		Build: (*creates.CreatedBy)(nil),
-		Params: dingo.Params{
-			"Env": dingo.Service("bima:config:env"),
-		},
-	},
-	{
-		Name:  "bima:listener:update:updated_by",
-		Build: (*updates.UpdatedBy)(nil),
-		Params: dingo.Params{
-			"Env": dingo.Service("bima:config:env"),
-		},
-	},
-	{
-		Name:  "bima:listener:delete:deleted_by",
-		Build: (*deletes.DeletedBy)(nil),
-		Params: dingo.Params{
-			"Env": dingo.Service("bima:config:env"),
-		},
-	},
-	{
 		Name:  "bima:listener:filter:elasticsearch",
 		Build: (*filters.ElasticsearchFilter)(nil),
 	},
@@ -517,7 +496,7 @@ var Container = []dingo.Def{
 			mux configs.Router,
 		) (*handlers.Router, error) {
 			return &handlers.Router{
-				Routes: []configs.Router{
+				Routers: []configs.Router{
 					gateway,
 					mux,
 				},
@@ -733,8 +712,8 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:model",
-		Build: func() (*bima.Model, error) {
-			return &bima.Model{Base: configs.Base{}}, nil
+		Build: func() (*bima.GormModel, error) {
+			return &bima.GormModel{GormBase: configs.GormBase{}}, nil
 		},
 	},
 }

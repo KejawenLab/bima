@@ -12,7 +12,11 @@ type Model struct {
 }
 
 func (g *Model) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
-	modelTemplate, _ := engine.ParseFiles(fmt.Sprintf("%s/%s/model.tpl", packagePath, templatePath))
+	modelTemplate, err := engine.ParseFiles(fmt.Sprintf("%s/%s/model.tpl", packagePath, templatePath))
+	if err != nil {
+		panic(err)
+	}
+
 	modelPath := fmt.Sprintf("%s/models", modulePath)
 	os.MkdirAll(modelPath, 0755)
 

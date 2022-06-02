@@ -19,8 +19,9 @@ func (m *MuxRouter) Register(routes []configs.Route) {
 
 func (m *MuxRouter) Handle(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn) {
 	for _, v := range m.Routes {
-		v.SetClient(client)
-		server.HandlePath(v.Method(), v.Path(), func(w http.ResponseWriter, r *http.Request, params map[string]string) {
+		route := v
+		route.SetClient(client)
+		server.HandlePath(route.Method(), route.Path(), func(w http.ResponseWriter, r *http.Request, params map[string]string) {
 			for _, m := range v.Middlewares() {
 				stop := m.Attach(r, w)
 				if stop {
@@ -28,7 +29,7 @@ func (m *MuxRouter) Handle(context context.Context, server *runtime.ServeMux, cl
 				}
 			}
 
-			v.Handle(w, r, params)
+			route.Handle(w, r, params)
 		})
 	}
 }

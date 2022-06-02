@@ -49,9 +49,14 @@ func (f *Factory) Generate(module *configs.ModuleTemplate) {
 	f.Template.ModulePluralLowercase = modulePluralLowercase
 	f.Template.Columns = module.Fields
 
+	templatePath := fmt.Sprintf("%s/gorm", f.Env.TemplateLocation)
+	if f.Env.Db.Driver == "mongo" {
+		templatePath = fmt.Sprintf("%s/mongo", f.Env.TemplateLocation)
+	}
+
 	os.MkdirAll(modulePath, 0755)
 	for _, generator := range f.Generators {
-		generator.Generate(f.Template, modulePath, packagePath, f.Env.TemplateLocation)
+		generator.Generate(f.Template, modulePath, packagePath, templatePath)
 	}
 }
 

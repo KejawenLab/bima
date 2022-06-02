@@ -38,11 +38,11 @@ func (r *GormRepository) Transaction(f configs.Transaction) error {
 }
 
 func (r *GormRepository) Create(v interface{}) error {
-	return r.Database.Create(r.bind(v)).Error
+	return r.Database.Create(v).Error
 }
 
 func (r *GormRepository) Update(v interface{}) error {
-	return r.Database.Save(r.bind(v)).Error
+	return r.Database.Save(v).Error
 }
 
 func (r *GormRepository) Bind(v interface{}, id string) error {
@@ -71,16 +71,4 @@ func (r *GormRepository) Delete(v interface{}, id string) error {
 	}
 
 	return r.Database.Unscoped().Where("id = ?", id).Delete(v).Error
-}
-
-func (r *GormRepository) OverrideData(v interface{}) {
-	r.overridedData = v
-}
-
-func (r *GormRepository) bind(v interface{}) interface{} {
-	if r.overridedData != nil {
-		v = r.overridedData
-	}
-
-	return v
 }

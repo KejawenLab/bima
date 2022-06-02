@@ -19,7 +19,11 @@ func (p *Provider) Generate(template *configs.Template, modulePath string, packa
 	workDir, _ := os.Getwd()
 	path := fmt.Sprintf("%s/configs/provider.go", workDir)
 
-	file, _ := ioutil.ReadFile(path)
+	file, err := ioutil.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+
 	contents := strings.Split(string(file), "\n")
 	importIdx := 0
 	moduleIdx := 0

@@ -12,7 +12,11 @@ type Validation struct {
 }
 
 func (g *Validation) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
-	validationTemplate, _ := engine.ParseFiles(fmt.Sprintf("%s/%s/validation.tpl", packagePath, templatePath))
+	validationTemplate, err := engine.ParseFiles(fmt.Sprintf("%s/%s/validation.tpl", packagePath, templatePath))
+	if err != nil {
+		panic(err)
+	}
+
 	validationPath := fmt.Sprintf("%s/validations", modulePath)
 	os.MkdirAll(validationPath, 0755)
 

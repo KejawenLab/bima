@@ -17,7 +17,11 @@ type Module struct {
 
 func (g *Module) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
 	workDir, _ := os.Getwd()
-	moduleTemplate, _ := engine.ParseFiles(fmt.Sprintf("%s/%s/module.tpl", packagePath, templatePath))
+	moduleTemplate, err := engine.ParseFiles(fmt.Sprintf("%s/%s/module.tpl", packagePath, templatePath))
+	if err != nil {
+		panic(err)
+	}
+
 	moduleFile, err := os.Create(fmt.Sprintf("%s/module.go", modulePath))
 	if err != nil {
 		panic(err)

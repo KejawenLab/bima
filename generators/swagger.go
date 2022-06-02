@@ -16,7 +16,11 @@ type Swagger struct {
 
 func (g *Swagger) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
 	workDir, _ := os.Getwd()
-	modules, _ := ioutil.ReadFile(fmt.Sprintf("%s/%s", workDir, MODULES_FILE))
+	modules, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", workDir, MODULES_FILE))
+	if err != nil {
+		panic(err)
+	}
+
 	modulesJson := []configs.ModuleJson{}
 
 	json.Unmarshal(modules, &modulesJson)
@@ -28,7 +32,7 @@ func (g *Swagger) Generate(template *configs.Template, modulePath string, packag
 	modulesJson = g.makeUnique(modulesJson)
 	modules, _ = json.Marshal(modulesJson)
 
-	err := ioutil.WriteFile(fmt.Sprintf("%s/%s", workDir, MODULES_FILE), modules, 0644)
+	err = ioutil.WriteFile(fmt.Sprintf("%s/%s", workDir, MODULES_FILE), modules, 0644)
 	if err != nil {
 		panic(err)
 	}

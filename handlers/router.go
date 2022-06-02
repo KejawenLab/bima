@@ -11,16 +11,16 @@ import (
 )
 
 type Router struct {
-	Routes []configs.Router
+	Routers []configs.Router
 }
 
 func (r *Router) Handle(context context.Context, server *http.ServeMux, client *grpc.ClientConn) *http.ServeMux {
-	sort.Slice(r.Routes, func(i int, j int) bool {
-		return r.Routes[i].Priority() > r.Routes[j].Priority()
+	sort.Slice(r.Routers, func(i int, j int) bool {
+		return r.Routers[i].Priority() > r.Routers[j].Priority()
 	})
 
 	mux := runtime.NewServeMux()
-	for _, route := range r.Routes {
+	for _, route := range r.Routers {
 		route.Handle(context, mux, client)
 	}
 

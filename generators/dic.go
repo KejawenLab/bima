@@ -12,7 +12,11 @@ type Dic struct {
 }
 
 func (g *Dic) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
-	dicTemplate, _ := engine.ParseFiles(fmt.Sprintf("%s/%s/dic.tpl", packagePath, templatePath))
+	dicTemplate, err := engine.ParseFiles(fmt.Sprintf("%s/%s/dic.tpl", packagePath, templatePath))
+	if err != nil {
+		panic(err)
+	}
+
 	dicPath := fmt.Sprintf("%s/dics", modulePath)
 	os.MkdirAll(dicPath, 0755)
 

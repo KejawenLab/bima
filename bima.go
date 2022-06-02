@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const VERSION_STRING = "v2.2.9"
+const VERSION_STRING = "v2.2.10"
 
 type (
 	Module struct {
@@ -25,8 +25,8 @@ type (
 		Request       *paginations.Request
 	}
 
-	Model struct {
-		configs.Base
+	GormModel struct {
+		configs.GormBase
 	}
 
 	Server struct {
