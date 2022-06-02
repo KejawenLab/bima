@@ -12,7 +12,7 @@ var {{.Module}} = []dingo.Def{
 		Name:  "module:{{.ModuleLowercase}}:model",
 		Build: (*models.{{.Module}})(nil),
         Params: dingo.Params{
-			"Model": dingo.Service("bima:model"),
+			"GormModel": dingo.Service("bima:model"),
 		},
 	},
 	{

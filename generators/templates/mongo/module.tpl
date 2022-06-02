@@ -58,7 +58,7 @@ func (m *Module) Create(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 	m.Logger.Info(fmt.Sprintf("%+v", r))
 
 	v := models.{{.Module}}{}
-	copier.Copy(&v, &r)
+	copier.Copy(&v, r)
 
 	ok, err := m.Validator.Validate(&v)
 	if !ok {
@@ -92,7 +92,7 @@ func (m *Module) Update(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 
 	v := models.{{.Module}}{}
     hold := v
-	copier.Copy(&v, &r)
+	copier.Copy(&v, r)
 
 	ok, err := m.Validator.Validate(&v)
 	if !ok {
@@ -156,7 +156,7 @@ func (m *Module) Get(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}
 		m.Cache.Set(r.Id, v)
 	}
 
-	copier.Copy(&r, &v)
+	copier.Copy(r, &v)
 
 	return &grpcs.{{.Module}}Response{
 		Code: http.StatusOK,

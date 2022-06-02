@@ -16,6 +16,7 @@ import (
 
 type Module struct {
     *bima.Module
+	Model     *models.{{.Module}}
 	Validator *validations.{{.Module}}
     grpcs.Unimplemented{{.Module}}sServer
 }
@@ -24,7 +25,7 @@ func (m *Module) GetPaginated(c context.Context, r *grpcs.Pagination) (*grpcs.{{
 	m.Logger.Info(fmt.Sprintf("%+v", r))
 	records := []*grpcs.{{.Module}}{}
 	model := models.{{.Module}}{}
-	m.Paginator.Model = &model
+	m.Paginator.Model = model
 	m.Paginator.Table = model.TableName()
 
     copier.Copy(m.Request, r)
@@ -58,10 +59,10 @@ func (m *Module) GetPaginated(c context.Context, r *grpcs.Pagination) (*grpcs.{{
 func (m *Module) Create(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
 	m.Logger.Info(fmt.Sprintf("%+v", r))
 
-	v := models.{{.Module}}{}
-	copier.Copy(&v, &r)
+	v := m.Model
+	copier.Copy(v, r)
 
-	ok, err := m.Validator.Validate(&v)
+	ok, err := m.Validator.Validate(v)
 	if !ok {
 		m.Logger.Info(fmt.Sprintf("%+v", err))
 		return &grpcs.{{.Module}}Response{
@@ -71,7 +72,7 @@ func (m *Module) Create(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 		}, nil
 	}
 
-	err = m.Handler.Create(&v)
+	err = m.Handler.Create(v)
 	if err != nil {
 		return &grpcs.{{.Module}}Response{
 			Code:    http.StatusBadRequest,
@@ -91,11 +92,11 @@ func (m *Module) Create(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 func (m *Module) Update(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
 	m.Logger.Info(fmt.Sprintf("%+v", r))
 
-	v := models.{{.Module}}{}
-    hold := v
-	copier.Copy(&v, &r)
+	v := m.Model
+    hold := *v
+	copier.Copy(v, r)
 
-	ok, err := m.Validator.Validate(&v)
+	ok, err := m.Validator.Validate(v)
 	if !ok {
 		m.Logger.Info(fmt.Sprintf("%+v", err))
 		return &grpcs.{{.Module}}Response{
@@ -119,7 +120,7 @@ func (m *Module) Update(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
     v.Id = r.Id
 	v.SetCreatedBy(&configs.User{Id: hold.CreatedBy.String})
 	v.SetCreatedAt(hold.CreatedAt.Time)
-	err = m.Handler.Update(&v, v.Id)
+	err = m.Handler.Update(v, v.Id)
 	if err != nil {
 		return &grpcs.{{.Module}}Response{
 			Code:    http.StatusBadRequest,
@@ -158,7 +159,7 @@ func (m *Module) Get(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}
 		m.Cache.Set(r.Id, v)
 	}
 
-	copier.Copy(&r, &v)
+	copier.Copy(r, &v)
 
 	return &grpcs.{{.Module}}Response{
 		Code: http.StatusOK,
@@ -169,9 +170,9 @@ func (m *Module) Get(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}
 func (m *Module) Delete(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
 	m.Logger.Info(fmt.Sprintf("%+v", r))
 
-	v := models.{{.Module}}{}
+	v := m.Model
 
-	err := m.Handler.Bind(&v, r.Id)
+	err := m.Handler.Bind(v, r.Id)
 	if err != nil {
 		m.Logger.Info(fmt.Sprintf("Data with ID '%s' Not found.", r.Id))
 
@@ -182,7 +183,7 @@ func (m *Module) Delete(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 		}, nil
 	}
 
-    m.Handler.Delete(&v, r.Id)
+    m.Handler.Delete(v, r.Id)
     m.Cache.Invalidate(r.Id)
 
 	return &grpcs.{{.Module}}Response{

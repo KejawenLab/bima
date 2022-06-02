@@ -712,8 +712,15 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:model",
-		Build: func() (*bima.GormModel, error) {
-			return &bima.GormModel{GormBase: configs.GormBase{}}, nil
+		Build: func(env *configs.Env) (*bima.GormModel, error) {
+			return &bima.GormModel{
+				GormBase: configs.GormBase{
+					Env: env,
+				},
+			}, nil
+		},
+		Params: dingo.Params{
+			"0": dingo.Service("bima:config:env"),
 		},
 	},
 }
