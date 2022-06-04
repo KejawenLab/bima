@@ -11,8 +11,10 @@ type Database struct {
 }
 
 func (d *Database) Run(servers []configs.Server) {
-	color.New(color.FgCyan, color.Bold).Printf("✓ ")
-	fmt.Println("Serving DB Auto Migration Juices...")
+	if len(servers) > 0 {
+		color.New(color.FgCyan, color.Bold).Printf("✓ ")
+		fmt.Println("Serving DB Auto Migration Juices...")
+	}
 
 	for _, server := range servers {
 		go server.RegisterAutoMigrate()

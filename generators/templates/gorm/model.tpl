@@ -1,9 +1,9 @@
 package models
 
-import "github.com/KejawenLab/bima/v2"
+import "github.com/KejawenLab/bima/v2/configs"
 
 type {{.Module}} struct {
-	mgm.DefaultModel `bson:",inline"`
+	configs.GormBase
 {{range .Columns}}
     {{.Name}} {{.GolangType}}
 {{end}}

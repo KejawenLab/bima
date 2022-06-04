@@ -4,11 +4,11 @@ import (
 	"context"
 	"time"
 
-	"github.com/kamva/mgm/v3"
+    "github.com/KejawenLab/bima/v2/configs"
 )
 
 type {{.Module}} struct {
-	mgm.DefaultModel `bson:",inline"`
+	configs.MongoBase `bson:",inline"`
 {{range .Columns}}
     {{.Name}} {{.GolangType}} `bson:"{{.NameUnderScore}}"`
 {{end}}
