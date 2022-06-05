@@ -13,6 +13,10 @@ type Auth struct {
 }
 
 func (a *Auth) Attach(request *http.Request, response http.ResponseWriter) bool {
+	if a.Env.AuthHeader.Id == "" || a.Env.AuthHeader.Email == "" || a.Env.AuthHeader.Role == "" {
+		return false
+	}
+
 	match, _ := regexp.MatchString(a.Env.AuthHeader.Whitelist, request.RequestURI)
 	if match {
 		return false
