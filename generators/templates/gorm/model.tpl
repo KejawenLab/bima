@@ -1,9 +1,9 @@
 package models
 
-import "github.com/KejawenLab/bima/v2/configs"
+import "github.com/KejawenLab/bima/v2"
 
 type {{.Module}} struct {
-	configs.GormBase
+	*bima.GormModel
 {{range .Columns}}
     {{.Name}} {{.GolangType}}
 {{end}}
