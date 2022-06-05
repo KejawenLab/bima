@@ -529,8 +529,21 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:router:mux",
-		Build: (*routers.MuxRouter)(nil),
+		Name: "bima:router:mux",
+		Build: func(
+			apiDoc configs.Route,
+			apiDocRedirection configs.Route,
+			health configs.Route,
+		) (*routers.MuxRouter, error) {
+			return &routers.MuxRouter{
+				Routes: []configs.Route{apiDoc, apiDocRedirection, health},
+			}, nil
+		},
+		Params: dingo.Params{
+			"0": dingo.Service("bima:routes:api-doc"),
+			"1": dingo.Service("bima:routes:api-doc-redirect"),
+			"2": dingo.Service("bima:routes:health"),
+		},
 	},
 	{
 		Name:  "bima:router:gateway",
@@ -539,6 +552,13 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:routes:api-doc",
 		Build: (*routes.ApiDoc)(nil),
+		Params: dingo.Params{
+			"Env": dingo.Service("bima:config:env"),
+		},
+	},
+	{
+		Name:  "bima:routes:api-doc-redirect",
+		Build: (*routes.ApiDocRedirect)(nil),
 	},
 	{
 		Name:  "bima:routes:health",

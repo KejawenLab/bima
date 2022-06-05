@@ -14,7 +14,7 @@ type MuxRouter struct {
 }
 
 func (m *MuxRouter) Register(routes []configs.Route) {
-	m.Routes = routes
+	m.Routes = append(m.Routes, routes...)
 }
 
 func (m *MuxRouter) Handle(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn) {
