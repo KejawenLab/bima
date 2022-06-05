@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const VERSION_STRING = "v2.2.14"
+const VERSION_STRING = "v2.2.15"
 
 type (
 	Module struct {
