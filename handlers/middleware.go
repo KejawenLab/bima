@@ -11,7 +11,6 @@ import (
 	"github.com/CAFxX/httpcompression/contrib/andybalholm/brotli"
 	"github.com/CAFxX/httpcompression/contrib/compress/zlib"
 	"github.com/CAFxX/httpcompression/contrib/klauspost/pgzip"
-	"github.com/CAFxX/httpcompression/contrib/klauspost/zstd"
 )
 
 type Middleware struct {
@@ -60,11 +59,6 @@ func (m *Middleware) Attach(handler http.Handler) http.Handler {
 		m.Logger.Fatal(err.Error())
 	}
 
-	zstdEncoder, err := zstd.New()
-	if err != nil {
-		m.Logger.Fatal(err.Error())
-	}
-
 	brotliEncoder, err := brotli.New(brotli.Options{})
 	if err != nil {
 		m.Logger.Fatal(err.Error())
@@ -80,10 +74,9 @@ func (m *Middleware) Attach(handler http.Handler) http.Handler {
 	}
 
 	compress, err := httpcompression.Adapter(
-		httpcompression.Compressor(brotli.Encoding, 3, brotliEncoder),
-		httpcompression.Compressor(pgzip.Encoding, 2, gzipEncoder),
-		httpcompression.Compressor(zlib.Encoding, 1, deflateEncoder),
-		httpcompression.Compressor(zstd.Encoding, 0, zstdEncoder),
+		httpcompression.Compressor(brotli.Encoding, 2, brotliEncoder),
+		httpcompression.Compressor(pgzip.Encoding, 1, gzipEncoder),
+		httpcompression.Compressor(zlib.Encoding, 0, deflateEncoder),
 		httpcompression.Prefer(httpcompression.PreferServer),
 		httpcompression.MinSize(165),
 	)
