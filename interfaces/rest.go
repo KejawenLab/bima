@@ -53,6 +53,9 @@ func (r *Rest) Run(servers []configs.Server) {
 	util.Printf("✓ ")
 	fmt.Println("Playlist API is Ready at /api/docs...")
 
+	r.Middleware.Sort()
+	r.Router.Sort()
+
 	http.ListenAndServe(fmt.Sprintf(":%d", r.Env.HtppPort), r.Middleware.Attach(r.Router.Handle(ctx, r.Server, conn)))
 }
 

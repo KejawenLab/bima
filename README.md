@@ -10,9 +10,11 @@ Bima Framework utilize [gRPC Gateway](https://grpc-ecosystem.github.io/grpc-gate
 
 - CRUD Generator
 
-- Authentication and Authorization
+- Authentication and Authorization (using Middleware)
 
 - Support RDBMS (using [Gorm](https://gorm.io)) and MongoDB (using [mgm](https://github.com/Kamva/mgm))
+
+- Soft Deletable (only for RDBMS)
 
 - Support [Elasticsearch](github.com/olivere/elastic) and [AMQP (Queue)](github.com/ThreeDotsLabs/watermill) Out of The Box
 

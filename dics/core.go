@@ -34,6 +34,8 @@ import (
 	"github.com/fatih/color"
 	"github.com/gadelkareem/cachita"
 	"github.com/gertd/go-pluralize"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/kamva/mgm/v3"
 	elastic "github.com/olivere/elastic/v7"
 	"github.com/sarulabs/dingo/v4"
@@ -180,13 +182,13 @@ var Container = []dingo.Def{
 				Password: os.Getenv("AMQP_PASSWORD"),
 			}
 
-			maxRole, _ := strconv.Atoi(os.Getenv("AUTH_HEADER_MAX_ROLE"))
+			minRole, _ := strconv.Atoi(os.Getenv("AUTH_HEADER_MIN_ROLE"))
 			env.AuthHeader = configs.AuthHeader{
 				Id:        os.Getenv("AUTH_HEADER_ID"),
 				Email:     os.Getenv("AUTH_HEADER_EMAIL"),
 				Role:      os.Getenv("AUTH_HEADER_ROLE"),
 				Whitelist: os.Getenv("AUTH_HEADER_WHITELIST"),
-				MaxRole:   maxRole,
+				MinRole:   minRole,
 			}
 
 			env.CacheLifetime, _ = strconv.Atoi(os.Getenv("CACHE_LIFETIME"))
@@ -316,6 +318,7 @@ var Container = []dingo.Def{
 				Logger:     logger,
 			}
 			middleware.Add(&middlewares.Header{})
+			middleware.Add(&middlewares.Recovery{Logger: logger})
 
 			return &middleware, nil
 		},
@@ -515,13 +518,6 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:middleware:recovery",
-		Build: (*middlewares.Recovery)(nil),
-		Params: dingo.Params{
-			"Logger": dingo.Service("bima:handler:logger"),
-		},
-	},
-	{
 		Name:  "bima:middleware:requestid",
 		Build: (*middlewares.RequestID)(nil),
 		Params: dingo.Params{
@@ -576,7 +572,14 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:grpc:server",
 		Build: func() (*grpc.Server, error) {
-			return grpc.NewServer(), nil
+			return grpc.NewServer(
+				grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+					grpc_recovery.StreamServerInterceptor(),
+				)),
+				grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+					grpc_recovery.UnaryServerInterceptor(),
+				)),
+			), nil
 		},
 	},
 	{

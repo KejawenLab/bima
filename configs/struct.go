@@ -65,7 +65,7 @@ type (
 		Email     string
 		Role      string
 		Whitelist string
-		MaxRole   int
+		MinRole   int
 	}
 
 	Env struct {

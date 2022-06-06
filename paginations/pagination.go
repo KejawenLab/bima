@@ -53,17 +53,22 @@ func (p *Pagination) Handle(request *Request) {
 		request.Limit = 17
 	}
 
-	p.Filters = nil
-	if len(request.Fields) == len(request.Values) {
+	p.Limit = int(request.Limit)
+	p.Page = int(request.Page)
+
+	n := len(request.Fields)
+	if n == 0 {
+		return
+	}
+
+	p.Filters = []Filter{}
+	if n == len(request.Values) {
 		for k, v := range request.Fields {
 			if v != "" {
 				p.Filters = append(p.Filters, Filter{Field: strings.Title(v), Value: request.Values[k]})
 			}
 		}
 	}
-
-	p.Limit = int(request.Limit)
-	p.Page = int(request.Page)
 }
 
 func (p *Pagination) Paginate(adapter paginator.Adapter) *Pagination {

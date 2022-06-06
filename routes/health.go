@@ -2,7 +2,9 @@ package routes
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"runtime"
 
 	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/configs"
@@ -45,12 +47,23 @@ func (h *Health) Handle(w http.ResponseWriter, r *http.Request, params map[strin
 		return
 	}
 
-	payload := map[string]string{
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	payload := map[string]interface{}{
 		"version": bima.VERSION_STRING,
 		"name":    "Bima",
 		"author":  "Muhamad Surya Iksanudin<surya.iksanudin@gmail.com>",
 		"link":    "https://github.com/KejawenLab/skeleton",
+		"memory_usage": map[string]string{
+			"allocation":       fmt.Sprintf("%d MiB", bToMb(m.Alloc)),
+			"total_allocation": fmt.Sprintf("%d MiB", bToMb(m.TotalAlloc)),
+			"system":           fmt.Sprintf("%d MiB", bToMb(m.Sys)),
+		},
 	}
 
 	json.NewEncoder(w).Encode(payload)
+}
+
+func bToMb(b uint64) uint64 {
+	return b / 1024 / 1024
 }

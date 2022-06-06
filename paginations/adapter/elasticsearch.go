@@ -74,7 +74,6 @@ func (es *elasticsearchPaginator) Slice(offset int, length int, data interface{}
 	var record interface{}
 	for _, hit := range result.Hits.Hits {
 		json.Unmarshal(hit.Source, &record)
-
 		*records = append(*records, record)
 	}
 

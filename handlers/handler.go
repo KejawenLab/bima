@@ -2,8 +2,6 @@ package handlers
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 
 	configs "github.com/KejawenLab/bima/v2/configs"
 	events "github.com/KejawenLab/bima/v2/events"
@@ -55,11 +53,6 @@ func (h *Handler) Create(v interface{}) error {
 			return err
 		}
 
-		if h.Env.Debug {
-			m, _ := json.Marshal(v)
-			h.Logger.Info(fmt.Sprintf("Elasticsearch result: %s", string(m)))
-		}
-
 		h.Dispatcher.Dispatch(events.AFTER_CREATE_EVENT, &events.Model{
 			Data:       v,
 			Repository: r,
@@ -79,7 +72,7 @@ func (h *Handler) Update(v interface{}, id string) error {
 
 		err := r.Update(v)
 		if err != nil {
-			h.Logger.Error("Error when creating resource(s), Rolling back")
+			h.Logger.Error("Error when updating resource(s), Rolling back")
 
 			return err
 		}
@@ -112,7 +105,7 @@ func (h *Handler) Delete(v interface{}, id string) error {
 
 		err := r.Delete(v, id)
 		if err != nil {
-			h.Logger.Error("Error when creating resource(s), Rolling back")
+			h.Logger.Error("Error when deleting resource(s), Rolling back")
 
 			return err
 		}

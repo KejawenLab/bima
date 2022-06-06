@@ -1,7 +1,6 @@
 package paginations
 
 import (
-	"fmt"
 	"strings"
 
 	configs "github.com/KejawenLab/bima/v2/configs"
@@ -29,8 +28,6 @@ func (u *MongoDbFilter) Handle(event interface{}) interface{} {
 			},
 		}
 	}
-
-	fmt.Printf("%+v\n", bFilters)
 
 	e.MongoDbFilter = bFilters
 
