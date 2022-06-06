@@ -687,10 +687,6 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:util:number",
-		Build: (*utils.Number)(nil),
-	},
-	{
 		Name:  "bima:util:word",
 		Build: (*utils.Word)(nil),
 	},

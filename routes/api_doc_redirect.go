@@ -28,6 +28,6 @@ func (a *ApiDocRedirect) Middlewares() []configs.Middleware {
 	return nil
 }
 
-func (a *ApiDocRedirect) Handle(w http.ResponseWriter, r *http.Request, params map[string]string) {
+func (a *ApiDocRedirect) Handle(w http.ResponseWriter, r *http.Request, _ map[string]string) {
 	http.Redirect(w, r, fmt.Sprintf("%s/", r.URL.RequestURI()), http.StatusPermanentRedirect)
 }

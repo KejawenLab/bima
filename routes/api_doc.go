@@ -30,7 +30,7 @@ func (a *ApiDoc) Middlewares() []configs.Middleware {
 	return nil
 }
 
-func (a *ApiDoc) Handle(w http.ResponseWriter, r *http.Request, params map[string]string) {
+func (a *ApiDoc) Handle(w http.ResponseWriter, r *http.Request, _ map[string]string) {
 	if a.Env.Debug {
 		regex := regexp.MustCompile(API_DOC_PATH)
 		http.ServeFile(w, r, regex.ReplaceAllString(r.URL.Path, "swaggers/"))

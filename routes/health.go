@@ -36,7 +36,7 @@ func (h *Health) SetClient(client *grpc.ClientConn) {
 	h.Client = client
 }
 
-func (h *Health) Handle(w http.ResponseWriter, r *http.Request, params map[string]string) {
+func (h *Health) Handle(w http.ResponseWriter, r *http.Request, _ map[string]string) {
 	w.Header().Set("Content-Type", "application/json")
 	s := h.Client.GetState()
 

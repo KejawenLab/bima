@@ -10,7 +10,7 @@ import (
 type Header struct {
 }
 
-func (a *Header) Attach(request *http.Request, response http.ResponseWriter) bool {
+func (a *Header) Attach(_ *http.Request, response http.ResponseWriter) bool {
 	response.Header().Add("X-Bima-Version", bima.VERSION_STRING)
 
 	return false

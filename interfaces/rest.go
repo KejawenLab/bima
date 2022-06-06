@@ -33,14 +33,14 @@ func (r *Rest) Run(servers []configs.Server) {
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Infof("Failed to close connection to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Infof("Failed to close connection to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -48,7 +48,7 @@ func (r *Rest) Run(servers []configs.Server) {
 	util := color.New(color.FgCyan, color.Bold)
 
 	util.Printf("✓ ")
-	fmt.Printf("Starting REST Multimedia Server on :%d...\n", r.Env.HtppPort)
+	fmt.Printf("Playing REST Multimedia on :%d...\n", r.Env.HtppPort)
 
 	util.Printf("✓ ")
 	fmt.Println("Playlist API is Ready at /api/docs...")

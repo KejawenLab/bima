@@ -12,7 +12,7 @@ type Recovery struct {
 	Logger *handlers.Logger
 }
 
-func (r *Recovery) Attach(request *http.Request, response http.ResponseWriter) bool {
+func (r *Recovery) Attach(_ *http.Request, _ http.ResponseWriter) bool {
 	defer func() {
 		rc := recover()
 		if rc != nil {
