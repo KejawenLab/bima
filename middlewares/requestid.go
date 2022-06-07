@@ -28,5 +28,5 @@ func (r *RequestID) Attach(request *http.Request, response http.ResponseWriter) 
 }
 
 func (r *RequestID) Priority() int {
-	return configs.LOWEST_PRIORITY - 1
+	return configs.LOWEST_PRIORITY + 3
 }

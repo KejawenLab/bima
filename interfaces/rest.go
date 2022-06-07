@@ -18,6 +18,7 @@ type Rest struct {
 	Router     *handlers.Router
 	Server     *http.ServeMux
 	Context    context.Context
+	Logger     *handlers.Logger
 }
 
 func (r *Rest) Run(servers []configs.Server) {
@@ -27,7 +28,7 @@ func (r *Rest) Run(servers []configs.Server) {
 	endpoint := fmt.Sprintf("0.0.0.0:%d", r.Env.RpcPort)
 	conn, err := grpc.DialContext(ctx, endpoint, grpc.WithInsecure())
 	if err != nil {
-		panic(err)
+		r.Logger.Fatal(fmt.Sprintf("Server is not ready. %v", err))
 	}
 
 	defer func() {

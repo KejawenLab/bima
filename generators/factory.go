@@ -20,7 +20,6 @@ type Factory struct {
 	Pluralizer *pluralize.Client
 	Template   *configs.Template
 	Generators []configs.Generator
-	Word       *utils.Word
 }
 
 func (f *Factory) Generate(module *configs.ModuleTemplate) {
@@ -36,15 +35,15 @@ func (f *Factory) Generate(module *configs.ModuleTemplate) {
 
 	workDir, _ := os.Getwd()
 	packageName := f.GetPackageName(workDir)
-	moduleName := f.Word.Camelcase(module.Name)
+	moduleName := utils.Camelcase(module.Name)
 	modulePlural := f.Pluralizer.Plural(module.Name)
-	modulePluralLowercase := f.Word.Underscore(modulePlural)
+	modulePluralLowercase := utils.Underscore(modulePlural)
 	modulePath := fmt.Sprintf("%s/%s", workDir, modulePluralLowercase)
 
 	f.Template.ApiVersion = f.Env.ApiVersion
 	f.Template.PackageName = packageName
 	f.Template.Module = moduleName
-	f.Template.ModuleLowercase = f.Word.Underscore(module.Name)
+	f.Template.ModuleLowercase = utils.Underscore(module.Name)
 	f.Template.ModulePlural = modulePlural
 	f.Template.ModulePluralLowercase = modulePluralLowercase
 	f.Template.Columns = module.Fields

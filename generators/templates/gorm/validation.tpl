@@ -8,10 +8,10 @@ import (
 type {{.Module}} struct{}
 
 func (v *{{.Module}}) Validate(m *models.{{.Module}}) (bool, error) {
-	err := validator.ValidateStruct(m,
+	err := validation.ValidateStruct(m,
     {{range .Columns}}
         {{if .IsRequired}}
-        validator.Field(&m.{{.Name}}, validator.Required),
+        validation.Field(&m.{{.Name}}, validation.Required),
         {{end}}
     {{end}}
 	)

@@ -8,7 +8,6 @@ import (
 
 	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/events"
-	"github.com/KejawenLab/bima/v2/handlers"
 	"github.com/olivere/elastic/v7"
 )
 
@@ -16,7 +15,6 @@ type Elasticsearch struct {
 	Env           *configs.Env
 	Context       context.Context
 	Elasticsearch *elastic.Client
-	Logger        *handlers.Logger
 }
 
 func (c *Elasticsearch) Handle(event interface{}) interface{} {

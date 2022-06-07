@@ -17,7 +17,7 @@ type GRpc struct {
 }
 
 func (g *GRpc) Run(servers []configs.Server) {
-	l, err := net.Listen("tcp", fmt.Sprintf(":%d", g.Env.RpcPort))
+	listen, err := net.Listen("tcp", fmt.Sprintf(":%d", g.Env.RpcPort))
 	if err != nil {
 		g.Logger.Fatal(fmt.Sprintf("Port %d is not available. %v", g.Env.RpcPort, err))
 	}
@@ -29,7 +29,7 @@ func (g *GRpc) Run(servers []configs.Server) {
 	color.New(color.FgCyan, color.Bold).Printf("✓ ")
 	fmt.Printf("Connecting gRPC Multimedia on :%d...\n", g.Env.RpcPort)
 
-	g.GRpc.Serve(l)
+	g.GRpc.Serve(listen)
 }
 
 func (g *GRpc) IsBackground() bool {

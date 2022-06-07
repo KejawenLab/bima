@@ -55,15 +55,15 @@ func (h *Health) Handle(w http.ResponseWriter, r *http.Request, _ map[string]str
 		"author":  "Muhamad Surya Iksanudin<surya.iksanudin@gmail.com>",
 		"link":    "https://github.com/KejawenLab/skeleton",
 		"memory_usage": map[string]string{
-			"allocation":       fmt.Sprintf("%d MiB", bToMb(m.Alloc)),
-			"total_allocation": fmt.Sprintf("%d MiB", bToMb(m.TotalAlloc)),
-			"system":           fmt.Sprintf("%d MiB", bToMb(m.Sys)),
+			"allocation":       fmt.Sprintf("%d MiB", h.byteToMb(m.Alloc)),
+			"total_allocation": fmt.Sprintf("%d MiB", h.byteToMb(m.TotalAlloc)),
+			"system":           fmt.Sprintf("%d MiB", h.byteToMb(m.Sys)),
 		},
 	}
 
 	json.NewEncoder(w).Encode(payload)
 }
 
-func bToMb(b uint64) uint64 {
+func (h *Health) byteToMb(b uint64) uint64 {
 	return b / 1024 / 1024
 }

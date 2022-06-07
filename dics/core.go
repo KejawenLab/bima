@@ -111,7 +111,6 @@ var Container = []dingo.Def{
 		Name: "bima:config:env",
 		Build: func(
 			user *configs.User,
-			word *utils.Word,
 		) (*configs.Env, error) {
 			env := configs.Env{}
 
@@ -129,7 +128,7 @@ var Container = []dingo.Def{
 			sName := os.Getenv("APP_NAME")
 			env.Service = configs.Service{
 				Name:           sName,
-				ConnonicalName: word.Underscore(sName),
+				ConnonicalName: utils.Underscore(sName),
 				Host:           os.Getenv("APP_HOST"),
 			}
 
@@ -212,13 +211,11 @@ var Container = []dingo.Def{
 			env *configs.Env,
 			pluralizer *pluralize.Client,
 			template *configs.Template,
-			word *utils.Word,
 		) (*generators.Factory, error) {
 			return &generators.Factory{
 				Env:        env,
 				Pluralizer: pluralizer,
 				Template:   template,
-				Word:       word,
 				Generators: []configs.Generator{
 					dic,
 					model,
@@ -232,14 +229,17 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:generator:dic"),
-			"1": dingo.Service("bima:generator:model"),
-			"2": dingo.Service("bima:generator:module"),
-			"3": dingo.Service("bima:generator:proto"),
-			"4": dingo.Service("bima:generator:provider"),
-			"5": dingo.Service("bima:generator:server"),
-			"6": dingo.Service("bima:generator:validation"),
-			"7": dingo.Service("bima:generator:swagger"),
+			"0":  dingo.Service("bima:generator:dic"),
+			"1":  dingo.Service("bima:generator:model"),
+			"2":  dingo.Service("bima:generator:module"),
+			"3":  dingo.Service("bima:generator:proto"),
+			"4":  dingo.Service("bima:generator:provider"),
+			"5":  dingo.Service("bima:generator:server"),
+			"6":  dingo.Service("bima:generator:validation"),
+			"7":  dingo.Service("bima:generator:swagger"),
+			"8":  dingo.Service("bima:config:env"),
+			"9":  dingo.Service("bima:util:pluralizer"),
+			"10": dingo.Service("bima:config:template"),
 		},
 	},
 	{
@@ -399,7 +399,6 @@ var Container = []dingo.Def{
 			"Env":           dingo.Service("bima:config:env"),
 			"Context":       dingo.Service("bima:context:background"),
 			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
-			"Logger":        dingo.Service("bima:handler:logger"),
 		},
 	},
 	{
@@ -409,7 +408,6 @@ var Container = []dingo.Def{
 			"Env":           dingo.Service("bima:config:env"),
 			"Context":       dingo.Service("bima:context:background"),
 			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
-			"Logger":        dingo.Service("bima:handler:logger"),
 		},
 	},
 	{
@@ -419,7 +417,6 @@ var Container = []dingo.Def{
 			"Env":           dingo.Service("bima:config:env"),
 			"Context":       dingo.Service("bima:context:background"),
 			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
-			"Logger":        dingo.Service("bima:handler:logger"),
 		},
 	},
 	{
@@ -463,6 +460,7 @@ var Container = []dingo.Def{
 			"Router":     dingo.Service("bima:handler:router"),
 			"Server":     dingo.Service("bima:http:mux"),
 			"Context":    dingo.Service("bima:context:background"),
+			"Logger":     dingo.Service("bima:handler:logger"),
 		},
 	},
 	{
@@ -684,16 +682,6 @@ var Container = []dingo.Def{
 		Build: (*utils.Cache)(nil),
 		Params: dingo.Params{
 			"Pool": dingo.Service("bima:cachita:cache"),
-		},
-	},
-	{
-		Name:  "bima:util:word",
-		Build: (*utils.Word)(nil),
-	},
-	{
-		Name: "bima:util:cli",
-		Build: func() (*color.Color, error) {
-			return color.New(color.FgCyan, color.Bold), nil
 		},
 	},
 	{

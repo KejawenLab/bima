@@ -23,9 +23,10 @@ func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metada
 	paginator.Paginate(adapter)
 	paginator.Pager.Results(&result)
 	next := paginator.Page + 1
-	total, _ := paginator.Pager.Nums()
+	nums, _ := paginator.Pager.Nums()
+	total := int(nums)
 
-	if paginator.Page*paginator.Limit > int(total) {
+	if paginator.Page*paginator.Limit > total {
 		next = -1
 	}
 
@@ -35,7 +36,7 @@ func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metada
 		Previous: paginator.Page - 1,
 		Next:     next,
 		Limit:    paginator.Limit,
-		Total:    int(total),
+		Total:    total,
 	}, result
 }
 

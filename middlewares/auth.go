@@ -36,5 +36,5 @@ func (a *Auth) Attach(request *http.Request, response http.ResponseWriter) bool 
 }
 
 func (a *Auth) Priority() int {
-	return configs.HIGEST_PRIORITY + 1
+	return configs.HIGEST_PRIORITY + 2
 }
