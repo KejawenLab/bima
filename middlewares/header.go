@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/KejawenLab/bima/v2"
-	configs "github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/configs"
 )
 
 type Header struct {

@@ -3,9 +3,9 @@ package handlers
 import (
 	"context"
 
-	configs "github.com/KejawenLab/bima/v2/configs"
-	events "github.com/KejawenLab/bima/v2/events"
-	paginations "github.com/KejawenLab/bima/v2/paginations"
+	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/events"
+	"github.com/KejawenLab/bima/v2/paginations"
 )
 
 type Handler struct {

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	configs "github.com/KejawenLab/bima/v2/configs"
-	cachita "github.com/gadelkareem/cachita"
+	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/gadelkareem/cachita"
 )
 
 type Cache struct {

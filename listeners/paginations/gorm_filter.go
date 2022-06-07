@@ -3,8 +3,8 @@ package paginations
 import (
 	"fmt"
 
-	configs "github.com/KejawenLab/bima/v2/configs"
-	events "github.com/KejawenLab/bima/v2/events"
+	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/events"
 )
 
 type GormFilter struct {

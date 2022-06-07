@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"time"
 
-	configs "github.com/KejawenLab/bima/v2/configs"
-	events "github.com/KejawenLab/bima/v2/events"
-	handlers "github.com/KejawenLab/bima/v2/handlers"
-	elastic "github.com/olivere/elastic/v7"
+	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/events"
+	"github.com/KejawenLab/bima/v2/handlers"
+	"github.com/olivere/elastic/v7"
 )
 
 type Elasticsearch struct {

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
-    bima "github.com/KejawenLab/bima/v2"
-	copier "github.com/jinzhu/copier"
+    "github.com/KejawenLab/bima/v2"
+	"github.com/jinzhu/copier"
 	grpcs "{{.PackageName}}/protos/builds"
-	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
-	validations "{{.PackageName}}/{{.ModulePluralLowercase}}/validations"
+	"{{.PackageName}}/{{.ModulePluralLowercase}}/models"
+	"{{.PackageName}}/{{.ModulePluralLowercase}}/validations"
     "gopkg.in/mgo.v2/bson"
 )
 

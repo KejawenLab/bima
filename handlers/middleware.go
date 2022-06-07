@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"sort"
 
-	configs "github.com/KejawenLab/bima/v2/configs"
-	events "github.com/KejawenLab/bima/v2/events"
+	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/events"
 
 	"github.com/CAFxX/httpcompression"
 	"github.com/CAFxX/httpcompression/contrib/andybalholm/brotli"

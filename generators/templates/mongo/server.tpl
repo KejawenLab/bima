@@ -3,9 +3,9 @@ package {{.ModulePluralLowercase}}
 import (
     "context"
 
-	bima "github.com/KejawenLab/bima/v2"
-	grpcs "{{.PackageName}}/protos/builds"
-	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
+	"github.com/KejawenLab/bima/v2"
+	"{{.PackageName}}/protos/builds"
+	"{{.PackageName}}/{{.ModulePluralLowercase}}/models"
     "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )

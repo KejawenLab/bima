@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	paginator "github.com/vcraescu/go-paginator/v2"
+	"github.com/vcraescu/go-paginator/v2"
 )
 
 type (

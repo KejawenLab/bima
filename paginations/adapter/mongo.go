@@ -7,7 +7,7 @@ import (
 	"github.com/KejawenLab/bima/v2/events"
 	"github.com/KejawenLab/bima/v2/paginations"
 	"github.com/kamva/mgm/v3"
-	paginator "github.com/vcraescu/go-paginator/v2"
+	"github.com/vcraescu/go-paginator/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

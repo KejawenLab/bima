@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/KejawenLab/bima/v2/configs"
-	paginations "github.com/KejawenLab/bima/v2/paginations"
+	"github.com/KejawenLab/bima/v2/paginations"
 	"github.com/kamva/mgm/v3"
-	elastic "github.com/olivere/elastic/v7"
+	"github.com/olivere/elastic/v7"
 	"go.mongodb.org/mongo-driver/bson"
 	"gorm.io/gorm"
 )

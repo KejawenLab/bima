@@ -6,7 +6,7 @@ import (
 	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/events"
 	"github.com/KejawenLab/bima/v2/paginations"
-	paginator "github.com/vcraescu/go-paginator/v2"
+	"github.com/vcraescu/go-paginator/v2"
 	"github.com/vcraescu/go-paginator/v2/adapter"
 	"gorm.io/gorm"
 )

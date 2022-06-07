@@ -1,8 +1,8 @@
 package validations
 
 import (
-	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
-	validator "github.com/go-ozzo/ozzo-validation/v4"
+	"{{.PackageName}}/{{.ModulePluralLowercase}}/models"
+	"github.com/go-ozzo/ozzo-validation/v4"
 )
 
 type {{.Module}} struct{}

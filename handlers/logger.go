@@ -3,8 +3,8 @@ package handlers
 import (
 	"runtime"
 
-	configs "github.com/KejawenLab/bima/v2/configs"
-	logrus "github.com/sirupsen/logrus"
+	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/sirupsen/logrus"
 )
 
 type Logger struct {

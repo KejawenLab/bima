@@ -3,11 +3,11 @@ package bima
 import (
 	"context"
 
-	configs "github.com/KejawenLab/bima/v2/configs"
-	handlers "github.com/KejawenLab/bima/v2/handlers"
-	paginations "github.com/KejawenLab/bima/v2/paginations"
-	utils "github.com/KejawenLab/bima/v2/utils"
-	elastic "github.com/olivere/elastic/v7"
+	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/handlers"
+	"github.com/KejawenLab/bima/v2/paginations"
+	"github.com/KejawenLab/bima/v2/utils"
+	"github.com/olivere/elastic/v7"
 	"gorm.io/gorm"
 )
 

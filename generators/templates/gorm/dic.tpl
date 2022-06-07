@@ -1,9 +1,9 @@
 package dics
 
 import (
-	{{.ModulePluralLowercase}} "{{.PackageName}}/{{.ModulePluralLowercase}}"
-	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
-	validations "{{.PackageName}}/{{.ModulePluralLowercase}}/validations"
+	"{{.PackageName}}/{{.ModulePluralLowercase}}"
+	"{{.PackageName}}/{{.ModulePluralLowercase}}/models"
+	"{{.PackageName}}/{{.ModulePluralLowercase}}/validations"
 	"github.com/sarulabs/dingo/v4"
 )
 

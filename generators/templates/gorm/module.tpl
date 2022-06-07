@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"net/http"
 
-    bima "github.com/KejawenLab/bima/v2"
-	configs "github.com/KejawenLab/bima/v2/configs"
-	copier "github.com/jinzhu/copier"
+    "github.com/KejawenLab/bima/v2"
+	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/jinzhu/copier"
 	grpcs "{{.PackageName}}/protos/builds"
-	models "{{.PackageName}}/{{.ModulePluralLowercase}}/models"
-	validations "{{.PackageName}}/{{.ModulePluralLowercase}}/validations"
+	"{{.PackageName}}/{{.ModulePluralLowercase}}/models"
+	"{{.PackageName}}/{{.ModulePluralLowercase}}/validations"
 )
 
 type Module struct {

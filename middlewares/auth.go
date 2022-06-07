@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strconv"
 
-	configs "github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/configs"
 )
 
 type Auth struct {

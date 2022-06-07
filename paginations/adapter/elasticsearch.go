@@ -9,8 +9,8 @@ import (
 	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/events"
 	"github.com/KejawenLab/bima/v2/paginations"
-	elastic "github.com/olivere/elastic/v7"
-	paginator "github.com/vcraescu/go-paginator/v2"
+	"github.com/olivere/elastic/v7"
+	"github.com/vcraescu/go-paginator/v2"
 )
 
 type (

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"sort"
 
-	configs "github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )

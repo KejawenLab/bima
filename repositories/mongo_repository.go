@@ -3,7 +3,7 @@ package repositories
 import (
 	"errors"
 
-	configs "github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

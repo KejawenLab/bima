@@ -3,9 +3,9 @@ package handlers
 import (
 	"context"
 
-	watermill "github.com/ThreeDotsLabs/watermill"
-	amqp "github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
-	message "github.com/ThreeDotsLabs/watermill/message"
+	"github.com/ThreeDotsLabs/watermill"
+	"github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
+	"github.com/ThreeDotsLabs/watermill/message"
 )
 
 type Messenger struct {
