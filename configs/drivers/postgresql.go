@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	driver "gorm.io/driver/postgres"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -20,7 +20,7 @@ func (d *PostgreSql) Connect(host string, port int, user string, password string
 
 	conn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Jakarta", host, user, password, dbname, port)
 	if debug {
-		db, err = gorm.Open(driver.Open(conn), &gorm.Config{
+		db, err = gorm.Open(postgres.Open(conn), &gorm.Config{
 			SkipDefaultTransaction: true,
 			Logger: logger.New(
 				log.New(os.Stdout, "\r\n", log.LstdFlags),
@@ -32,7 +32,7 @@ func (d *PostgreSql) Connect(host string, port int, user string, password string
 			),
 		})
 	} else {
-		db, err = gorm.Open(driver.Open(conn), &gorm.Config{
+		db, err = gorm.Open(postgres.Open(conn), &gorm.Config{
 			SkipDefaultTransaction: true,
 			Logger: logger.New(
 				log.New(os.Stdout, "\r\n", log.LstdFlags),

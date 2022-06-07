@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	driver "gorm.io/driver/mysql"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -20,7 +20,7 @@ func (d *Mysql) Connect(host string, port int, user string, password string, dbn
 
 	conn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=true&loc=Local", user, password, host, port, dbname)
 	if debug {
-		db, err = gorm.Open(driver.Open(conn), &gorm.Config{
+		db, err = gorm.Open(mysql.Open(conn), &gorm.Config{
 			SkipDefaultTransaction: true,
 			Logger: logger.New(
 				log.New(os.Stdout, "\r\n", log.LstdFlags),
@@ -32,7 +32,7 @@ func (d *Mysql) Connect(host string, port int, user string, password string, dbn
 			),
 		})
 	} else {
-		db, err = gorm.Open(driver.Open(conn), &gorm.Config{
+		db, err = gorm.Open(mysql.Open(conn), &gorm.Config{
 			SkipDefaultTransaction: true,
 			Logger: logger.New(
 				log.New(os.Stdout, "\r\n", log.LstdFlags),

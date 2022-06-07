@@ -7,7 +7,7 @@ import (
 
     "github.com/KejawenLab/bima/v2"
 	"github.com/jinzhu/copier"
-	grpcs "{{.PackageName}}/protos/builds"
+	"{{.PackageName}}/protos/builds"
 	"{{.PackageName}}/{{.ModulePluralLowercase}}/models"
 	"{{.PackageName}}/{{.ModulePluralLowercase}}/validations"
     "gopkg.in/mgo.v2/bson"
