@@ -32,7 +32,6 @@ import (
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
 	"github.com/fatih/color"
-	"github.com/gadelkareem/cachita"
 	"github.com/gertd/go-pluralize"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -544,10 +543,14 @@ var Container = []dingo.Def{
 		Build: (*routers.GRpcGateway)(nil),
 	},
 	{
-		Name:  "bima:routes:api-doc",
-		Build: (*routes.ApiDoc)(nil),
+		Name: "bima:routes:api-doc",
+		Build: func(env *configs.Env) (*routes.ApiDoc, error) {
+			return &routes.ApiDoc{
+				Debug: env.Debug,
+			}, nil
+		},
 		Params: dingo.Params{
-			"Env": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config:env"),
 		},
 	},
 	{
@@ -678,22 +681,18 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:cache:memory",
-		Build: (*utils.Cache)(nil),
+		Name: "bima:cache:memory",
+		Build: func(env *configs.Env) (*utils.Cache, error) {
+			return utils.NewCache(time.Duration(env.CacheLifetime) * time.Second), nil
+		},
 		Params: dingo.Params{
-			"Pool": dingo.Service("bima:cachita:cache"),
+			"0": dingo.Service("bima:config:env"),
 		},
 	},
 	{
 		Name: "bima:util:pluralizer",
 		Build: func() (*pluralize.Client, error) {
 			return pluralize.NewClient(), nil
-		},
-	},
-	{
-		Name: "bima:cachita:cache",
-		Build: func() (cachita.Cache, error) {
-			return cachita.Memory(), nil
 		},
 	},
 	{

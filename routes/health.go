@@ -16,7 +16,7 @@ import (
 const HEALTH_PATH = "/health"
 
 type Health struct {
-	Client *grpc.ClientConn
+	client *grpc.ClientConn
 	Logger *handlers.Logger
 }
 
@@ -33,12 +33,12 @@ func (h *Health) Middlewares() []configs.Middleware {
 }
 
 func (h *Health) SetClient(client *grpc.ClientConn) {
-	h.Client = client
+	h.client = client
 }
 
 func (h *Health) Handle(w http.ResponseWriter, r *http.Request, _ map[string]string) {
 	w.Header().Set("Content-Type", "application/json")
-	s := h.Client.GetState()
+	s := h.client.GetState()
 
 	if s != connectivity.Ready {
 		h.Logger.Error("gRPC server is down")

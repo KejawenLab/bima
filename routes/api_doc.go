@@ -9,14 +9,14 @@ import (
 	"google.golang.org/grpc"
 )
 
-const API_DOC_PATH = "/api/docs/"
+const API_DOC_PATH = "/api/docs"
 
 type ApiDoc struct {
-	Env *configs.Env
+	Debug bool
 }
 
 func (a *ApiDoc) Path() string {
-	return fmt.Sprintf("%s{path}", API_DOC_PATH)
+	return fmt.Sprintf("%s/{path}", API_DOC_PATH)
 }
 
 func (a *ApiDoc) Method() string {
@@ -31,8 +31,8 @@ func (a *ApiDoc) Middlewares() []configs.Middleware {
 }
 
 func (a *ApiDoc) Handle(w http.ResponseWriter, r *http.Request, _ map[string]string) {
-	if a.Env.Debug {
-		regex := regexp.MustCompile(API_DOC_PATH)
+	if a.Debug {
+		regex := regexp.MustCompile(fmt.Sprintf("%s/", API_DOC_PATH))
 		http.ServeFile(w, r, regex.ReplaceAllString(r.URL.Path, "swaggers/"))
 	}
 }

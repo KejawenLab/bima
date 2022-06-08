@@ -18,7 +18,7 @@ Bima Framework utilize [gRPC Gateway](https://grpc-ecosystem.github.io/grpc-gate
 
 - Support [Elasticsearch](github.com/olivere/elastic) and [AMQP (Queue)](github.com/ThreeDotsLabs/watermill) Out of The Box
 
-- Event Dispatcher
+- [Event Dispatcher](https://en.wikipedia.org/wiki/Observer_pattern)
 
 - Auto documentation (Swagger)
 
@@ -33,6 +33,10 @@ Bima Framework utilize [gRPC Gateway](https://grpc-ecosystem.github.io/grpc-gate
 - Health Check
 
 - Easy to Custom
+
+## Testing
+
+`go test -coverprofile /tmp/coverage ./... -v`
 
 ## Todo
 

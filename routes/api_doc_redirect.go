@@ -8,13 +8,11 @@ import (
 	"google.golang.org/grpc"
 )
 
-const API_DOC_REDIRECT_PATH = "/api/docs"
-
 type ApiDocRedirect struct {
 }
 
 func (a *ApiDocRedirect) Path() string {
-	return API_DOC_REDIRECT_PATH
+	return API_DOC_PATH
 }
 
 func (a *ApiDocRedirect) Method() string {

@@ -1,35 +1,34 @@
 package utils
 
 import (
-	"fmt"
 	"time"
 
-	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/gadelkareem/cachita"
 )
 
 type Cache struct {
-	Env  *configs.Env
-	Pool cachita.Cache
+	lifetime time.Duration
+	pool     cachita.Cache
+}
+
+func NewCache(lifetime time.Duration) *Cache {
+	return &Cache{
+		lifetime: lifetime,
+		pool:     cachita.Memory(),
+	}
 }
 
 func (c *Cache) Set(key string, value interface{}) {
-	err := c.Pool.Put(key, &value, time.Duration(c.Env.CacheLifetime)*time.Second)
-	if err != nil {
-		fmt.Println(err)
-	}
+	c.pool.Put(key, &value, c.lifetime)
 }
 
 func (c *Cache) Invalidate(key string) {
-	err := c.Pool.Invalidate(key)
-	if err != nil {
-		fmt.Println(err)
-	}
+	c.pool.Invalidate(key)
 }
 
 func (c *Cache) Get(key string) (interface{}, bool) {
 	var data interface{}
-	err := c.Pool.Get(key, &data)
+	err := c.pool.Get(key, &data)
 	if err != nil {
 		return nil, false
 	}
