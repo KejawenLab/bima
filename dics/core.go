@@ -755,8 +755,8 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"Env":      dingo.Service("bima:config:env"),
-			"Database": dingo.Service("bima:connection:database"),
+			"0": dingo.Service("bima:config:env"),
+			"1": dingo.Service("bima:connection:database"),
 		},
 	},
 	{
