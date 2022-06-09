@@ -11,7 +11,6 @@ import (
 )
 
 type MongoRepository struct {
-	Env   *configs.Env
 	model string
 }
 

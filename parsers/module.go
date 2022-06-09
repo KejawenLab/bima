@@ -3,6 +3,7 @@ package parsers
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 
 	"gopkg.in/yaml.v2"
 )
@@ -16,12 +17,16 @@ type Module struct {
 func (m Module) Parse(dir string) []string {
 	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", dir, MODULES_FILE))
 	if err != nil {
-		panic(err)
+		log.Println(err)
+
+		return []string{}
 	}
 
 	err = yaml.Unmarshal(config, &m)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+
+		return []string{}
 	}
 
 	return m.Config

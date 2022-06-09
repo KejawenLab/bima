@@ -48,7 +48,7 @@ import (
 var Container = []dingo.Def{
 	{
 		Name:  "bima:config:parser:listener",
-		Build: (*parsers.Listeners)(nil),
+		Build: (*parsers.Listener)(nil),
 	},
 	{
 		Name:  "bima:config:parser:logger",
@@ -670,16 +670,12 @@ var Container = []dingo.Def{
 		Name:  "bima:service:repository:gorm",
 		Build: (*repositories.GormRepository)(nil),
 		Params: dingo.Params{
-			"Env":      dingo.Service("bima:config:env"),
 			"Database": dingo.Service("bima:connection:database"),
 		},
 	},
 	{
 		Name:  "bima:service:repository:mongo",
 		Build: (*repositories.MongoRepository)(nil),
-		Params: dingo.Params{
-			"Env": dingo.Service("bima:config:env"),
-		},
 	},
 	{
 		Name: "bima:cache:memory",

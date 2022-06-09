@@ -3,6 +3,7 @@ package parsers
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 
 	"gopkg.in/yaml.v2"
 )
@@ -16,12 +17,16 @@ type Middleware struct {
 func (m Middleware) Parse(dir string) []string {
 	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", dir, MIDDLEWARES_FILE))
 	if err != nil {
-		panic(err)
+		log.Println(err)
+
+		return []string{}
 	}
 
 	err = yaml.Unmarshal(config, &m)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+
+		return []string{}
 	}
 
 	return m.Config

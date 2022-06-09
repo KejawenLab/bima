@@ -3,6 +3,7 @@ package parsers
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 
 	"gopkg.in/yaml.v2"
 )
@@ -16,12 +17,16 @@ type Route struct {
 func (r Route) Parse(dir string) []string {
 	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", dir, ROUTES_FILE))
 	if err != nil {
-		panic(err)
+		log.Println(err)
+
+		return []string{}
 	}
 
 	err = yaml.Unmarshal(config, &r)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+
+		return []string{}
 	}
 
 	return r.Config

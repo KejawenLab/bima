@@ -8,9 +8,8 @@ import (
 )
 
 type GormRepository struct {
-	dbPool   *gorm.DB
+	pool     *gorm.DB
 	model    string
-	Env      *configs.Env
 	Database *gorm.DB
 }
 
@@ -19,19 +18,19 @@ func (r *GormRepository) Model(model string) {
 }
 
 func (r *GormRepository) Transaction(f configs.Transaction) error {
-	r.dbPool = r.Database
+	r.pool = r.Database
 	r.Database = r.Database.Begin()
 
 	result := f(r)
 	if result != nil {
 		r.Database.Rollback()
-		r.Database = r.dbPool
+		r.Database = r.pool
 
 		return result
 	}
 
 	r.Database.Commit()
-	r.Database = r.dbPool
+	r.Database = r.pool
 
 	return result
 }
