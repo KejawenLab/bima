@@ -24,7 +24,6 @@ import (
 	"github.com/KejawenLab/bima/v2/middlewares"
 	paginations "github.com/KejawenLab/bima/v2/paginations"
 	"github.com/KejawenLab/bima/v2/paginations/adapter"
-	"github.com/KejawenLab/bima/v2/parsers"
 	"github.com/KejawenLab/bima/v2/repositories"
 	"github.com/KejawenLab/bima/v2/routers"
 	"github.com/KejawenLab/bima/v2/routes"
@@ -46,30 +45,6 @@ import (
 )
 
 var Container = []dingo.Def{
-	{
-		Name:  "bima:config:parser:listener",
-		Build: (*parsers.Listener)(nil),
-	},
-	{
-		Name:  "bima:config:parser:logger",
-		Build: (*parsers.Logger)(nil),
-	},
-	{
-		Name:  "bima:config:parser:middleware",
-		Build: (*parsers.Middleware)(nil),
-	},
-	{
-		Name:  "bima:config:parser:module",
-		Build: (*parsers.Module)(nil),
-	},
-	{
-		Name:  "bima:config:parser:route",
-		Build: (*parsers.Route)(nil),
-	},
-	{
-		Name:  "bima:config:user",
-		Build: (*configs.User)(nil),
-	},
 	{
 		Name: "bima:config:type",
 		Build: func() (*configs.Type, error) {
@@ -251,9 +226,6 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:generator:module",
 		Build: (*generators.Module)(nil),
-		Params: dingo.Params{
-			"Config": dingo.Service("bima:config:parser:module"),
-		},
 	},
 	{
 		Name:  "bima:generator:proto",

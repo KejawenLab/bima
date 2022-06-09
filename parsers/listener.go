@@ -10,24 +10,25 @@ import (
 
 const LISTENERS_FILE = "configs/listeners.yaml"
 
-type Listener struct {
+type listener struct {
 	Config []string `yaml:"listeners"`
 }
 
-func (l Listener) Parse(dir string) []string {
+func ParseListener(dir string) []string {
 	config, err := os.ReadFile(fmt.Sprintf("%s/%s", dir, LISTENERS_FILE))
+	mapping := listener{}
 	if err != nil {
 		log.Println(err)
 
 		return []string{}
 	}
 
-	err = yaml.Unmarshal(config, &l)
+	err = yaml.Unmarshal(config, &mapping)
 	if err != nil {
 		log.Println(err)
 
 		return []string{}
 	}
 
-	return l.Config
+	return mapping.Config
 }

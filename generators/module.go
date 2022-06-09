@@ -11,7 +11,7 @@ import (
 )
 
 type Module struct {
-	Config *parsers.Module
+	Config []string `yaml:"modules"`
 }
 
 func (g *Module) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
@@ -26,9 +26,9 @@ func (g *Module) Generate(template *configs.Template, modulePath string, package
 		panic(err)
 	}
 
-	g.Config.Parse(workDir)
-	g.Config.Config = append(g.Config.Config, fmt.Sprintf("module:%s", template.ModuleLowercase))
-	g.Config.Config = g.makeUnique(g.Config.Config)
+	g.Config = parsers.ParseModule(workDir)
+	g.Config = append(g.Config, fmt.Sprintf("module:%s", template.ModuleLowercase))
+	g.Config = g.makeUnique(g.Config)
 
 	modules, err := yaml.Marshal(g.Config)
 	if err != nil {
@@ -44,11 +44,11 @@ func (g *Module) Generate(template *configs.Template, modulePath string, package
 }
 
 func (g *Module) makeUnique(modules []string) []string {
-	occured := make(map[string]bool)
+	exists := make(map[string]bool)
 	var result []string
 	for e := range modules {
-		if occured[modules[e]] != true {
-			occured[modules[e]] = true
+		if exists[modules[e]] != true {
+			exists[modules[e]] = true
 
 			result = append(result, modules[e])
 		}

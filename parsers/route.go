@@ -10,24 +10,25 @@ import (
 
 const ROUTES_FILE = "configs/routes.yaml"
 
-type Route struct {
+type route struct {
 	Config []string `yaml:"routes"`
 }
 
-func (r Route) Parse(dir string) []string {
+func ParseRoute(dir string) []string {
 	config, err := os.ReadFile(fmt.Sprintf("%s/%s", dir, ROUTES_FILE))
+	mapping := route{}
 	if err != nil {
 		log.Println(err)
 
 		return []string{}
 	}
 
-	err = yaml.Unmarshal(config, &r)
+	err = yaml.Unmarshal(config, &mapping)
 	if err != nil {
 		log.Println(err)
 
 		return []string{}
 	}
 
-	return r.Config
+	return mapping.Config
 }

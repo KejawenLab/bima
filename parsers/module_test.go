@@ -9,11 +9,9 @@ import (
 )
 
 func Test_Module_Parse(t *testing.T) {
-	parser := Module{}
-
 	cwd, _ := os.Getwd()
 
-	assert.Equal(t, 1, len(parser.Parse(fmt.Sprintf("%s/stubs/valids", cwd))))
-	assert.Equal(t, 0, len(parser.Parse(fmt.Sprintf("%s/stubs/not_exists", cwd))))
-	assert.Equal(t, 0, len(parser.Parse(fmt.Sprintf("%s/stubs/invalids", cwd))))
+	assert.Equal(t, 1, len(ParseModule(fmt.Sprintf("%s/stubs/valids", cwd))))
+	assert.Equal(t, 0, len(ParseModule(fmt.Sprintf("%s/stubs/not_exists", cwd))))
+	assert.Equal(t, 0, len(ParseModule(fmt.Sprintf("%s/stubs/invalids", cwd))))
 }

@@ -9,7 +9,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/handlers"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
@@ -36,15 +35,10 @@ func Test_Hello_Route_Success(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	logger := logrus.New()
-	env := configs.Env{
-		Debug: true,
-	}
-
 	health := Health{
 		Logger: &handlers.Logger{
-			Env:    &env,
-			Logger: logger,
+			Verbose: true,
+			Logger:  logrus.New(),
 		},
 	}
 
@@ -74,29 +68,24 @@ func Test_Hello_Route_Down(t *testing.T) {
 	endpoint := "0.0.0.0:111"
 	conn, _ := grpc.DialContext(ctx, endpoint, grpc.WithInsecure())
 
-	logger := logrus.New()
-	env := configs.Env{
-		Debug: true,
-	}
-
-	route := Health{
+	health := Health{
 		Logger: &handlers.Logger{
-			Env:    &env,
-			Logger: logger,
+			Verbose: true,
+			Logger:  logrus.New(),
 		},
 	}
 
 	time.Sleep(100 * time.Millisecond)
 
-	route.SetClient(conn)
+	health.SetClient(conn)
 
-	assert.Equal(t, http.MethodGet, route.Method())
-	assert.Equal(t, HEALTH_PATH, route.Path())
-	assert.Nil(t, route.Middlewares())
+	assert.Equal(t, http.MethodGet, health.Method())
+	assert.Equal(t, HEALTH_PATH, health.Path())
+	assert.Nil(t, health.Middlewares())
 
 	req := httptest.NewRequest("GET", "http://bima.framework/foo", nil)
 	w := httptest.NewRecorder()
-	route.Handle(w, req, map[string]string{})
+	health.Handle(w, req, map[string]string{})
 
 	resp := w.Result()
 

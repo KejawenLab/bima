@@ -9,11 +9,9 @@ import (
 )
 
 func Test_Middleware_Parse(t *testing.T) {
-	parser := Middleware{}
-
 	cwd, _ := os.Getwd()
 
-	assert.Equal(t, 1, len(parser.Parse(fmt.Sprintf("%s/stubs/valids", cwd))))
-	assert.Equal(t, 0, len(parser.Parse(fmt.Sprintf("%s/stubs/not_exists", cwd))))
-	assert.Equal(t, 0, len(parser.Parse(fmt.Sprintf("%s/stubs/invalids", cwd))))
+	assert.Equal(t, 1, len(ParseMiddleware(fmt.Sprintf("%s/stubs/valids", cwd))))
+	assert.Equal(t, 0, len(ParseMiddleware(fmt.Sprintf("%s/stubs/not_exists", cwd))))
+	assert.Equal(t, 0, len(ParseMiddleware(fmt.Sprintf("%s/stubs/invalids", cwd))))
 }
