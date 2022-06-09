@@ -56,7 +56,7 @@ func Test_Hello_Route_Success(t *testing.T) {
 	assert.Equal(t, HEALTH_PATH, health.Path())
 	assert.Nil(t, health.Middlewares())
 
-	req := httptest.NewRequest("GET", "http://example.com/foo", nil)
+	req := httptest.NewRequest("GET", "http://bima.framework/foo", nil)
 	w := httptest.NewRecorder()
 	health.Handle(w, req, map[string]string{})
 
@@ -94,7 +94,7 @@ func Test_Hello_Route_Down(t *testing.T) {
 	assert.Equal(t, HEALTH_PATH, route.Path())
 	assert.Nil(t, route.Middlewares())
 
-	req := httptest.NewRequest("GET", "http://example.com/foo", nil)
+	req := httptest.NewRequest("GET", "http://bima.framework/foo", nil)
 	w := httptest.NewRecorder()
 	route.Handle(w, req, map[string]string{})
 

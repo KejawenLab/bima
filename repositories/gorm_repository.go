@@ -8,11 +8,10 @@ import (
 )
 
 type GormRepository struct {
-	dbPool        *gorm.DB
-	overridedData interface{}
-	model         string
-	Env           *configs.Env
-	Database      *gorm.DB
+	dbPool   *gorm.DB
+	model    string
+	Env      *configs.Env
+	Database *gorm.DB
 }
 
 func (r *GormRepository) Model(model string) {

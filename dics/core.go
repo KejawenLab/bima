@@ -528,9 +528,10 @@ var Container = []dingo.Def{
 			apiDocRedirection configs.Route,
 			health configs.Route,
 		) (*routers.MuxRouter, error) {
-			return &routers.MuxRouter{
-				Routes: []configs.Route{apiDoc, apiDocRedirection, health},
-			}, nil
+			routers := routers.MuxRouter{}
+			routers.Register([]configs.Route{apiDoc, apiDocRedirection, health})
+
+			return &routers, nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:routes:api-doc"),

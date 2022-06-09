@@ -17,7 +17,7 @@ func Test_Api_Doc_Redirect_Route(t *testing.T) {
 	endpoint := "0.0.0.0:111"
 	conn, _ := grpc.DialContext(ctx, endpoint, grpc.WithInsecure())
 
-	req := httptest.NewRequest("GET", "http://example.com/foo", nil)
+	req := httptest.NewRequest("GET", "http://bima.framework/foo", nil)
 	w := httptest.NewRecorder()
 
 	route := ApiDocRedirect{}

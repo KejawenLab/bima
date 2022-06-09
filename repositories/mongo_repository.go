@@ -11,9 +11,8 @@ import (
 )
 
 type MongoRepository struct {
-	Env           *configs.Env
-	overridedData interface{}
-	model         string
+	Env   *configs.Env
+	model string
 }
 
 func (r *MongoRepository) Model(model string) {

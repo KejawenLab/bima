@@ -9,15 +9,15 @@ import (
 )
 
 type GRpcGateway struct {
-	Servers []configs.Server
+	servers []configs.Server
 }
 
 func (g *GRpcGateway) Register(servers []configs.Server) {
-	g.Servers = servers
+	g.servers = servers
 }
 
 func (g *GRpcGateway) Handle(ctx context.Context, server *runtime.ServeMux, client *grpc.ClientConn) {
-	for _, handler := range g.Servers {
+	for _, handler := range g.servers {
 		handler.GRpcHandler(ctx, server, client)
 	}
 }

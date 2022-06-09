@@ -19,8 +19,7 @@ func (a *ApiDocRedirect) Method() string {
 	return http.MethodGet
 }
 
-func (a *ApiDocRedirect) SetClient(client *grpc.ClientConn) {
-}
+func (a *ApiDocRedirect) SetClient(client *grpc.ClientConn) {}
 
 func (a *ApiDocRedirect) Middlewares() []configs.Middleware {
 	return nil

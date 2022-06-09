@@ -18,7 +18,7 @@ func Test_Api_Doc(t *testing.T) {
 	endpoint := "0.0.0.0:111"
 	conn, _ := grpc.DialContext(ctx, endpoint, grpc.WithInsecure())
 
-	req := httptest.NewRequest("GET", "http://example.com/api/docs/", nil)
+	req := httptest.NewRequest("GET", "http://bima.framework/api/docs/", nil)
 	w := httptest.NewRecorder()
 
 	route := ApiDoc{

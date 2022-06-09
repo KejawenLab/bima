@@ -23,8 +23,7 @@ func (a *ApiDoc) Method() string {
 	return http.MethodGet
 }
 
-func (a *ApiDoc) SetClient(client *grpc.ClientConn) {
-}
+func (a *ApiDoc) SetClient(client *grpc.ClientConn) {}
 
 func (a *ApiDoc) Middlewares() []configs.Middleware {
 	return nil

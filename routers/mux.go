@@ -10,15 +10,15 @@ import (
 )
 
 type MuxRouter struct {
-	Routes []configs.Route
+	routes []configs.Route
 }
 
 func (m *MuxRouter) Register(routes []configs.Route) {
-	m.Routes = append(m.Routes, routes...)
+	m.routes = append(m.routes, routes...)
 }
 
 func (m *MuxRouter) Handle(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn) {
-	for _, v := range m.Routes {
+	for _, v := range m.routes {
 		route := v
 		route.SetClient(client)
 		server.HandlePath(route.Method(), route.Path(), func(w http.ResponseWriter, r *http.Request, params map[string]string) {
