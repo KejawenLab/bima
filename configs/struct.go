@@ -70,7 +70,7 @@ type (
 
 	Env struct {
 		Debug            bool
-		HtppPort         int
+		HttpPort         int
 		RpcPort          int
 		Version          string
 		ApiVersion       string

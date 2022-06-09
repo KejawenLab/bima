@@ -9,7 +9,6 @@ import (
 )
 
 type Handler struct {
-	Env        *configs.Env
 	Context    context.Context
 	Dispatcher *events.Dispatcher
 	Logger     *Logger

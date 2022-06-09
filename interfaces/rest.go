@@ -13,7 +13,8 @@ import (
 )
 
 type Rest struct {
-	Env        *configs.Env
+	GRpcPort   int
+	HttpPort   int
 	Middleware *handlers.Middleware
 	Router     *handlers.Router
 	Server     *http.ServeMux
@@ -25,7 +26,7 @@ func (r *Rest) Run(servers []configs.Server) {
 	ctx, cancel := context.WithCancel(r.Context)
 	defer cancel()
 
-	endpoint := fmt.Sprintf("0.0.0.0:%d", r.Env.RpcPort)
+	endpoint := fmt.Sprintf("0.0.0.0:%d", r.GRpcPort)
 	conn, err := grpc.DialContext(ctx, endpoint, grpc.WithInsecure())
 	if err != nil {
 		r.Logger.Fatal(fmt.Sprintf("Server is not ready. %v", err))
@@ -49,7 +50,7 @@ func (r *Rest) Run(servers []configs.Server) {
 	util := color.New(color.FgCyan, color.Bold)
 
 	util.Printf("✓ ")
-	fmt.Printf("Playing REST Multimedia on :%d...\n", r.Env.HtppPort)
+	fmt.Printf("Playing REST Multimedia on :%d...\n", r.HttpPort)
 
 	util.Printf("✓ ")
 	fmt.Println("Playlist API is Ready at /api/docs...")
@@ -57,7 +58,7 @@ func (r *Rest) Run(servers []configs.Server) {
 	r.Middleware.Sort()
 	r.Router.Sort()
 
-	http.ListenAndServe(fmt.Sprintf(":%d", r.Env.HtppPort), r.Middleware.Attach(r.Router.Handle(ctx, r.Server, conn)))
+	http.ListenAndServe(fmt.Sprintf(":%d", r.HttpPort), r.Middleware.Attach(r.Router.Handle(ctx, r.Server, conn)))
 }
 
 func (r *Rest) IsBackground() bool {

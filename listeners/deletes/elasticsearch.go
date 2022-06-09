@@ -11,7 +11,7 @@ import (
 )
 
 type Elasticsearch struct {
-	Env           *configs.Env
+	Service       configs.Service
 	Context       context.Context
 	Elasticsearch *elastic.Client
 }
@@ -22,9 +22,9 @@ func (d *Elasticsearch) Handle(event interface{}) interface{} {
 
 	query := elastic.NewMatchQuery("Id", e.Id)
 
-	result, _ := d.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", d.Env.Service.ConnonicalName, m.TableName())).Query(query).Do(d.Context)
+	result, _ := d.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", d.Service.ConnonicalName, m.TableName())).Query(query).Do(d.Context)
 	for _, hit := range result.Hits.Hits {
-		d.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", d.Env.Service.ConnonicalName, m.TableName())).Id(hit.Id).Do(d.Context)
+		d.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", d.Service.ConnonicalName, m.TableName())).Id(hit.Id).Do(d.Context)
 	}
 
 	m.SetSyncedAt(time.Now())

@@ -16,10 +16,12 @@ import (
 const TEMPLATE_PATH = "templates"
 
 type Factory struct {
-	Env        *configs.Env
-	Pluralizer *pluralize.Client
-	Template   *configs.Template
-	Generators []configs.Generator
+	ApiVersion       string
+	TemplateLocation string
+	Driver           string
+	Pluralizer       *pluralize.Client
+	Template         *configs.Template
+	Generators       []configs.Generator
 }
 
 func (f *Factory) Generate(module *configs.ModuleTemplate) {
@@ -40,7 +42,7 @@ func (f *Factory) Generate(module *configs.ModuleTemplate) {
 	modulePluralLowercase := utils.Underscore(modulePlural)
 	modulePath := fmt.Sprintf("%s/%s", workDir, modulePluralLowercase)
 
-	f.Template.ApiVersion = f.Env.ApiVersion
+	f.Template.ApiVersion = f.ApiVersion
 	f.Template.PackageName = packageName
 	f.Template.Module = moduleName
 	f.Template.ModuleLowercase = utils.Underscore(module.Name)
@@ -48,9 +50,9 @@ func (f *Factory) Generate(module *configs.ModuleTemplate) {
 	f.Template.ModulePluralLowercase = modulePluralLowercase
 	f.Template.Columns = module.Fields
 
-	templatePath := fmt.Sprintf("%s/gorm", f.Env.TemplateLocation)
-	if f.Env.Db.Driver == "mongo" {
-		templatePath = fmt.Sprintf("%s/mongo", f.Env.TemplateLocation)
+	templatePath := fmt.Sprintf("%s/gorm", f.TemplateLocation)
+	if f.Driver == "mongo" {
+		templatePath = fmt.Sprintf("%s/mongo", f.TemplateLocation)
 	}
 
 	os.MkdirAll(modulePath, 0755)

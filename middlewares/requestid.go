@@ -11,17 +11,17 @@ import (
 )
 
 type RequestID struct {
-	Logger *handlers.Logger
-	Env    *configs.Env
+	Logger          *handlers.Logger
+	RequestIDHeader string
 }
 
 func (r *RequestID) Attach(request *http.Request, response http.ResponseWriter) bool {
-	reqID := request.Header.Get(r.Env.RequestIDHeader)
+	reqID := request.Header.Get(r.RequestIDHeader)
 	if reqID == "" {
 		reqID = fmt.Sprintf("%x", sha1.Sum([]byte(time.Now().Format(time.RFC3339))))
 	}
 
-	response.Header().Add(r.Env.RequestIDHeader, reqID)
+	response.Header().Add(r.RequestIDHeader, reqID)
 	r.Logger.RequestID = reqID
 
 	return false

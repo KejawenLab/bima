@@ -12,7 +12,7 @@ import (
 )
 
 type Elasticsearch struct {
-	Env           *configs.Env
+	Service       configs.Service
 	Context       context.Context
 	Elasticsearch *elastic.Client
 }
@@ -23,14 +23,14 @@ func (u *Elasticsearch) Handle(event interface{}) interface{} {
 
 	query := elastic.NewMatchQuery("Id", e.Id)
 
-	result, _ := u.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", u.Env.Service.ConnonicalName, m.TableName())).Query(query).Do(u.Context)
+	result, _ := u.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", u.Service.ConnonicalName, m.TableName())).Query(query).Do(u.Context)
 	for _, hit := range result.Hits.Hits {
-		u.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", u.Env.Service.ConnonicalName, m.TableName())).Id(hit.Id).Do(u.Context)
+		u.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", u.Service.ConnonicalName, m.TableName())).Id(hit.Id).Do(u.Context)
 	}
 
 	data, _ := json.Marshal(e.Data)
 
-	u.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", u.Env.Service.ConnonicalName, m.TableName())).BodyJson(string(data)).Do(u.Context)
+	u.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", u.Service.ConnonicalName, m.TableName())).BodyJson(string(data)).Do(u.Context)
 
 	m.SetSyncedAt(time.Now())
 	e.Repository.Update(m)

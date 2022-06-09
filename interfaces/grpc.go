@@ -11,15 +11,15 @@ import (
 )
 
 type GRpc struct {
-	Env    *configs.Env
-	GRpc   *grpc.Server
-	Logger *handlers.Logger
+	GRpcPort int
+	GRpc     *grpc.Server
+	Logger   *handlers.Logger
 }
 
 func (g *GRpc) Run(servers []configs.Server) {
-	listen, err := net.Listen("tcp", fmt.Sprintf(":%d", g.Env.RpcPort))
+	listen, err := net.Listen("tcp", fmt.Sprintf(":%d", g.GRpcPort))
 	if err != nil {
-		g.Logger.Fatal(fmt.Sprintf("Port %d is not available. %v", g.Env.RpcPort, err))
+		g.Logger.Fatal(fmt.Sprintf("Port %d is not available. %v", g.GRpcPort, err))
 	}
 
 	for _, server := range servers {
@@ -27,7 +27,7 @@ func (g *GRpc) Run(servers []configs.Server) {
 	}
 
 	color.New(color.FgCyan, color.Bold).Printf("✓ ")
-	fmt.Printf("Connecting gRPC Multimedia on :%d...\n", g.Env.RpcPort)
+	fmt.Printf("Connecting gRPC Multimedia on :%d...\n", g.GRpcPort)
 
 	g.GRpc.Serve(listen)
 }

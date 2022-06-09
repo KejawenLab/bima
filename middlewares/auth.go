@@ -22,6 +22,7 @@ func (a *Auth) Attach(request *http.Request, response http.ResponseWriter) bool 
 		return false
 	}
 
+	a.Env.User = &configs.User{}
 	a.Env.User.Id = request.Header.Get(a.Env.AuthHeader.Id)
 	a.Env.User.Email = request.Header.Get(a.Env.AuthHeader.Email)
 	a.Env.User.Role, _ = strconv.Atoi(request.Header.Get(a.Env.AuthHeader.Role))

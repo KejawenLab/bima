@@ -9,12 +9,13 @@ import (
 
 type Logger struct {
 	RequestID string
-	Env       *configs.Env
+	Verbose   bool
+	Service   configs.Service
 	Logger    *logrus.Logger
 }
 
 func (l *Logger) Trace(message string) {
-	if l.Env.Debug {
+	if l.Verbose {
 		var file string
 		var line int
 		var caller string
@@ -30,7 +31,7 @@ func (l *Logger) Trace(message string) {
 }
 
 func (l *Logger) Debug(message string) {
-	if l.Env.Debug {
+	if l.Verbose {
 		var file string
 		var line int
 		var caller string
@@ -46,7 +47,7 @@ func (l *Logger) Debug(message string) {
 }
 
 func (l *Logger) Info(message string) {
-	if l.Env.Debug {
+	if l.Verbose {
 		var file string
 		var line int
 		var caller string
@@ -62,7 +63,7 @@ func (l *Logger) Info(message string) {
 }
 
 func (l *Logger) Warning(message string) {
-	if l.Env.Debug {
+	if l.Verbose {
 		var file string
 		var line int
 		var caller string
@@ -122,8 +123,8 @@ func (l *Logger) Panic(message string) {
 func (l *Logger) fields(caller string, file string, line int) logrus.Fields {
 	return logrus.Fields{
 		"RequestID":   l.RequestID,
-		"ServiceName": l.Env.Service.Name,
-		"Debug":       l.Env.Debug,
+		"ServiceName": l.Service.Name,
+		"Debug":       l.Verbose,
 		"Caller":      caller,
 		"File":        file,
 		"Line":        line,
