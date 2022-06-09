@@ -3,7 +3,6 @@ package generators
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/KejawenLab/bima/v2/configs"
@@ -16,7 +15,7 @@ type Swagger struct {
 
 func (g *Swagger) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
 	workDir, _ := os.Getwd()
-	modules, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", workDir, MODULES_FILE))
+	modules, err := os.ReadFile(fmt.Sprintf("%s/%s", workDir, MODULES_FILE))
 	if err != nil {
 		panic(err)
 	}
@@ -32,7 +31,7 @@ func (g *Swagger) Generate(template *configs.Template, modulePath string, packag
 	modulesJson = g.makeUnique(modulesJson)
 	modules, _ = json.Marshal(modulesJson)
 
-	err = ioutil.WriteFile(fmt.Sprintf("%s/%s", workDir, MODULES_FILE), modules, 0644)
+	err = os.WriteFile(fmt.Sprintf("%s/%s", workDir, MODULES_FILE), modules, 0644)
 	if err != nil {
 		panic(err)
 	}

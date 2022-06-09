@@ -2,7 +2,6 @@ package generators
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	engine "text/template"
 
@@ -36,7 +35,7 @@ func (g *Module) Generate(template *configs.Template, modulePath string, package
 		panic(err)
 	}
 
-	err = ioutil.WriteFile(fmt.Sprintf("%s/%s", workDir, parsers.MODULES_FILE), modules, 0644)
+	err = os.WriteFile(fmt.Sprintf("%s/%s", workDir, parsers.MODULES_FILE), modules, 0644)
 	if err != nil {
 		panic(err)
 	}

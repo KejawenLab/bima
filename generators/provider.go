@@ -2,7 +2,6 @@ package generators
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -19,7 +18,7 @@ func (p *Provider) Generate(template *configs.Template, modulePath string, packa
 	workDir, _ := os.Getwd()
 	path := fmt.Sprintf("%s/configs/provider.go", workDir)
 
-	file, err := ioutil.ReadFile(path)
+	file, err := os.ReadFile(path)
 	if err != nil {
 		panic(err)
 	}
@@ -53,5 +52,5 @@ func (p *Provider) Generate(template *configs.Template, modulePath string, packa
 
 	body := strings.Join(contents, "\n")
 
-	ioutil.WriteFile(path, []byte(body), 0644)
+	os.WriteFile(path, []byte(body), 0644)
 }

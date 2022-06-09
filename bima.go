@@ -30,7 +30,7 @@ type (
 	}
 
 	Server struct {
-		Env      *configs.Env
+		Debug    bool
 		Database *gorm.DB
 	}
 )

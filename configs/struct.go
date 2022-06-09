@@ -162,15 +162,21 @@ func (t *Type) Value(key string) string {
 }
 
 func (b *GormBase) SetCreatedBy(user *User) {
-	b.CreatedBy = sql.NullString{String: user.Id, Valid: true}
+	if user != nil {
+		b.CreatedBy = sql.NullString{String: user.Id, Valid: true}
+	}
 }
 
 func (b *GormBase) SetUpdatedBy(user *User) {
-	b.UpdatedBy = sql.NullString{String: user.Id, Valid: true}
+	if user != nil {
+		b.UpdatedBy = sql.NullString{String: user.Id, Valid: true}
+	}
 }
 
 func (b *GormBase) SetDeletedBy(user *User) {
-	b.DeletedBy = sql.NullString{String: user.Id, Valid: true}
+	if user != nil {
+		b.DeletedBy = sql.NullString{String: user.Id, Valid: true}
+	}
 }
 
 func (b *GormBase) SetCreatedAt(time time.Time) {

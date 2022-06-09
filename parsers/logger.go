@@ -2,8 +2,8 @@ package parsers
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 
 	"gopkg.in/yaml.v2"
 )
@@ -15,7 +15,7 @@ type Logger struct {
 }
 
 func (l Logger) Parse(dir string) []string {
-	config, err := ioutil.ReadFile(fmt.Sprintf("%s/%s", dir, LOGGERS_FILE))
+	config, err := os.ReadFile(fmt.Sprintf("%s/%s", dir, LOGGERS_FILE))
 	if err != nil {
 		log.Println(err)
 

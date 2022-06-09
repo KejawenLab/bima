@@ -2,7 +2,6 @@ package generators
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -66,7 +65,7 @@ func (f *Factory) GetDefaultTemplatePath() string {
 }
 
 func (f *Factory) GetPackageName(workDir string) string {
-	mod, err := ioutil.ReadFile(fmt.Sprintf("%s/go.mod", workDir))
+	mod, err := os.ReadFile(fmt.Sprintf("%s/go.mod", workDir))
 	if err != nil {
 		panic(err)
 	}

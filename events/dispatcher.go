@@ -28,8 +28,7 @@ func (d *Dispatcher) Register(listeners []configs.Listener) {
 }
 
 func (d *Dispatcher) Dispatch(event string, payload interface{}) error {
-	_, ok := d.Events[event]
-	if !ok {
+	if _, ok := d.Events[event]; !ok {
 		return errors.New(fmt.Sprintf("Event '%s' not registered", event))
 	}
 

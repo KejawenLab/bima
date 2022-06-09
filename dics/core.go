@@ -747,8 +747,13 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:server",
-		Build: (*bima.Server)(nil),
+		Name: "bima:server",
+		Build: func(env *configs.Env, db *gorm.DB) (*bima.Server, error) {
+			return &bima.Server{
+				Debug:    env.Debug,
+				Database: db,
+			}, nil
+		},
 		Params: dingo.Params{
 			"Env":      dingo.Service("bima:config:env"),
 			"Database": dingo.Service("bima:connection:database"),
