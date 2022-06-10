@@ -30,7 +30,7 @@ func (g *Module) Generate(template *configs.Template, modulePath string, package
 	g.Config = append(g.Config, fmt.Sprintf("module:%s", template.ModuleLowercase))
 	g.Config = g.makeUnique(g.Config)
 
-	modules, err := yaml.Marshal(g.Config)
+	modules, err := yaml.Marshal(g)
 	if err != nil {
 		panic(err)
 	}
