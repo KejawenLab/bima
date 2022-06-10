@@ -3,7 +3,9 @@ package generators
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/KejawenLab/bima/v2/configs"
@@ -31,7 +33,13 @@ func (g *Swagger) Generate(template *configs.Template, modulePath string, packag
 
 	modulesJson = g.makeUnique(modulesJson)
 	for k, m := range modulesJson {
-		m.Url = fmt.Sprintf("%s?v=%s", m.Url, time.Now().Format(time.RFC3339Nano))
+		mUrl, _ := url.Parse(m.Url)
+		query := mUrl.Query()
+
+		query.Set("v", strconv.Itoa(int(time.Now().UnixMicro())))
+		mUrl.RawQuery = query.Encode()
+		m.Url = mUrl.String()
+
 		modulesJson[k] = m
 	}
 
