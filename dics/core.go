@@ -288,7 +288,6 @@ var Container = []dingo.Def{
 				Logger:     logger,
 			}
 			middleware.Add(&middlewares.Header{})
-			middleware.Add(&middlewares.Recovery{Logger: logger})
 
 			return &middleware, nil
 		},
