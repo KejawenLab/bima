@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/KejawenLab/bima/v2/configs"
 )
@@ -29,6 +30,11 @@ func (g *Swagger) Generate(template *configs.Template, modulePath string, packag
 	})
 
 	modulesJson = g.makeUnique(modulesJson)
+	for k, m := range modulesJson {
+		m.Url = fmt.Sprintf("%s?v=%s", m.Url, time.Now().Format(time.RFC3339Nano))
+		modulesJson[k] = m
+	}
+
 	modules, _ = json.Marshal(modulesJson)
 
 	err = os.WriteFile(fmt.Sprintf("%s/%s", workDir, MODULES_FILE), modules, 0644)
