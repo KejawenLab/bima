@@ -22,7 +22,7 @@ Bima Framework utilize [gRPC Gateway](https://grpc-ecosystem.github.io/grpc-gate
 
 - Auto documentation (Swagger)
 
-- [Dependency Injection](https://github.com/sarulabs/di)
+- [Dependency Injection](https://github.com/sarulabs/dingo)
 
 - Two Level Middleware (Global or Per Route)
 
