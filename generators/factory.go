@@ -6,24 +6,58 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/KejawenLab/bima/v2/configs"
-	"github.com/KejawenLab/bima/v2/utils"
 	"github.com/gertd/go-pluralize"
+	"github.com/iancoleman/strcase"
 	"golang.org/x/mod/modfile"
 )
 
 const TEMPLATE_PATH = "templates"
 
-type Factory struct {
-	ApiVersion       string
-	TemplateLocation string
-	Driver           string
-	Pluralizer       *pluralize.Client
-	Template         *configs.Template
-	Generators       []configs.Generator
-}
+type (
+	Generator interface {
+		Generate(template *Template, modulePath string, packagePath string, templatePath string)
+	}
 
-func (f *Factory) Generate(module *configs.ModuleTemplate) {
+	Template struct {
+		ApiVersion            string
+		PackageName           string
+		Module                string
+		ModuleLowercase       string
+		ModulePlural          string
+		ModulePluralLowercase string
+		Columns               []*FieldTemplate
+	}
+
+	ModuleJson struct {
+		Name string `json:"name"`
+		Url  string `json:"url"`
+	}
+
+	ModuleTemplate struct {
+		Name   string
+		Fields []*FieldTemplate
+	}
+
+	FieldTemplate struct {
+		Name           string
+		NameUnderScore string
+		ProtobufType   string
+		GolangType     string
+		Index          int
+		IsRequired     bool
+	}
+
+	Factory struct {
+		ApiVersion       string
+		TemplateLocation string
+		Driver           string
+		Pluralizer       *pluralize.Client
+		Template         *Template
+		Generators       []Generator
+	}
+)
+
+func (f *Factory) Generate(module *ModuleTemplate) {
 	_, filename, _, ok := runtime.Caller(0)
 	if !ok {
 		panic("No caller information")
@@ -36,15 +70,15 @@ func (f *Factory) Generate(module *configs.ModuleTemplate) {
 
 	workDir, _ := os.Getwd()
 	packageName := f.GetPackageName(workDir)
-	moduleName := utils.Camelcase(module.Name)
+	moduleName := strcase.ToCamel(module.Name)
 	modulePlural := f.Pluralizer.Plural(module.Name)
-	modulePluralLowercase := utils.Underscore(modulePlural)
+	modulePluralLowercase := strcase.ToDelimited(modulePlural, '_')
 	modulePath := fmt.Sprintf("%s/%s", workDir, modulePluralLowercase)
 
 	f.Template.ApiVersion = f.ApiVersion
 	f.Template.PackageName = packageName
 	f.Template.Module = moduleName
-	f.Template.ModuleLowercase = utils.Underscore(module.Name)
+	f.Template.ModuleLowercase = strcase.ToDelimited(module.Name, '_')
 	f.Template.ModulePlural = modulePlural
 	f.Template.ModulePluralLowercase = modulePluralLowercase
 	f.Template.Columns = module.Fields

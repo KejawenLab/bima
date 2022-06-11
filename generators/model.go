@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"os"
 	engine "text/template"
-
-	"github.com/KejawenLab/bima/v2/configs"
 )
 
 type Model struct {
 }
 
-func (g *Model) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
+func (g *Model) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
 	modelTemplate, err := engine.ParseFiles(fmt.Sprintf("%s/%s/model.tpl", packagePath, templatePath))
 	if err != nil {
 		panic(err)

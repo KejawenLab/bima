@@ -23,6 +23,7 @@ func (g *GormAdapter) CreateAdapter(ctx context.Context, paginator paginations.P
 		Query:   query,
 		Filters: paginator.Filters,
 	}
+
 	g.Dispatcher.Dispatch(events.PAGINATION_EVENT, &event)
 
 	return adapter.NewGORMAdapter(event.Query)

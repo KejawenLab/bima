@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"os"
 	engine "text/template"
-
-	"github.com/KejawenLab/bima/v2/configs"
 )
 
 type Validation struct {
 }
 
-func (g *Validation) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
+func (g *Validation) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
 	validationTemplate, err := engine.ParseFiles(fmt.Sprintf("%s/%s/validation.tpl", packagePath, templatePath))
 	if err != nil {
 		panic(err)

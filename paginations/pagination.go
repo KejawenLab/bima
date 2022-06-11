@@ -45,11 +45,11 @@ type (
 )
 
 func (p *Pagination) Handle(request *Request) {
-	if 0 == request.Page {
+	if request.Page == 0 {
 		request.Page = 1
 	}
 
-	if 0 == request.Limit {
+	if request.Limit == 0 {
 		request.Limit = 17
 	}
 

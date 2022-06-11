@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"os"
 	engine "text/template"
-
-	"github.com/KejawenLab/bima/v2/configs"
 )
 
 type Dic struct {
 }
 
-func (g *Dic) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
+func (g *Dic) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
 	dicTemplate, err := engine.ParseFiles(fmt.Sprintf("%s/%s/dic.tpl", packagePath, templatePath))
 	if err != nil {
 		panic(err)

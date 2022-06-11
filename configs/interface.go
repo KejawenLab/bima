@@ -32,10 +32,6 @@ type (
 		Delete(v interface{}, id string) error
 	}
 
-	Generator interface {
-		Generate(template *Template, modulePath string, packagePath string, templatePath string)
-	}
-
 	Listener interface {
 		Handle(event interface{}) interface{}
 		Listen() string

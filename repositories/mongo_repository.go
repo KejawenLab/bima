@@ -20,8 +20,7 @@ func (r *MongoRepository) Model(model string) {
 
 func (r *MongoRepository) Transaction(f configs.Transaction) error {
 	return mgm.TransactionWithCtx(mgm.Ctx(), func(session mongo.Session, context mongo.SessionContext) error {
-		err := f(r)
-		if err != nil {
+		if err := f(r); err != nil {
 			return session.AbortTransaction(context)
 		}
 

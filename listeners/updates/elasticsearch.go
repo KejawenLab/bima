@@ -21,19 +21,29 @@ func (u *Elasticsearch) Handle(event interface{}) interface{} {
 	e := event.(*events.Model)
 	m := e.Data.(configs.Model)
 
-	query := elastic.NewMatchQuery("Id", e.Id)
+	result := make(chan error)
+	go func(r chan<- error) {
+		query := elastic.NewMatchQuery("Id", e.Id)
 
-	result, _ := u.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", u.Service.ConnonicalName, m.TableName())).Query(query).Do(u.Context)
-	for _, hit := range result.Hits.Hits {
-		u.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", u.Service.ConnonicalName, m.TableName())).Id(hit.Id).Do(u.Context)
-	}
+		result, _ := u.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", u.Service.ConnonicalName, m.TableName())).Query(query).Do(u.Context)
+		if result != nil {
+			for _, hit := range result.Hits.Hits {
+				u.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", u.Service.ConnonicalName, m.TableName())).Id(hit.Id).Do(u.Context)
+			}
+		}
 
-	data, _ := json.Marshal(e.Data)
+		data, _ := json.Marshal(e.Data)
 
-	u.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", u.Service.ConnonicalName, m.TableName())).BodyJson(string(data)).Do(u.Context)
+		_, err := u.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", u.Service.ConnonicalName, m.TableName())).BodyJson(string(data)).Do(u.Context)
+		r <- err
+	}(result)
 
-	m.SetSyncedAt(time.Now())
-	e.Repository.Update(m)
+	go func(r <-chan error) {
+		if <-r == nil {
+			m.SetSyncedAt(time.Now())
+			e.Repository.Update(m)
+		}
+	}(result)
 
 	return e
 }

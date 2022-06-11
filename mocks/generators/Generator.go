@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	configs "github.com/KejawenLab/bima/v2/configs"
+	generators "github.com/KejawenLab/bima/v2/generators"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,7 +13,7 @@ type Generator struct {
 }
 
 // Generate provides a mock function with given fields: template, modulePath, packagePath, templatePath
-func (_m *Generator) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
+func (_m *Generator) Generate(template *generators.Template, modulePath string, packagePath string, templatePath string) {
 	_m.Called(template, modulePath, packagePath, templatePath)
 }
 

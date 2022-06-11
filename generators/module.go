@@ -5,7 +5,6 @@ import (
 	"os"
 	engine "text/template"
 
-	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/parsers"
 	"gopkg.in/yaml.v2"
 )
@@ -14,7 +13,7 @@ type Module struct {
 	Config []string `yaml:"modules"`
 }
 
-func (g *Module) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
+func (g *Module) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
 	workDir, _ := os.Getwd()
 	moduleTemplate, err := engine.ParseFiles(fmt.Sprintf("%s/%s/module.tpl", packagePath, templatePath))
 	if err != nil {

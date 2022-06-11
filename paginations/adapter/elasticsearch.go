@@ -35,6 +35,7 @@ func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator pag
 		Query:   query,
 		Filters: paginator.Filters,
 	}
+
 	es.Dispatcher.Dispatch(events.PAGINATION_EVENT, &event)
 
 	return newElasticsearchPaginator(ctx, es.Client, fmt.Sprintf("%s_%s", es.Env.Service.ConnonicalName, paginator.Table), event.Query)

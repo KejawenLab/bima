@@ -39,6 +39,7 @@ func (mg *MongodbAdapter) CreateAdapter(ctx context.Context, paginator paginatio
 		Filters:       paginator.Filters,
 		MongoDbFilter: bson.M{},
 	}
+
 	mg.Dispatcher.Dispatch(events.PAGINATION_EVENT, &event)
 
 	return newMongodbPaginator(ctx, event.Query, event.MongoDbFilter)

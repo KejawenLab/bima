@@ -34,6 +34,7 @@ import (
 	"github.com/gertd/go-pluralize"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	"github.com/iancoleman/strcase"
 	"github.com/kamva/mgm/v3"
 	"github.com/olivere/elastic/v7"
 	"github.com/sarulabs/dingo/v4"
@@ -71,15 +72,15 @@ var Container = []dingo.Def{
 	},
 	{
 		Name:  "bima:config:template",
-		Build: (*configs.Template)(nil),
+		Build: (*generators.Template)(nil),
 	},
 	{
 		Name:  "bima:template:module",
-		Build: (*configs.ModuleTemplate)(nil),
+		Build: (*generators.ModuleTemplate)(nil),
 	},
 	{
 		Name:  "bima:template:field",
-		Build: (*configs.FieldTemplate)(nil),
+		Build: (*generators.FieldTemplate)(nil),
 	},
 	{
 		Name: "bima:config:env",
@@ -100,7 +101,7 @@ var Container = []dingo.Def{
 			sName := os.Getenv("APP_NAME")
 			env.Service = configs.Service{
 				Name:           sName,
-				ConnonicalName: utils.Underscore(sName),
+				ConnonicalName: strcase.ToDelimited(sName, '_'),
 				Host:           os.Getenv("APP_HOST"),
 			}
 
@@ -171,17 +172,17 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:module:generator",
 		Build: func(
-			dic configs.Generator,
-			model configs.Generator,
-			module configs.Generator,
-			proto configs.Generator,
-			provider configs.Generator,
-			server configs.Generator,
-			validation configs.Generator,
-			swagger configs.Generator,
+			dic generators.Generator,
+			model generators.Generator,
+			module generators.Generator,
+			proto generators.Generator,
+			provider generators.Generator,
+			server generators.Generator,
+			validation generators.Generator,
+			swagger generators.Generator,
 			env *configs.Env,
 			pluralizer *pluralize.Client,
-			template *configs.Template,
+			template *generators.Template,
 		) (*generators.Factory, error) {
 			return &generators.Factory{
 				ApiVersion:       env.ApiVersion,
@@ -189,7 +190,7 @@ var Container = []dingo.Def{
 				TemplateLocation: env.TemplateLocation,
 				Pluralizer:       pluralizer,
 				Template:         template,
-				Generators: []configs.Generator{
+				Generators: []generators.Generator{
 					dic,
 					model,
 					module,

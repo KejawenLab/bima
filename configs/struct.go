@@ -86,35 +86,6 @@ type (
 		RequestIDHeader  string
 	}
 
-	Template struct {
-		ApiVersion            string
-		PackageName           string
-		Module                string
-		ModuleLowercase       string
-		ModulePlural          string
-		ModulePluralLowercase string
-		Columns               []*FieldTemplate
-	}
-
-	ModuleJson struct {
-		Name string `json:"name"`
-		Url  string `json:"url"`
-	}
-
-	ModuleTemplate struct {
-		Name   string
-		Fields []*FieldTemplate
-	}
-
-	FieldTemplate struct {
-		Name           string
-		NameUnderScore string
-		ProtobufType   string
-		GolangType     string
-		Index          int
-		IsRequired     bool
-	}
-
 	LoggerExtension struct {
 		Extensions []logrus.Hook
 	}

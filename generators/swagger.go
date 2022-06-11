@@ -7,8 +7,6 @@ import (
 	"os"
 	"strconv"
 	"time"
-
-	"github.com/KejawenLab/bima/v2/configs"
 )
 
 const MODULES_FILE = "swaggers/modules.json"
@@ -16,17 +14,17 @@ const MODULES_FILE = "swaggers/modules.json"
 type Swagger struct {
 }
 
-func (g *Swagger) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
+func (g *Swagger) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
 	workDir, _ := os.Getwd()
 	modules, err := os.ReadFile(fmt.Sprintf("%s/%s", workDir, MODULES_FILE))
 	if err != nil {
 		panic(err)
 	}
 
-	modulesJson := []configs.ModuleJson{}
+	modulesJson := []ModuleJson{}
 
 	json.Unmarshal(modules, &modulesJson)
-	modulesJson = append(modulesJson, configs.ModuleJson{
+	modulesJson = append(modulesJson, ModuleJson{
 		Name: template.Module,
 		Url:  fmt.Sprintf("./%s.swagger.json", template.ModuleLowercase),
 	})
@@ -51,9 +49,9 @@ func (g *Swagger) Generate(template *configs.Template, modulePath string, packag
 	}
 }
 
-func (g *Swagger) makeUnique(modules []configs.ModuleJson) []configs.ModuleJson {
+func (g *Swagger) makeUnique(modules []ModuleJson) []ModuleJson {
 	occured := make(map[string]bool)
-	var result []configs.ModuleJson
+	var result []ModuleJson
 	for _, e := range modules {
 		if occured[e.Name] != true {
 			occured[e.Name] = true

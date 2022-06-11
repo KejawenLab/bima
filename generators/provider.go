@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/KejawenLab/bima/v2/configs"
 )
 
 const MODULE_IMPORT = "@modules:import"
@@ -14,7 +12,7 @@ const MODULE_REGISTER = "@modules:register"
 type Provider struct {
 }
 
-func (p *Provider) Generate(template *configs.Template, modulePath string, packagePath string, templatePath string) {
+func (p *Provider) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
 	workDir, _ := os.Getwd()
 	path := fmt.Sprintf("%s/configs/provider.go", workDir)
 

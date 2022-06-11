@@ -20,12 +20,22 @@ type Elasticsearch struct {
 func (c *Elasticsearch) Handle(event interface{}) interface{} {
 	e := event.(*events.Model)
 	m := e.Data.(configs.Model)
-	data, _ := json.Marshal(e.Data)
 
-	c.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", c.Service.ConnonicalName, m.TableName())).BodyJson(string(data)).Do(c.Context)
+	result := make(chan error)
+	go func(r chan<- error) {
+		data, _ := json.Marshal(e.Data)
 
-	m.SetSyncedAt(time.Now())
-	e.Repository.Update(m)
+		_, err := c.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", c.Service.ConnonicalName, m.TableName())).BodyJson(string(data)).Do(c.Context)
+
+		r <- err
+	}(result)
+
+	go func(r <-chan error) {
+		if <-r == nil {
+			m.SetSyncedAt(time.Now())
+			e.Repository.Update(m)
+		}
+	}(result)
 
 	return e
 }
