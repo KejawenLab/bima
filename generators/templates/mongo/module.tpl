@@ -19,7 +19,7 @@ type Module struct {
     grpcs.Unimplemented{{.Module}}sServer
 }
 
-func (m *Module) GetPaginated(c context.Context, r *grpcs.Pagination) (*grpcs.{{.Module}}PaginatedResponse, error) {
+func (m *Module) GetPaginated(_ context.Context, r *grpcs.Pagination) (*grpcs.{{.Module}}PaginatedResponse, error) {
 	m.Logger.Info(fmt.Sprintf("%+v", r))
 	records := []*grpcs.{{.Module}}{}
 	model := models.{{.Module}}{}
@@ -54,7 +54,7 @@ func (m *Module) GetPaginated(c context.Context, r *grpcs.Pagination) (*grpcs.{{
 	}, nil
 }
 
-func (m *Module) Create(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
+func (m *Module) Create(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
 	m.Logger.Info(fmt.Sprintf("%+v", r))
 
 	v := models.{{.Module}}{}
@@ -87,7 +87,7 @@ func (m *Module) Create(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 	}, nil
 }
 
-func (m *Module) Update(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
+func (m *Module) Update(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
 	m.Logger.Info(fmt.Sprintf("%+v", r))
 
 	v := models.{{.Module}}{}
@@ -133,7 +133,7 @@ func (m *Module) Update(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 	}, nil
 }
 
-func (m *Module) Get(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
+func (m *Module) Get(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
 	m.Logger.Info(fmt.Sprintf("%+v", r))
 
 	var v models.{{.Module}}
@@ -164,7 +164,7 @@ func (m *Module) Get(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}
 	}, nil
 }
 
-func (m *Module) Delete(c context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
+func (m *Module) Delete(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
 	m.Logger.Info(fmt.Sprintf("%+v", r))
 
 	v := models.{{.Module}}{}

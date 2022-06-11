@@ -708,7 +708,6 @@ var Container = []dingo.Def{
 		Name:  "bima:module",
 		Build: (*bima.Module)(nil),
 		Params: dingo.Params{
-			"Context":       dingo.Service("bima:context:background"),
 			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
 			"Handler":       dingo.Service("bima:handler:handler"),
 			"Logger":        dingo.Service("bima:handler:logger"),

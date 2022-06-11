@@ -1,8 +1,6 @@
 package bima
 
 import (
-	"context"
-
 	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/handlers"
 	"github.com/KejawenLab/bima/v2/paginations"
@@ -11,11 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
-const VERSION_STRING = "v2.3.4"
+const VERSION_STRING = "v2.3.5"
 
 type (
 	Module struct {
-		Context       context.Context
 		Elasticsearch *elastic.Client
 		Handler       *handlers.Handler
 		Logger        *handlers.Logger
