@@ -1,24 +1,29 @@
 package handlers
 
 import (
+	"os"
 	"runtime"
+	"strings"
 
 	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/sirupsen/logrus"
 )
 
 type Logger struct {
-	RequestID string
-	Verbose   bool
-	Service   configs.Service
-	Logger    *logrus.Logger
+	Verbose bool
+	Service configs.Service
+	Logger  *logrus.Logger
+	Data    logrus.Fields
+}
+
+func (l *Logger) Add(key string, value interface{}) {
+	l.Data[key] = value
 }
 
 func (l *Logger) Trace(message string) {
 	if l.Verbose {
-		var file string
+		var file, caller string
 		var line int
-		var caller string
 
 		pc, file, line, ok := runtime.Caller(1)
 		detail := runtime.FuncForPC(pc)
@@ -26,15 +31,16 @@ func (l *Logger) Trace(message string) {
 			caller = detail.Name()
 		}
 
-		go l.Logger.WithFields(l.fields(caller, file, line)).Trace(message)
+		l.fields(caller, file, line)
+
+		go l.Logger.WithFields(l.Data).Trace(message)
 	}
 }
 
 func (l *Logger) Debug(message string) {
 	if l.Verbose {
-		var file string
+		var file, caller string
 		var line int
-		var caller string
 
 		pc, file, line, ok := runtime.Caller(1)
 		detail := runtime.FuncForPC(pc)
@@ -42,15 +48,16 @@ func (l *Logger) Debug(message string) {
 			caller = detail.Name()
 		}
 
-		go l.Logger.WithFields(l.fields(caller, file, line)).Debug(message)
+		l.fields(caller, file, line)
+
+		go l.Logger.WithFields(l.Data).Debug(message)
 	}
 }
 
 func (l *Logger) Info(message string) {
 	if l.Verbose {
-		var file string
+		var file, caller string
 		var line int
-		var caller string
 
 		pc, file, line, ok := runtime.Caller(1)
 		detail := runtime.FuncForPC(pc)
@@ -58,15 +65,16 @@ func (l *Logger) Info(message string) {
 			caller = detail.Name()
 		}
 
-		go l.Logger.WithFields(l.fields(caller, file, line)).Info(message)
+		l.fields(caller, file, line)
+
+		go l.Logger.WithFields(l.Data).Info(message)
 	}
 }
 
 func (l *Logger) Warning(message string) {
 	if l.Verbose {
-		var file string
+		var file, caller string
 		var line int
-		var caller string
 
 		pc, file, line, ok := runtime.Caller(1)
 		detail := runtime.FuncForPC(pc)
@@ -74,14 +82,15 @@ func (l *Logger) Warning(message string) {
 			caller = detail.Name()
 		}
 
-		go l.Logger.WithFields(l.fields(caller, file, line)).Warning(message)
+		l.fields(caller, file, line)
+
+		go l.Logger.WithFields(l.Data).Warning(message)
 	}
 }
 
 func (l *Logger) Error(message string) {
-	var file string
+	var file, caller string
 	var line int
-	var caller string
 
 	pc, file, line, ok := runtime.Caller(1)
 	detail := runtime.FuncForPC(pc)
@@ -89,13 +98,14 @@ func (l *Logger) Error(message string) {
 		caller = detail.Name()
 	}
 
-	go l.Logger.WithFields(l.fields(caller, file, line)).Error(message)
+	l.fields(caller, file, line)
+
+	go l.Logger.WithFields(l.Data).Error(message)
 }
 
 func (l *Logger) Fatal(message string) {
-	var file string
+	var file, caller string
 	var line int
-	var caller string
 
 	pc, file, line, ok := runtime.Caller(1)
 	detail := runtime.FuncForPC(pc)
@@ -103,13 +113,14 @@ func (l *Logger) Fatal(message string) {
 		caller = detail.Name()
 	}
 
-	go l.Logger.WithFields(l.fields(caller, file, line)).Fatal(message)
+	l.fields(caller, file, line)
+
+	go l.Logger.WithFields(l.Data).Fatal(message)
 }
 
 func (l *Logger) Panic(message string) {
-	var file string
+	var file, caller string
 	var line int
-	var caller string
 
 	pc, file, line, ok := runtime.Caller(1)
 	detail := runtime.FuncForPC(pc)
@@ -117,16 +128,21 @@ func (l *Logger) Panic(message string) {
 		caller = detail.Name()
 	}
 
-	go l.Logger.WithFields(l.fields(caller, file, line)).Panic(message)
+	l.fields(caller, file, line)
+
+	go l.Logger.WithFields(l.Data).Panic(message)
 }
 
-func (l *Logger) fields(caller string, file string, line int) logrus.Fields {
-	return logrus.Fields{
-		"RequestID":   l.RequestID,
-		"ServiceName": l.Service.Name,
-		"Debug":       l.Verbose,
-		"Caller":      caller,
-		"File":        file,
-		"Line":        line,
+func (l *Logger) fields(caller string, file string, line int) {
+	workDir, _ := os.Getwd()
+	l.Data["debug"] = l.Verbose
+	l.Data["service"] = map[string]string{
+		"name": l.Service.ConnonicalName,
+		"host": l.Service.Host,
+	}
+	l.Data["trace"] = map[string]interface{}{
+		"caller": caller,
+		"file":   strings.Replace(file, workDir, ".", 1),
+		"line":   line,
 	}
 }

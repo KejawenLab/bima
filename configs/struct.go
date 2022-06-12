@@ -167,7 +167,7 @@ func (b *GormBase) SetDeletedAt(time time.Time) {
 }
 
 func (b *GormBase) BeforeCreate(tx *gorm.DB) (err error) {
-	b.Id = uuid.New().String()
+	b.Id = uuid.NewString()
 
 	b.SetCreatedBy(b.Env.User)
 	b.SetCreatedAt(time.Now())

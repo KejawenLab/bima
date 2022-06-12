@@ -487,6 +487,7 @@ var Container = []dingo.Def{
 				Verbose: env.Debug,
 				Service: env.Service,
 				Logger:  logger,
+				Data:    logrus.Fields{},
 			}, nil
 		},
 	},
@@ -518,7 +519,8 @@ var Container = []dingo.Def{
 		Name:  "bima:middleware:auth",
 		Build: (*middlewares.Auth)(nil),
 		Params: dingo.Params{
-			"Env": dingo.Service("bima:config:env"),
+			"Env":    dingo.Service("bima:config:env"),
+			"Logger": dingo.Service("bima:handler:logger"),
 		},
 	},
 	{
@@ -547,9 +549,9 @@ var Container = []dingo.Def{
 			return &routers, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:routes:api-doc"),
-			"1": dingo.Service("bima:routes:api-doc-redirect"),
-			"2": dingo.Service("bima:routes:health"),
+			"0": dingo.Service("bima:route:api-doc"),
+			"1": dingo.Service("bima:route:api-doc-redirect"),
+			"2": dingo.Service("bima:route:health"),
 		},
 	},
 	{
@@ -557,7 +559,7 @@ var Container = []dingo.Def{
 		Build: (*routers.GRpcGateway)(nil),
 	},
 	{
-		Name: "bima:routes:api-doc",
+		Name: "bima:route:api-doc",
 		Build: func(env *configs.Env) (*routes.ApiDoc, error) {
 			return &routes.ApiDoc{
 				Debug: env.Debug,
@@ -568,11 +570,11 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:routes:api-doc-redirect",
+		Name:  "bima:route:api-doc-redirect",
 		Build: (*routes.ApiDocRedirect)(nil),
 	},
 	{
-		Name:  "bima:routes:health",
+		Name:  "bima:route:health",
 		Build: (*routes.Health)(nil),
 		Params: dingo.Params{
 			"Logger": dingo.Service("bima:handler:logger"),

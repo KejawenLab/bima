@@ -53,7 +53,7 @@ func (r *Rest) Run(servers []configs.Server) {
 	fmt.Printf("Playing REST Multimedia on :%d...\n", r.HttpPort)
 
 	util.Printf("✓ ")
-	fmt.Println("Playlist API is Ready at /api/docs...")
+	fmt.Println("Playlist API is Ready on /api/docs...")
 
 	r.Middleware.Sort()
 	r.Router.Sort()
