@@ -74,7 +74,5 @@ func (es *elasticsearchPaginator) Slice(offset int, length int, data interface{}
 		*records = append(*records, record)
 	}
 
-	data = *records
-
 	return nil
 }

@@ -60,13 +60,13 @@ func (p *Pagination) Handle(request *Request) {
 		return
 	}
 
-	p.Filters = []Filter{}
 	if n != len(request.Values) {
 		return
 	}
 
+	p.Filters = []Filter{}
 	for k, v := range request.Fields {
-		if v == "" {
+		if v == "" || request.Values[k] == "" {
 			continue
 		}
 
