@@ -26,6 +26,8 @@ Bima Framework utilize [gRPC Gateway](https://grpc-ecosystem.github.io/grpc-gate
 
 - Two Level Middleware (Global or Per Route)
 
+- Better Log Management
+
 - Support Custom Route
 
 - Support [HTTP Compression](https://github.com/CAFxX/httpcompression) Out of The Box
