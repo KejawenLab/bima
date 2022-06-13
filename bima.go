@@ -9,14 +9,13 @@ import (
 	"gorm.io/gorm"
 )
 
-const VERSION_STRING = "v2.3.8"
+const VERSION_STRING = "v2.3.9"
 
 type (
 	Module struct {
 		Elasticsearch *elastic.Client
 		Handler       *handlers.Handler
 		Logger        *handlers.Logger
-		Messenger     *handlers.Messenger
 		Cache         *utils.Cache
 		Paginator     *paginations.Pagination
 		Request       *paginations.Request

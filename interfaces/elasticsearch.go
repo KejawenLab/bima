@@ -1,21 +1,13 @@
 package interfaces
 
 import (
-	"fmt"
-
 	"github.com/KejawenLab/bima/v2/configs"
-	"github.com/fatih/color"
 )
 
 type Elasticsearch struct {
 }
 
 func (e *Elasticsearch) Run(servers []configs.Server) {
-	if len(servers) > 0 {
-		color.New(color.FgCyan, color.Bold).Printf("✓ ")
-		fmt.Println("Refill Data on Elasticsearch Storage...")
-	}
-
 	for _, server := range servers {
 		go server.RepopulateData()
 	}

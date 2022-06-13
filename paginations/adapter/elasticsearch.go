@@ -4,9 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 
-	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/events"
 	"github.com/KejawenLab/bima/v2/paginations"
 	"github.com/olivere/elastic/v7"
@@ -15,7 +13,7 @@ import (
 
 type (
 	ElasticsearchAdapter struct {
-		Env        *configs.Env
+		Service    string
 		Client     *elastic.Client
 		Dispatcher *events.Dispatcher
 	}
@@ -38,7 +36,7 @@ func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator pag
 
 	es.Dispatcher.Dispatch(events.PAGINATION_EVENT, &event)
 
-	return newElasticsearchPaginator(ctx, es.Client, fmt.Sprintf("%s_%s", es.Env.Service.ConnonicalName, paginator.Table), event.Query)
+	return newElasticsearchPaginator(ctx, es.Client, fmt.Sprintf("%s_%s", es.Service, paginator.Table), event.Query)
 }
 
 func newElasticsearchPaginator(context context.Context, client *elastic.Client, index string, query *elastic.BoolQuery) paginator.Adapter {
@@ -57,8 +55,7 @@ func newElasticsearchPaginator(context context.Context, client *elastic.Client, 
 func (es *elasticsearchPaginator) Nums() (int64, error) {
 	result, err := es.client.Search().Index(es.index).IgnoreUnavailable(true).Query(es.totalQuery).Do(es.context)
 	if err != nil {
-		log.Printf("%s", err.Error())
-		return 0, nil
+		return 0, err
 	}
 
 	return result.TotalHits(), nil
@@ -67,12 +64,11 @@ func (es *elasticsearchPaginator) Nums() (int64, error) {
 func (es *elasticsearchPaginator) Slice(offset int, length int, data interface{}) error {
 	result, err := es.client.Search().Index(es.index).IgnoreUnavailable(true).Query(es.pageQuery).From(offset).Size(length).Do(es.context)
 	if err != nil {
-		log.Printf("%s", err.Error())
-		return nil
+		return err
 	}
 
-	records := data.(*[]interface{})
-	var record interface{}
+	records := data.(*[]map[string]interface{})
+	var record map[string]interface{}
 	for _, hit := range result.Hits.Hits {
 		json.Unmarshal(hit.Source, &record)
 		*records = append(*records, record)

@@ -19,13 +19,18 @@ type Handler struct {
 func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metadata, []map[string]interface{}) {
 	var result []map[string]interface{}
 	adapter := h.Adapter.CreateAdapter(h.Context, paginator)
-	paginator.Paginate(adapter)
-	paginator.Pager.Results(&result)
-	next := paginator.Page + 1
-	nums, _ := paginator.Pager.Nums()
-	total := int(nums)
+	if adapter == nil {
+		h.Logger.Error("Error when creating adapter")
 
-	if paginator.Page*paginator.Limit > total {
+		return paginations.Metadata{}, []map[string]interface{}{}
+	}
+
+	var total64 int64
+	paginator.Paginate(adapter, &result, &total64)
+
+	var total = int(total64)
+	next := paginator.Page + 1
+	if paginator.Page*paginator.Limit > int(total) {
 		next = -1
 	}
 

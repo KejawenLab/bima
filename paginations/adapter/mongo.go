@@ -68,7 +68,5 @@ func (mg *mongodbPaginator) Slice(offset int, length int, data interface{}) erro
 		Limit: &limit,
 	}
 
-	mg.pageQuery.SimpleFind(data, mg.filter, options)
-
-	return nil
+	return mg.pageQuery.SimpleFind(data, mg.filter, options)
 }

@@ -17,7 +17,6 @@ type (
 		Page    int
 		Filters []Filter
 		Search  string
-		Pager   paginator.Paginator
 		Model   interface{}
 		Table   string
 	}
@@ -67,16 +66,25 @@ func (p *Pagination) Handle(request *Request) {
 	}
 
 	for k, v := range request.Fields {
-		if v != "" {
-			p.Filters = append(p.Filters, Filter{Field: strings.Title(v), Value: request.Values[k]})
+		if v == "" {
+			continue
 		}
+
+		p.Filters = append(p.Filters, Filter{Field: strings.Title(v), Value: request.Values[k]})
 	}
 }
 
-func (p *Pagination) Paginate(adapter paginator.Adapter) *Pagination {
+func (p *Pagination) Paginate(adapter paginator.Adapter, results interface{}, total *int64) error {
 	pager := paginator.New(adapter, p.Limit)
-	pager.SetPage(p.Page)
-	p.Pager = pager
 
-	return p
+	pager.SetPage(p.Page)
+
+	err := pager.Results(results)
+	if err != nil {
+		return err
+	}
+
+	*total, err = pager.Nums()
+
+	return err
 }

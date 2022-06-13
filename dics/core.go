@@ -600,6 +600,9 @@ var Container = []dingo.Def{
 
 			return amqp.NewDurableQueueConfig(fmt.Sprintf("amqp://%s:%s@%s:%d/", env.Amqp.User, env.Amqp.Password, env.Amqp.Host, env.Amqp.Port)), nil
 		},
+		Params: dingo.Params{
+			"0": dingo.Service("bima:config:env"),
+		},
 	},
 	{
 		Name: "bima:message:publisher",
@@ -611,6 +614,10 @@ var Container = []dingo.Def{
 
 			return publisher, nil
 		},
+		Params: dingo.Params{
+			"0": dingo.Service("bima:config:env"),
+			"1": dingo.Service("bima:message:config"),
+		},
 	},
 	{
 		Name: "bima:message:consumer",
@@ -621,6 +628,10 @@ var Container = []dingo.Def{
 			}
 
 			return consumer, nil
+		},
+		Params: dingo.Params{
+			"0": dingo.Service("bima:config:env"),
+			"1": dingo.Service("bima:message:config"),
 		},
 	},
 	{
@@ -637,12 +648,18 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:pagination:adapter:elasticsearch",
-		Build: (*adapter.ElasticsearchAdapter)(nil),
+		Name: "bima:pagination:adapter:elasticsearch",
+		Build: func(env *configs.Env, client *elastic.Client, dispatcher *events.Dispatcher) (*adapter.ElasticsearchAdapter, error) {
+			return &adapter.ElasticsearchAdapter{
+				Service:    env.Service.ConnonicalName,
+				Client:     client,
+				Dispatcher: dispatcher,
+			}, nil
+		},
 		Params: dingo.Params{
-			"Env":        dingo.Service("bima:config:env"),
-			"Client":     dingo.Service("bima:connection:elasticsearch"),
-			"Dispatcher": dingo.Service("bima:event:dispatcher"),
+			"0": dingo.Service("bima:config:env"),
+			"1": dingo.Service("bima:connection:elasticsearch"),
+			"2": dingo.Service("bima:event:dispatcher"),
 		},
 	},
 	{
@@ -690,7 +707,6 @@ var Container = []dingo.Def{
 			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
 			"Handler":       dingo.Service("bima:handler:handler"),
 			"Logger":        dingo.Service("bima:handler:logger"),
-			"Messenger":     dingo.Service("bima:handler:messager"),
 			"Cache":         dingo.Service("bima:cache:memory"),
 			"Paginator":     dingo.Service("bima:pagination:paginator"),
 		},
