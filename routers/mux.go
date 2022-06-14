@@ -23,8 +23,7 @@ func (m *MuxRouter) Handle(context context.Context, server *runtime.ServeMux, cl
 		route.SetClient(client)
 		server.HandlePath(route.Method(), route.Path(), func(w http.ResponseWriter, r *http.Request, params map[string]string) {
 			for _, m := range v.Middlewares() {
-				stop := m.Attach(r, w)
-				if stop {
+				if stop := m.Attach(r, w); stop {
 					return
 				}
 			}

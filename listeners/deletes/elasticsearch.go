@@ -11,8 +11,7 @@ import (
 )
 
 type Elasticsearch struct {
-	Service       configs.Service
-	Context       context.Context
+	Service       string
 	Elasticsearch *elastic.Client
 }
 
@@ -24,10 +23,11 @@ func (d *Elasticsearch) Handle(event interface{}) interface{} {
 	go func(c chan<- error) {
 		query := elastic.NewMatchQuery("Id", e.Id)
 
-		result, _ := d.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", d.Service.ConnonicalName, m.TableName())).Query(query).Do(d.Context)
+		ctx := context.Background()
+		result, _ := d.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", d.Service, m.TableName())).Query(query).Do(ctx)
 		if result != nil {
 			for _, hit := range result.Hits.Hits {
-				d.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", d.Service.ConnonicalName, m.TableName())).Id(hit.Id).Do(d.Context)
+				d.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", d.Service, m.TableName())).Id(hit.Id).Do(ctx)
 			}
 		}
 

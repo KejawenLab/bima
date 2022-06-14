@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -37,10 +38,9 @@ func (h *Health) SetClient(client *grpc.ClientConn) {
 }
 
 func (h *Health) Handle(w http.ResponseWriter, r *http.Request, _ map[string]string) {
-	w.Header().Set("Content-Type", "application/json")
 	s := h.client.GetState()
 	if s != connectivity.Ready {
-		h.Logger.Error("gRPC server is down")
+		h.Logger.Error(context.WithValue(context.Background(), "scope", "health_route"), "gRPC server is down")
 		http.Error(w, "gRPC server is down", http.StatusBadGateway)
 
 		return
@@ -60,6 +60,7 @@ func (h *Health) Handle(w http.ResponseWriter, r *http.Request, _ map[string]str
 		},
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(payload)
 }
 

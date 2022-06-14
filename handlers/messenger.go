@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
@@ -15,10 +16,12 @@ type Messenger struct {
 }
 
 func (m *Messenger) Publish(queueName string, data []byte) error {
+	ctx := context.WithValue(context.Background(), "scope", "messenger")
+	m.Logger.Info(ctx, fmt.Sprintf("Publishing message to: %s", queueName))
+
 	msg := message.NewMessage(watermill.NewUUID(), data)
-	err := m.Publisher.Publish(queueName, msg)
-	if err != nil {
-		m.Logger.Error(err.Error())
+	if err := m.Publisher.Publish(queueName, msg); err != nil {
+		m.Logger.Error(ctx, err.Error())
 
 		return err
 	}
@@ -27,9 +30,12 @@ func (m *Messenger) Publish(queueName string, data []byte) error {
 }
 
 func (m *Messenger) Consume(queueName string) (<-chan *message.Message, error) {
+	ctx := context.WithValue(context.Background(), "scope", "messenger")
+	m.Logger.Info(ctx, fmt.Sprintf("Consuming: %s", queueName))
+
 	messages, err := m.Consumer.Subscribe(context.Background(), queueName)
 	if err != nil {
-		m.Logger.Error(err.Error())
+		m.Logger.Error(ctx, err.Error())
 
 		return nil, err
 	}

@@ -28,8 +28,7 @@ func (c *Cache) Invalidate(key string) {
 
 func (c *Cache) Get(key string) (interface{}, bool) {
 	var data interface{}
-	err := c.pool.Get(key, &data)
-	if err != nil {
+	if err := c.pool.Get(key, &data); err != nil {
 		return nil, false
 	}
 

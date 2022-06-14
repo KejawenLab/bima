@@ -12,8 +12,7 @@ import (
 )
 
 type Elasticsearch struct {
-	Service       configs.Service
-	Context       context.Context
+	Service       string
 	Elasticsearch *elastic.Client
 }
 
@@ -25,7 +24,7 @@ func (c *Elasticsearch) Handle(event interface{}) interface{} {
 	go func(r chan<- error) {
 		data, _ := json.Marshal(e.Data)
 
-		_, err := c.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", c.Service.ConnonicalName, m.TableName())).BodyJson(string(data)).Do(c.Context)
+		_, err := c.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", c.Service, m.TableName())).BodyJson(string(data)).Do(context.Background())
 
 		r <- err
 	}(result)

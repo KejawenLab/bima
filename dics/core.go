@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"strconv"
 	"time"
@@ -157,39 +156,28 @@ var Container = []dingo.Def{
 			validation generators.Generator,
 			swagger generators.Generator,
 			env *configs.Env,
-			pluralizer *pluralize.Client,
 			template *generators.Template,
 		) (*generators.Factory, error) {
 			return &generators.Factory{
 				ApiVersion:       env.ApiVersion,
 				Driver:           env.Db.Driver,
 				TemplateLocation: env.TemplateLocation,
-				Pluralizer:       pluralizer,
+				Pluralizer:       pluralize.NewClient(),
 				Template:         template,
-				Generators: []generators.Generator{
-					dic,
-					model,
-					module,
-					proto,
-					provider,
-					server,
-					validation,
-					swagger,
-				},
+				Generators:       []generators.Generator{dic, model, module, proto, provider, server, validation, swagger},
 			}, nil
 		},
 		Params: dingo.Params{
-			"0":  dingo.Service("bima:generator:dic"),
-			"1":  dingo.Service("bima:generator:model"),
-			"2":  dingo.Service("bima:generator:module"),
-			"3":  dingo.Service("bima:generator:proto"),
-			"4":  dingo.Service("bima:generator:provider"),
-			"5":  dingo.Service("bima:generator:server"),
-			"6":  dingo.Service("bima:generator:validation"),
-			"7":  dingo.Service("bima:generator:swagger"),
-			"8":  dingo.Service("bima:config:env"),
-			"9":  dingo.Service("bima:util:pluralizer"),
-			"10": dingo.Service("bima:config:template"),
+			"0": dingo.Service("bima:generator:dic"),
+			"1": dingo.Service("bima:generator:model"),
+			"2": dingo.Service("bima:generator:module"),
+			"3": dingo.Service("bima:generator:proto"),
+			"4": dingo.Service("bima:generator:provider"),
+			"5": dingo.Service("bima:generator:server"),
+			"6": dingo.Service("bima:generator:validation"),
+			"7": dingo.Service("bima:generator:swagger"),
+			"8": dingo.Service("bima:config:env"),
+			"9": dingo.Service("bima:config:template"),
 		},
 	},
 	{
@@ -336,47 +324,41 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:listener:create:elasticsearch",
-		Build: func(env *configs.Env, context context.Context, client *elastic.Client) (*creates.Elasticsearch, error) {
+		Build: func(env *configs.Env, client *elastic.Client) (*creates.Elasticsearch, error) {
 			return &creates.Elasticsearch{
-				Service:       env.Service,
-				Context:       context,
+				Service:       env.Service.ConnonicalName,
 				Elasticsearch: client,
 			}, nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config:env"),
-			"1": dingo.Service("bima:context:background"),
-			"2": dingo.Service("bima:connection:elasticsearch"),
+			"1": dingo.Service("bima:connection:elasticsearch"),
 		},
 	},
 	{
 		Name: "bima:listener:update:elasticsearch",
-		Build: func(env *configs.Env, context context.Context, client *elastic.Client) (*updates.Elasticsearch, error) {
+		Build: func(env *configs.Env, client *elastic.Client) (*updates.Elasticsearch, error) {
 			return &updates.Elasticsearch{
-				Service:       env.Service,
-				Context:       context,
+				Service:       env.Service.ConnonicalName,
 				Elasticsearch: client,
 			}, nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config:env"),
-			"1": dingo.Service("bima:context:background"),
-			"2": dingo.Service("bima:connection:elasticsearch"),
+			"1": dingo.Service("bima:connection:elasticsearch"),
 		},
 	},
 	{
 		Name: "bima:listener:delete:elasticsearch",
-		Build: func(env *configs.Env, context context.Context, client *elastic.Client) (*deletes.Elasticsearch, error) {
+		Build: func(env *configs.Env, client *elastic.Client) (*deletes.Elasticsearch, error) {
 			return &deletes.Elasticsearch{
-				Service:       env.Service,
-				Context:       context,
+				Service:       env.Service.ConnonicalName,
 				Elasticsearch: client,
 			}, nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config:env"),
-			"1": dingo.Service("bima:context:background"),
-			"2": dingo.Service("bima:connection:elasticsearch"),
+			"1": dingo.Service("bima:connection:elasticsearch"),
 		},
 	},
 	{
@@ -401,17 +383,13 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:interface:grpc",
-		Build: func(env *configs.Env, gRpc *grpc.Server, logger *handlers.Logger) (*interfaces.GRpc, error) {
+		Build: func(env *configs.Env) (*interfaces.GRpc, error) {
 			return &interfaces.GRpc{
 				GRpcPort: env.RpcPort,
-				GRpc:     gRpc,
-				Logger:   logger,
 			}, nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config:env"),
-			"1": dingo.Service("bima:grpc:server"),
-			"2": dingo.Service("bima:handler:logger"),
 		},
 	},
 	{
@@ -424,37 +402,30 @@ var Container = []dingo.Def{
 			env *configs.Env,
 			middleware *handlers.Middleware,
 			router *handlers.Router,
-			server *http.ServeMux,
-			context context.Context,
-			logger *handlers.Logger,
 		) (*interfaces.Rest, error) {
 			return &interfaces.Rest{
 				GRpcPort:   env.RpcPort,
 				HttpPort:   env.HttpPort,
 				Middleware: middleware,
 				Router:     router,
-				Server:     server,
-				Context:    context,
-				Logger:     logger,
 			}, nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config:env"),
 			"1": dingo.Service("bima:handler:middleware"),
 			"2": dingo.Service("bima:handler:router"),
-			"3": dingo.Service("bima:http:mux"),
-			"4": dingo.Service("bima:context:background"),
-			"5": dingo.Service("bima:handler:logger"),
 		},
 	},
 	{
 		Name: "bima:handler:logger",
 		Build: func(
 			env *configs.Env,
-			logger *logrus.Logger,
 			extension *configs.LoggerExtension,
 		) (*handlers.Logger, error) {
-			logger.SetFormatter(&logrus.JSONFormatter{})
+			logger := logrus.New()
+			logger.SetFormatter(&logrus.TextFormatter{
+				FullTimestamp: true,
+			})
 			for _, e := range extension.Extensions {
 				logger.AddHook(e)
 			}
@@ -465,6 +436,10 @@ var Container = []dingo.Def{
 				Logger:  logger,
 				Data:    logrus.Fields{},
 			}, nil
+		},
+		Params: dingo.Params{
+			"0": dingo.Service("bima:config:env"),
+			"1": dingo.Service("bima:logger:extension"),
 		},
 	},
 	{
@@ -557,12 +532,6 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name: "bima:http:mux",
-		Build: func() (*http.ServeMux, error) {
-			return http.NewServeMux(), nil
-		},
-	},
-	{
 		Name: "bima:grpc:server",
 		Build: func() (*grpc.Server, error) {
 			return grpc.NewServer(
@@ -573,22 +542,6 @@ var Container = []dingo.Def{
 					grpc_recovery.UnaryServerInterceptor(),
 				)),
 			), nil
-		},
-	},
-	{
-		Name: "bima:log:logger",
-		Build: func() (*logrus.Logger, error) {
-			color.New(color.FgCyan, color.Bold).Printf("✓ ")
-			fmt.Println("Logger configured...")
-			time.Sleep(100 * time.Millisecond)
-
-			return logrus.New(), nil
-		},
-	},
-	{
-		Name: "bima:context:background",
-		Build: func() (context.Context, error) {
-			return context.Background(), nil
 		},
 	},
 	{
@@ -692,12 +645,6 @@ var Container = []dingo.Def{
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config:env"),
-		},
-	},
-	{
-		Name: "bima:util:pluralizer",
-		Build: func() (*pluralize.Client, error) {
-			return pluralize.NewClient(), nil
 		},
 	},
 	{

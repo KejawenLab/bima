@@ -1,7 +1,10 @@
 package handlers
 
 import (
+	"context"
+	"fmt"
 	"net/http"
+	"reflect"
 	"sort"
 
 	"github.com/KejawenLab/bima/v2/configs"
@@ -37,18 +40,23 @@ func (m *Middleware) Sort() {
 }
 
 func (m *Middleware) Attach(handler http.Handler) http.Handler {
+	ctx := context.WithValue(context.Background(), "scope", "middleware")
+
 	internal := http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		for _, middleware := range m.Middlewares {
-			stop := middleware.Attach(request, response)
-			if stop {
+			if stop := middleware.Attach(request, response); stop {
+				m.Logger.Info(ctx, fmt.Sprintf("Middleware stopped by: %s", reflect.TypeOf(middleware).Name()))
+
 				return
 			}
 		}
 
+		m.Logger.Info(ctx, "Dispatching request event")
 		m.Dispatcher.Dispatch(events.REQUEST_EVENT, &events.Request{
 			HttpRequest: request,
 		})
 
+		m.Logger.Info(ctx, "Dispatching response event")
 		m.Dispatcher.Dispatch(events.RESPONSE_EVENT, &events.Response{
 			ResponseWriter: response,
 		})
@@ -58,12 +66,12 @@ func (m *Middleware) Attach(handler http.Handler) http.Handler {
 
 	deflateEncoder, err := zlib.New(zlib.Options{})
 	if err != nil {
-		m.Logger.Fatal(err.Error())
+		m.Logger.Fatal(ctx, err.Error())
 	}
 
 	brotliEncoder, err := brotli.New(brotli.Options{})
 	if err != nil {
-		m.Logger.Fatal(err.Error())
+		m.Logger.Fatal(ctx, err.Error())
 	}
 
 	gzipEncoder, err := pgzip.New(pgzip.Options{
@@ -72,7 +80,7 @@ func (m *Middleware) Attach(handler http.Handler) http.Handler {
 		Blocks:    4,
 	})
 	if err != nil {
-		m.Logger.Fatal(err.Error())
+		m.Logger.Fatal(ctx, err.Error())
 	}
 
 	compress, err := httpcompression.Adapter(
@@ -84,13 +92,16 @@ func (m *Middleware) Attach(handler http.Handler) http.Handler {
 	)
 
 	if err != nil {
-		m.Logger.Fatal(err.Error())
+		m.Logger.Fatal(ctx, err.Error())
 	}
 
+	m.Logger.Info(ctx, "Attach compression middleware")
 	last := compress(internal)
 	for _, middleware := range m.MuxMiddlewares {
 		last = middleware(last)
 	}
+
+	m.Logger.Info(ctx, fmt.Sprintf("Total middlewares: %d", len(m.MuxMiddlewares)+1))
 
 	return last
 }

@@ -56,11 +56,7 @@ func (p *Pagination) Handle(request *Request) {
 	p.Page = int(request.Page)
 
 	n := len(request.Fields)
-	if n == 0 {
-		return
-	}
-
-	if n != len(request.Values) {
+	if n == 0 || n != len(request.Values) {
 		return
 	}
 

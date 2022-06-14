@@ -22,7 +22,7 @@ type Module struct {
 }
 
 func (m *Module) GetPaginated(_ context.Context, r *grpcs.Pagination) (*grpcs.{{.Module}}PaginatedResponse, error) {
-	m.Logger.Info(fmt.Sprintf("%+v", r))
+	m.Logger.Info(context.WithValue(context.Background(), "scope", "{{.ModuleLowercase}}"), fmt.Sprintf("%+v", r))
 	records := []*grpcs.{{.Module}}{}
 	model := models.{{.Module}}{}
 	m.Paginator.Model = model
@@ -57,14 +57,15 @@ func (m *Module) GetPaginated(_ context.Context, r *grpcs.Pagination) (*grpcs.{{
 }
 
 func (m *Module) Create(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
-	m.Logger.Info(fmt.Sprintf("%+v", r))
+    ctx := context.WithValue(context.Background(), "scope", "{{.ModuleLowercase}}")
+	m.Logger.Info(ctx, fmt.Sprintf("%+v", r))
 
 	v := m.Model
 	copier.Copy(v, r)
 
-	ok, err := m.Validator.Validate(v)
-	if !ok {
-		m.Logger.Info(fmt.Sprintf("%+v", err))
+	if ok, err := m.Validator.Validate(v); !ok {
+		m.Logger.Error(ctx, err.Error())
+
 		return &grpcs.{{.Module}}Response{
 			Code:    http.StatusBadRequest,
 			Data:    r,
@@ -72,8 +73,9 @@ func (m *Module) Create(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 		}, nil
 	}
 
-	err = m.Handler.Create(v)
-	if err != nil {
+	if err := m.Handler.Create(v); err != nil {
+		m.Logger.Error(ctx, err.Error())
+
 		return &grpcs.{{.Module}}Response{
 			Code:    http.StatusBadRequest,
 			Data:    r,
@@ -90,15 +92,16 @@ func (m *Module) Create(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 }
 
 func (m *Module) Update(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
-	m.Logger.Info(fmt.Sprintf("%+v", r))
+    ctx := context.WithValue(context.Background(), "scope", "{{.ModuleLowercase}}")
+	m.Logger.Info(ctx, fmt.Sprintf("%+v", r))
 
 	v := m.Model
     hold := *v
 	copier.Copy(v, r)
 
-	ok, err := m.Validator.Validate(v)
-	if !ok {
-		m.Logger.Info(fmt.Sprintf("%+v", err))
+	if ok, err := m.Validator.Validate(v); !ok {
+		m.Logger.Error(ctx, err.Error())
+
 		return &grpcs.{{.Module}}Response{
 			Code:    http.StatusBadRequest,
 			Data:    r,
@@ -106,9 +109,8 @@ func (m *Module) Update(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 		}, nil
 	}
 
-	err = m.Handler.Bind(&hold, r.Id)
-	if err != nil {
-		m.Logger.Info(fmt.Sprintf("Data with ID '%s' Not found.", r.Id))
+	if err := m.Handler.Bind(&hold, r.Id); err != nil {
+		m.Logger.Error(ctx, fmt.Sprintf("Data with ID '%s' Not found.", r.Id))
 
 		return &grpcs.{{.Module}}Response{
 			Code:    http.StatusNotFound,
@@ -120,8 +122,9 @@ func (m *Module) Update(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
     v.Id = r.Id
 	v.SetCreatedBy(&configs.User{Id: hold.CreatedBy.String})
 	v.SetCreatedAt(hold.CreatedAt.Time)
-	err = m.Handler.Update(v, v.Id)
-	if err != nil {
+	if err := m.Handler.Update(v, v.Id); err != nil {
+		m.Logger.Error(ctx, err.Error())
+
 		return &grpcs.{{.Module}}Response{
 			Code:    http.StatusBadRequest,
 			Data:    r,
@@ -137,17 +140,15 @@ func (m *Module) Update(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 }
 
 func (m *Module) Get(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
-	m.Logger.Info(fmt.Sprintf("%+v", r))
+    ctx := context.WithValue(context.Background(), "scope", "{{.ModuleLowercase}}")
+	m.Logger.Info(ctx, fmt.Sprintf("%+v", r))
 
 	var v models.{{.Module}}
-
-	data, found := m.Cache.Get(r.Id)
-	if found {
+	if data, found := m.Cache.Get(r.Id); found {
 		v = data.(models.{{.Module}})
 	} else {
-		err := m.Handler.Bind(&v, r.Id)
-		if err != nil {
-			m.Logger.Info(fmt.Sprintf("Data with ID '%s' Not found.", r.Id))
+		if err := m.Handler.Bind(&v, r.Id); err != nil {
+			m.Logger.Error(ctx, fmt.Sprintf("Data with ID '%s' Not found.", r.Id))
 
 			return &grpcs.{{.Module}}Response{
 				Code:    http.StatusNotFound,
@@ -168,13 +169,12 @@ func (m *Module) Get(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}
 }
 
 func (m *Module) Delete(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
-	m.Logger.Info(fmt.Sprintf("%+v", r))
+    ctx := context.WithValue(context.Background(), "scope", "{{.ModuleLowercase}}")
+	m.Logger.Info(ctx, fmt.Sprintf("%+v", r))
 
 	v := m.Model
-
-	err := m.Handler.Bind(v, r.Id)
-	if err != nil {
-		m.Logger.Info(fmt.Sprintf("Data with ID '%s' Not found.", r.Id))
+	if err := m.Handler.Bind(v, r.Id); err != nil {
+		m.Logger.Error(ctx, fmt.Sprintf("Data with ID '%s' Not found.", r.Id))
 
 		return &grpcs.{{.Module}}Response{
 			Code:    http.StatusNotFound,

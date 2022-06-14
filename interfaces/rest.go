@@ -3,6 +3,7 @@ package interfaces
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/KejawenLab/bima/v2/configs"
@@ -17,32 +18,30 @@ type Rest struct {
 	HttpPort   int
 	Middleware *handlers.Middleware
 	Router     *handlers.Router
-	Server     *http.ServeMux
-	Context    context.Context
-	Logger     *handlers.Logger
 }
 
 func (r *Rest) Run(servers []configs.Server) {
-	ctx, cancel := context.WithCancel(r.Context)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	endpoint := fmt.Sprintf("0.0.0.0:%d", r.GRpcPort)
-	conn, err := grpc.DialContext(ctx, endpoint, grpc.WithInsecure())
+	gRpcClient, err := grpc.DialContext(ctx, endpoint, grpc.WithInsecure())
 	if err != nil {
-		r.Logger.Fatal(fmt.Sprintf("Server is not ready. %v", err))
+		log.Fatalf("Server is not ready. %v", err)
 	}
 
 	defer func() {
 		if err != nil {
-			if cerr := conn.Close(); cerr != nil {
+			if cerr := gRpcClient.Close(); cerr != nil {
 				grpclog.Infof("Failed to close connection to %s: %v", endpoint, cerr)
 			}
 			return
 		}
+
 		go func() {
 			<-ctx.Done()
-			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close connection to %s: %v", endpoint, cerr)
+			if cerr := gRpcClient.Close(); cerr != nil {
+				grpclog.Infof("Context closed by %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -58,7 +57,7 @@ func (r *Rest) Run(servers []configs.Server) {
 	r.Middleware.Sort()
 	r.Router.Sort()
 
-	http.ListenAndServe(fmt.Sprintf(":%d", r.HttpPort), r.Middleware.Attach(r.Router.Handle(ctx, r.Server, conn)))
+	http.ListenAndServe(fmt.Sprintf(":%d", r.HttpPort), r.Middleware.Attach(r.Router.Handle(ctx, http.NewServeMux(), gRpcClient)))
 }
 
 func (r *Rest) IsBackground() bool {
