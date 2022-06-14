@@ -30,8 +30,12 @@ func (a *ApiDoc) Middlewares() []configs.Middleware {
 }
 
 func (a *ApiDoc) Handle(w http.ResponseWriter, r *http.Request, _ map[string]string) {
-	if a.Debug {
-		regex := regexp.MustCompile(fmt.Sprintf("%s/", API_DOC_PATH))
-		http.ServeFile(w, r, regex.ReplaceAllString(r.URL.Path, "swaggers/"))
+	if !a.Debug {
+		w.Write([]byte("Api doc not available"))
+
+		return
 	}
+
+	regex := regexp.MustCompile(fmt.Sprintf("%s/", API_DOC_PATH))
+	http.ServeFile(w, r, regex.ReplaceAllString(r.URL.Path, "swaggers/"))
 }
