@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const VERSION_STRING = "v2.4.0"
+const VERSION_STRING = "v2.4.1"
 
 type (
 	Module struct {

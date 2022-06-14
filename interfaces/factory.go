@@ -17,10 +17,10 @@ func (a *Application) Run(servers []configs.Server) {
 	})
 
 	for _, application := range a.Applications {
-		time.Sleep(100 * time.Millisecond)
 		if application.IsBackground() {
 			go application.Run(servers)
 		} else {
+			time.Sleep(100 * time.Millisecond)
 			application.Run(servers)
 		}
 	}

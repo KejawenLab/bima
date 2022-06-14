@@ -18,5 +18,5 @@ func (e *Elasticsearch) IsBackground() bool {
 }
 
 func (e *Elasticsearch) Priority() int {
-	return configs.HIGEST_PRIORITY + 1
+	return 0
 }

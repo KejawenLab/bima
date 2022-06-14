@@ -18,5 +18,5 @@ func (d *Database) IsBackground() bool {
 }
 
 func (d *Database) Priority() int {
-	return configs.HIGEST_PRIORITY + 1
+	return 0
 }

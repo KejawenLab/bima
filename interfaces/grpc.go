@@ -6,7 +6,6 @@ import (
 	"net"
 
 	"github.com/KejawenLab/bima/v2/configs"
-	"github.com/fatih/color"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"google.golang.org/grpc"
@@ -34,9 +33,6 @@ func (g *GRpc) Run(servers []configs.Server) {
 	for _, server := range servers {
 		server.RegisterGRpc(gRpc)
 	}
-
-	color.New(color.FgCyan, color.Bold).Printf("✓ ")
-	fmt.Printf("Connecting gRPC Multimedia on :%d...\n", g.GRpcPort)
 
 	gRpc.Serve(listen)
 }

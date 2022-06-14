@@ -8,7 +8,6 @@ import (
 
 	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/handlers"
-	"github.com/fatih/color"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
 )
@@ -45,14 +44,6 @@ func (r *Rest) Run(servers []configs.Server) {
 			}
 		}()
 	}()
-
-	util := color.New(color.FgCyan, color.Bold)
-
-	util.Printf("✓ ")
-	fmt.Printf("Playing REST Multimedia on :%d...\n", r.HttpPort)
-
-	util.Printf("✓ ")
-	fmt.Println("Playlist API is Ready on /api/docs...")
 
 	r.Middleware.Sort()
 	r.Router.Sort()

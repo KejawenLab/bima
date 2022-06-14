@@ -90,23 +90,6 @@ var Container = []dingo.Def{
 				Driver:   os.Getenv("DB_DRIVER"),
 			}
 
-			err := mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s:%d", env.Db.User, env.Db.Password, env.Db.Host, env.Db.Port)).SetMonitor(&event.CommandMonitor{
-				Started: func(_ context.Context, evt *event.CommandStartedEvent) {
-					log.Print(evt.Command)
-				},
-			}))
-			if err != nil {
-				err = mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s", env.Db.Host)).SetMonitor(&event.CommandMonitor{
-					Started: func(_ context.Context, evt *event.CommandStartedEvent) {
-						log.Print(evt.Command)
-					},
-				}))
-			}
-
-			if err != nil {
-				return nil, err
-			}
-
 			esPort, _ := strconv.Atoi(os.Getenv("ELASTICSEARCH_PORT"))
 			env.Elasticsearch = configs.Elasticsearch{
 				Host:  os.Getenv("ELASTICSEARCH_HOST"),
@@ -271,9 +254,10 @@ var Container = []dingo.Def{
 			util := color.New(color.FgCyan, color.Bold)
 			var db configs.Driver
 
-			util.Printf("✓ ")
-			fmt.Printf("Database configured using '%s' driver...\n", env.Db.Driver)
-			time.Sleep(100 * time.Millisecond)
+			util.Print("✓ ")
+			fmt.Print("Database configured using ")
+			util.Print(env.Db.Driver)
+			fmt.Println(" driver")
 
 			switch env.Db.Driver {
 			case "mysql":
@@ -281,7 +265,20 @@ var Container = []dingo.Def{
 			case "postgresql":
 				db = postgresql
 			case "mongo":
-				return nil, nil
+				err := mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s:%d", env.Db.User, env.Db.Password, env.Db.Host, env.Db.Port)).SetMonitor(&event.CommandMonitor{
+					Started: func(_ context.Context, evt *event.CommandStartedEvent) {
+						log.Print(evt.Command)
+					},
+				}))
+				if err != nil {
+					err = mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s", env.Db.Host)).SetMonitor(&event.CommandMonitor{
+						Started: func(_ context.Context, evt *event.CommandStartedEvent) {
+							log.Print(evt.Command)
+						},
+					}))
+				}
+
+				return nil, err
 			default:
 				return nil, errors.New("Unknown database driver")
 			}
@@ -315,9 +312,8 @@ var Container = []dingo.Def{
 				return nil, err
 			}
 
-			color.New(color.FgCyan, color.Bold).Printf("✓ ")
-			fmt.Println("Elasticsearch configured...")
-			time.Sleep(100 * time.Millisecond)
+			color.New(color.FgCyan, color.Bold).Print("✓ ")
+			fmt.Println("Elasticsearch configured")
 
 			return client, nil
 		},
@@ -547,9 +543,8 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:message:config",
 		Build: func(env *configs.Env) (amqp.Config, error) {
-			color.New(color.FgCyan, color.Bold).Printf("✓ ")
-			fmt.Println("Pub/Sub configured...")
-			time.Sleep(100 * time.Millisecond)
+			color.New(color.FgCyan, color.Bold).Print("✓ ")
+			fmt.Println("Pub/Sub configured")
 
 			return amqp.NewDurableQueueConfig(fmt.Sprintf("amqp://%s:%s@%s:%d/", env.Amqp.User, env.Amqp.Password, env.Amqp.Host, env.Amqp.Port)), nil
 		},

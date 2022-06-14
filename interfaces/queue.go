@@ -18,5 +18,5 @@ func (q *Queue) IsBackground() bool {
 }
 
 func (q *Queue) Priority() int {
-	return configs.HIGEST_PRIORITY + 1
+	return 0
 }
