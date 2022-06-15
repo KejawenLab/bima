@@ -2,10 +2,11 @@ package routes
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"runtime"
+
+	"github.com/goccy/go-json"
 
 	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/configs"

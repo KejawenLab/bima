@@ -1,8 +1,6 @@
 package events
 
 import (
-	"net/http"
-
 	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/paginations"
 	"github.com/kamva/mgm/v3"
@@ -18,8 +16,6 @@ const BEFORE_UPDATE_EVENT = "event.before_update"
 const AFTER_UPDATE_EVENT = "event.after_update"
 const BEFORE_DELETE_EVENT = "event.before_delete"
 const AFTER_DELETE_EVENT = "event.after_delete"
-const REQUEST_EVENT = "event.request"
-const RESPONSE_EVENT = "event.response"
 
 type (
 	Model struct {
@@ -42,13 +38,5 @@ type (
 	GormPagination struct {
 		Query   *gorm.DB
 		Filters []paginations.Filter
-	}
-
-	Request struct {
-		HttpRequest *http.Request
-	}
-
-	Response struct {
-		ResponseWriter http.ResponseWriter
 	}
 )

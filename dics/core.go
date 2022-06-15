@@ -31,8 +31,6 @@ import (
 	"github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
 	"github.com/fatih/color"
 	"github.com/gertd/go-pluralize"
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/iancoleman/strcase"
 	"github.com/kamva/mgm/v3"
 	"github.com/olivere/elastic/v7"
@@ -40,7 +38,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"google.golang.org/grpc"
 	"gorm.io/gorm"
 )
 
@@ -230,8 +227,9 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:handler:middleware",
-		Build: func(dipatcher *events.Dispatcher, logger *handlers.Logger) (*handlers.Middleware, error) {
+		Build: func(env *configs.Env, dipatcher *events.Dispatcher, logger *handlers.Logger) (*handlers.Middleware, error) {
 			middleware := handlers.Middleware{
+				Debug:      env.Debug,
 				Dispatcher: dipatcher,
 				Logger:     logger,
 			}
@@ -240,8 +238,9 @@ var Container = []dingo.Def{
 			return &middleware, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:event:dispatcher"),
-			"1": dingo.Service("bima:handler:logger"),
+			"0": dingo.Service("bima:config:env"),
+			"1": dingo.Service("bima:event:dispatcher"),
+			"2": dingo.Service("bima:handler:logger"),
 		},
 	},
 	{
@@ -525,19 +524,6 @@ var Container = []dingo.Def{
 		Build: (*routes.Health)(nil),
 		Params: dingo.Params{
 			"Logger": dingo.Service("bima:handler:logger"),
-		},
-	},
-	{
-		Name: "bima:grpc:server",
-		Build: func() (*grpc.Server, error) {
-			return grpc.NewServer(
-				grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
-					grpc_recovery.StreamServerInterceptor(),
-				)),
-				grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-					grpc_recovery.UnaryServerInterceptor(),
-				)),
-			), nil
 		},
 	},
 	{

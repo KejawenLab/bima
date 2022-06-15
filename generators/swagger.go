@@ -1,12 +1,13 @@
 package generators
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/url"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/goccy/go-json"
 )
 
 const MODULES_FILE = "swaggers/modules.json"

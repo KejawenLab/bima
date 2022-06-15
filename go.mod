@@ -10,6 +10,7 @@ require (
 	github.com/gadelkareem/cachita v0.2.3
 	github.com/gertd/go-pluralize v0.1.7
 	github.com/go-stack/stack v1.8.1 // indirect
+	github.com/goccy/go-json v0.9.7
 	github.com/gofrs/uuid v4.0.0+incompatible // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/uuid v1.3.0
