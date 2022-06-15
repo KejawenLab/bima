@@ -2,9 +2,12 @@ package {{.ModulePluralLowercase}}
 
 import (
 	"context"
-	"github.com/goccy/go-json"
 	"fmt"
 	"net/http"
+
+	"github.com/goccy/go-json"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
     "github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/configs"
@@ -43,7 +46,6 @@ func (m *Module) GetPaginated(_ context.Context, r *grpcs.Pagination) (*grpcs.{{
 	}
 
 	return &grpcs.{{.Module}}PaginatedResponse{
-		Code: http.StatusOK,
 		Data: records,
 		Meta: &grpcs.PaginationMetadata{
 			Record:   int32(metadata.Record),
@@ -66,27 +68,18 @@ func (m *Module) Create(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 	if ok, err := m.Validator.Validate(v); !ok {
 		m.Logger.Error(ctx, err.Error())
 
-		return &grpcs.{{.Module}}Response{
-			Code:    http.StatusBadRequest,
-			Data:    r,
-			Message: err.Error(),
-		}, nil
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	if err := m.Handler.Create(v); err != nil {
 		m.Logger.Error(ctx, err.Error())
 
-		return &grpcs.{{.Module}}Response{
-			Code:    http.StatusBadRequest,
-			Data:    r,
-			Message: err.Error(),
-		}, nil
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	r.Id = v.Id
 
 	return &grpcs.{{.Module}}Response{
-		Code: http.StatusCreated,
 		Data: r,
 	}, nil
 }
@@ -102,21 +95,14 @@ func (m *Module) Update(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 	if ok, err := m.Validator.Validate(v); !ok {
 		m.Logger.Error(ctx, err.Error())
 
-		return &grpcs.{{.Module}}Response{
-			Code:    http.StatusBadRequest,
-			Data:    r,
-			Message: err.Error(),
-		}, nil
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	if err := m.Handler.Bind(&hold, r.Id); err != nil {
-		m.Logger.Error(ctx, fmt.Sprintf("Data with ID '%s' Not found.", r.Id))
+		msg := fmt.Sprintf("Data with ID '%s' not found.", r.Id)
+		m.Logger.Error(ctx, msg)
 
-		return &grpcs.{{.Module}}Response{
-			Code:    http.StatusNotFound,
-			Data:    nil,
-			Message: err.Error(),
-		}, nil
+		return nil, status.Error(codes.NotFound, msg)
 	}
 
     v.Id = r.Id
@@ -125,16 +111,12 @@ func (m *Module) Update(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 	if err := m.Handler.Update(v, v.Id); err != nil {
 		m.Logger.Error(ctx, err.Error())
 
-		return &grpcs.{{.Module}}Response{
-			Code:    http.StatusBadRequest,
-			Data:    r,
-			Message: err.Error(),
-		}, nil
+		return nil, status.Error(codes.Internal, err.Error())
 	}
+
     m.Cache.Invalidate(r.Id)
 
 	return &grpcs.{{.Module}}Response{
-		Code: http.StatusOK,
 		Data: r,
 	}, nil
 }
@@ -148,13 +130,10 @@ func (m *Module) Get(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}
 		v = data.(models.{{.Module}})
 	} else {
 		if err := m.Handler.Bind(&v, r.Id); err != nil {
-			m.Logger.Error(ctx, fmt.Sprintf("Data with ID '%s' Not found.", r.Id))
+			msg := fmt.Sprintf("Data with ID '%s' not found.", r.Id)
+			m.Logger.Error(ctx, msg)
 
-			return &grpcs.{{.Module}}Response{
-				Code:    http.StatusNotFound,
-				Data:    nil,
-				Message: err.Error(),
-			}, nil
+			return nil, status.Error(codes.NotFound, msg)
 		}
 
 		m.Cache.Set(r.Id, v)
@@ -163,7 +142,6 @@ func (m *Module) Get(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}
 	copier.Copy(r, &v)
 
 	return &grpcs.{{.Module}}Response{
-		Code: http.StatusOK,
 		Data: r,
 	}, nil
 }
@@ -174,20 +152,16 @@ func (m *Module) Delete(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 
 	v := m.Model
 	if err := m.Handler.Bind(v, r.Id); err != nil {
-		m.Logger.Error(ctx, fmt.Sprintf("Data with ID '%s' Not found.", r.Id))
+		msg := fmt.Sprintf("Data with ID '%s' not found.", r.Id)
+		m.Logger.Error(ctx, msg)
 
-		return &grpcs.{{.Module}}Response{
-			Code:    http.StatusNotFound,
-			Data:    nil,
-			Message: err.Error(),
-		}, nil
+		return nil, status.Error(codes.NotFound, msg)
 	}
 
     m.Handler.Delete(v, r.Id)
     m.Cache.Invalidate(r.Id)
 
 	return &grpcs.{{.Module}}Response{
-		Code: http.StatusNoContent,
 		Data: nil,
 	}, nil
 }

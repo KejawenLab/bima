@@ -23,15 +23,12 @@ message {{.Module}} {
 }
 
 message {{.Module}}Response {
-    int32 code = 1;
-    {{.Module}} data = 2;
-    string message = 3;
+    {{.Module}} data = 1;
 }
 
 message {{.Module}}PaginatedResponse {
-    int32 code = 1;
-    repeated {{.Module}} data = 2;
-    PaginationMetadata meta = 3;
+    repeated {{.Module}} data = 1;
+    PaginationMetadata meta = 2;
 }
 
 service {{.Module}}s {
