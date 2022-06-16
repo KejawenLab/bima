@@ -26,7 +26,7 @@ func (u *GormFilter) Handle(event interface{}) interface{} {
 }
 
 func (u *GormFilter) Listen() string {
-	return events.PAGINATION_EVENT
+	return events.PaginationEvent.String()
 }
 
 func (u *GormFilter) Priority() int {

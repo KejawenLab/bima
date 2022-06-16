@@ -17,7 +17,7 @@ type Messenger struct {
 
 func (m *Messenger) Publish(queueName string, data []byte) error {
 	ctx := context.WithValue(context.Background(), "scope", "messenger")
-	m.Logger.Info(ctx, fmt.Sprintf("Publishing message to: %s", queueName))
+	m.Logger.Debug(ctx, fmt.Sprintf("Publishing message to: %s", queueName))
 
 	msg := message.NewMessage(watermill.NewUUID(), data)
 	if err := m.Publisher.Publish(queueName, msg); err != nil {
@@ -31,7 +31,7 @@ func (m *Messenger) Publish(queueName string, data []byte) error {
 
 func (m *Messenger) Consume(queueName string) (<-chan *message.Message, error) {
 	ctx := context.WithValue(context.Background(), "scope", "messenger")
-	m.Logger.Info(ctx, fmt.Sprintf("Consuming: %s", queueName))
+	m.Logger.Debug(ctx, fmt.Sprintf("Consuming: %s", queueName))
 
 	messages, err := m.Consumer.Subscribe(context.Background(), queueName)
 	if err != nil {

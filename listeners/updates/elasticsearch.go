@@ -50,7 +50,7 @@ func (u *Elasticsearch) Handle(event interface{}) interface{} {
 }
 
 func (u *Elasticsearch) Listen() string {
-	return events.AFTER_UPDATE_EVENT
+	return events.AfterUpdateEvent.String()
 }
 
 func (u *Elasticsearch) Priority() int {

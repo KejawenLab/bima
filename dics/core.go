@@ -418,6 +418,10 @@ var Container = []dingo.Def{
 			extension *configs.LoggerExtension,
 		) (*handlers.Logger, error) {
 			logger := logrus.New()
+			if env.Debug {
+				logger.SetLevel(logrus.DebugLevel)
+			}
+
 			logger.SetFormatter(&logrus.TextFormatter{
 				FullTimestamp: true,
 			})
@@ -576,31 +580,33 @@ var Container = []dingo.Def{
 		Name:  "bima:pagination:adapter:gorm",
 		Build: (*adapter.GormAdapter)(nil),
 		Params: dingo.Params{
-			"Env":        dingo.Service("bima:config:env"),
+			"Logger":     dingo.Service("bima:handler:logger"),
 			"Database":   dingo.Service("bima:connection:database"),
 			"Dispatcher": dingo.Service("bima:event:dispatcher"),
 		},
 	},
 	{
 		Name: "bima:pagination:adapter:elasticsearch",
-		Build: func(env *configs.Env, client *elastic.Client, dispatcher *events.Dispatcher) (*adapter.ElasticsearchAdapter, error) {
+		Build: func(env *configs.Env, logger *handlers.Logger, client *elastic.Client, dispatcher *events.Dispatcher) (*adapter.ElasticsearchAdapter, error) {
 			return &adapter.ElasticsearchAdapter{
 				Service:    env.Service.ConnonicalName,
+				Logger:     logger,
 				Client:     client,
 				Dispatcher: dispatcher,
 			}, nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config:env"),
-			"1": dingo.Service("bima:connection:elasticsearch"),
-			"2": dingo.Service("bima:event:dispatcher"),
+			"1": dingo.Service("bima:handler:logger"),
+			"2": dingo.Service("bima:connection:elasticsearch"),
+			"3": dingo.Service("bima:event:dispatcher"),
 		},
 	},
 	{
 		Name:  "bima:pagination:adapter:mongo",
 		Build: (*adapter.MongodbAdapter)(nil),
 		Params: dingo.Params{
-			"Env":        dingo.Service("bima:config:env"),
+			"Logger":     dingo.Service("bima:handler:logger"),
 			"Dispatcher": dingo.Service("bima:event:dispatcher"),
 		},
 	},
@@ -629,14 +635,29 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:module",
-		Build: (*bima.Module)(nil),
+		Name: "bima:module",
+		Build: func(
+			logger *handlers.Logger,
+			client *elastic.Client,
+			handler *handlers.Handler,
+			cache *utils.Cache,
+			paginator *paginations.Pagination,
+		) (*bima.Module, error) {
+			return &bima.Module{
+				Logger:        logger,
+				Elasticsearch: client,
+				Handler:       handler,
+				Cache:         cache,
+				Paginator:     paginator,
+				Request:       &paginations.Request{},
+			}, nil
+		},
 		Params: dingo.Params{
-			"Elasticsearch": dingo.Service("bima:connection:elasticsearch"),
-			"Handler":       dingo.Service("bima:handler:handler"),
-			"Logger":        dingo.Service("bima:handler:logger"),
-			"Cache":         dingo.Service("bima:cache:memory"),
-			"Paginator":     dingo.Service("bima:pagination:paginator"),
+			"0": dingo.Service("bima:handler:logger"),
+			"1": dingo.Service("bima:connection:elasticsearch"),
+			"2": dingo.Service("bima:handler:handler"),
+			"3": dingo.Service("bima:cache:memory"),
+			"4": dingo.Service("bima:pagination:paginator"),
 		},
 	},
 	{

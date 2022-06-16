@@ -9,15 +9,19 @@ import (
 	"gorm.io/gorm"
 )
 
-const PAGINATION_EVENT = "event.pagination"
-const BEFORE_CREATE_EVENT = "event.before_create"
-const AFTER_CREATE_EVENT = "event.after_create"
-const BEFORE_UPDATE_EVENT = "event.before_update"
-const AFTER_UPDATE_EVENT = "event.after_update"
-const BEFORE_DELETE_EVENT = "event.before_delete"
-const AFTER_DELETE_EVENT = "event.after_delete"
+const (
+	PaginationEvent   = Event("pagination")
+	BeforeCreateEvent = Event("before_create")
+	BeforeUpdateEvent = Event("before_update")
+	BeforeDeleteEvent = Event("before_delete")
+	AfterCreateEvent  = Event("after_create")
+	AfterUpdateEvent  = Event("after_update")
+	AfterDeleteEvent  = Event("after_delete")
+)
 
 type (
+	Event string
+
 	Model struct {
 		Data       interface{}
 		Id         string
@@ -40,3 +44,7 @@ type (
 		Filters []paginations.Filter
 	}
 )
+
+func (e Event) String() string {
+	return string(e)
+}

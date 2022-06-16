@@ -29,7 +29,7 @@ func (u *ElasticsearchFilter) Handle(event interface{}) interface{} {
 }
 
 func (u *ElasticsearchFilter) Listen() string {
-	return events.PAGINATION_EVENT
+	return events.PaginationEvent.String()
 }
 
 func (u *ElasticsearchFilter) Priority() int {

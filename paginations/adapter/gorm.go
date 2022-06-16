@@ -2,9 +2,10 @@ package adapter
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/events"
+	"github.com/KejawenLab/bima/v2/handlers"
 	"github.com/KejawenLab/bima/v2/paginations"
 	"github.com/vcraescu/go-paginator/v2"
 	"github.com/vcraescu/go-paginator/v2/adapter"
@@ -12,7 +13,7 @@ import (
 )
 
 type GormAdapter struct {
-	Env        *configs.Env
+	Logger     *handlers.Logger
 	Dispatcher *events.Dispatcher
 	Database   *gorm.DB
 }
@@ -24,7 +25,8 @@ func (g *GormAdapter) CreateAdapter(ctx context.Context, paginator paginations.P
 		Filters: paginator.Filters,
 	}
 
-	g.Dispatcher.Dispatch(events.PAGINATION_EVENT, &event)
+	g.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.PaginationEvent))
+	g.Dispatcher.Dispatch(events.PaginationEvent.String(), &event)
 
 	return adapter.NewGORMAdapter(event.Query)
 }

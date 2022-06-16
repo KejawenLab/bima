@@ -41,7 +41,7 @@ func (c *Elasticsearch) Handle(event interface{}) interface{} {
 }
 
 func (u *Elasticsearch) Listen() string {
-	return events.AFTER_CREATE_EVENT
+	return events.AfterCreateEvent.String()
 }
 
 func (c *Elasticsearch) Priority() int {

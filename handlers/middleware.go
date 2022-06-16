@@ -66,57 +66,62 @@ func (m *Middleware) Sort() {
 func (m *Middleware) Attach(handler http.Handler) http.Handler {
 	ctx := context.WithValue(context.Background(), "scope", "middleware")
 	internal := http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		if !m.Debug {
+			for _, middleware := range m.Middlewares {
+				if stop := middleware.Attach(request, response); stop {
+					return
+				}
+			}
+
+			handler.ServeHTTP(response, request)
+
+			return
+		}
+
+		start := time.Now()
+		wrapper := responseWrapper{ResponseWriter: response}
 		for _, middleware := range m.Middlewares {
 			if stop := middleware.Attach(request, response); stop {
-				m.Logger.Info(ctx, fmt.Sprintf("Middleware stopped by: %s", reflect.TypeOf(middleware).Name()))
+				m.Logger.Debug(ctx, fmt.Sprintf("Middleware stopped by: %s", reflect.TypeOf(middleware).Name()))
 
 				return
 			}
 		}
 
-		if m.Debug {
-			wrapper := responseWrapper{ResponseWriter: response}
-			start := time.Now()
+		handler.ServeHTTP(&wrapper, request)
 
-			handler.ServeHTTP(&wrapper, request)
+		elapsed := time.Since(start)
 
-			elapsed := time.Since(start)
+		var statusCode string
+		uri, _ := url.QueryUnescape(request.RequestURI)
+		mGet := color.New(color.BgHiGreen, color.FgBlack)
+		mPost := color.New(color.BgYellow, color.FgBlack)
+		mPut := color.New(color.BgCyan, color.FgBlack)
+		mDelete := color.New(color.BgRed, color.FgBlack)
 
-			var statusCode string
-			uri, _ := url.QueryUnescape(request.RequestURI)
-			mGet := color.New(color.BgHiGreen, color.FgBlack)
-			mPost := color.New(color.BgYellow, color.FgBlack)
-			mPut := color.New(color.BgCyan, color.FgBlack)
-			mDelete := color.New(color.BgRed, color.FgBlack)
-
-			switch request.Method {
-			case http.MethodPost:
-				mPost.Print("[POST]")
-			case http.MethodPatch:
-				mPost.Print("[PATCH]")
-			case http.MethodPut:
-				mPut.Print("[PUT]")
-			case http.MethodDelete:
-				mDelete.Print("[DELETE]")
-			default:
-				mGet.Print("[GET]")
-			}
-
-			switch {
-			case wrapper.StatusCode() < 300:
-				statusCode = color.New(color.FgGreen, color.Bold).Sprintf("%d", wrapper.StatusCode())
-			case wrapper.StatusCode() < 400:
-				statusCode = color.New(color.FgYellow, color.Bold).Sprintf("%d", wrapper.StatusCode())
-			default:
-				statusCode = color.New(color.FgRed, color.Bold).Sprintf("%d", wrapper.StatusCode())
-			}
-
-			fmt.Printf("\t%s\t%s\t%s\n", statusCode, elapsed, uri)
-
-			return
+		switch request.Method {
+		case http.MethodPost:
+			mPost.Print("[POST]")
+		case http.MethodPatch:
+			mPost.Print("[PATCH]")
+		case http.MethodPut:
+			mPut.Print("[PUT]")
+		case http.MethodDelete:
+			mDelete.Print("[DELETE]")
+		default:
+			mGet.Print("[GET]")
 		}
 
-		handler.ServeHTTP(response, request)
+		switch {
+		case wrapper.StatusCode() < 300:
+			statusCode = color.New(color.FgGreen, color.Bold).Sprintf("%d", wrapper.StatusCode())
+		case wrapper.StatusCode() < 400:
+			statusCode = color.New(color.FgYellow, color.Bold).Sprintf("%d", wrapper.StatusCode())
+		default:
+			statusCode = color.New(color.FgRed, color.Bold).Sprintf("%d", wrapper.StatusCode())
+		}
+
+		fmt.Printf("\t%s\t%s\t%s\n", statusCode, elapsed, uri)
 	})
 
 	deflateEncoder, err := zlib.New(zlib.Options{})

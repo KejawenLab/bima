@@ -23,7 +23,7 @@ message {{.Module}} {
 }
 
 message {{.Module}}Response {
-    {{.Module}} data = 1;
+    {{.Module}} {{.ModuleLowercase}} = 1;
 }
 
 message {{.Module}}PaginatedResponse {

@@ -7,6 +7,7 @@ import (
 	"github.com/goccy/go-json"
 
 	"github.com/KejawenLab/bima/v2/events"
+	"github.com/KejawenLab/bima/v2/handlers"
 	"github.com/KejawenLab/bima/v2/paginations"
 	"github.com/olivere/elastic/v7"
 	"github.com/vcraescu/go-paginator/v2"
@@ -15,6 +16,7 @@ import (
 type (
 	ElasticsearchAdapter struct {
 		Service    string
+		Logger     *handlers.Logger
 		Client     *elastic.Client
 		Dispatcher *events.Dispatcher
 	}
@@ -35,7 +37,8 @@ func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator pag
 		Filters: paginator.Filters,
 	}
 
-	es.Dispatcher.Dispatch(events.PAGINATION_EVENT, &event)
+	es.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.PaginationEvent))
+	es.Dispatcher.Dispatch(events.PaginationEvent.String(), &event)
 
 	return newElasticsearchPaginator(ctx, es.Client, fmt.Sprintf("%s_%s", es.Service, paginator.Table), event.Query)
 }

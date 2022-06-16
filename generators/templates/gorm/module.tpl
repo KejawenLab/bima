@@ -3,7 +3,6 @@ package {{.ModulePluralLowercase}}
 import (
 	"context"
 	"fmt"
-	"net/http"
 
 	"github.com/goccy/go-json"
 	"google.golang.org/grpc/codes"
@@ -24,8 +23,8 @@ type Module struct {
     grpcs.Unimplemented{{.Module}}sServer
 }
 
-func (m *Module) GetPaginated(_ context.Context, r *grpcs.Pagination) (*grpcs.{{.Module}}PaginatedResponse, error) {
-	m.Logger.Info(context.WithValue(context.Background(), "scope", "{{.ModuleLowercase}}"), fmt.Sprintf("%+v", r))
+func (m *Module) GetPaginated(ctx context.Context, r *grpcs.Pagination) (*grpcs.{{.Module}}PaginatedResponse, error) {
+	m.Logger.Debug(context.WithValue(ctx, "scope", "{{.ModuleLowercase}}"), fmt.Sprintf("%+v", r))
 	records := []*grpcs.{{.Module}}{}
 	model := models.{{.Module}}{}
 	m.Paginator.Model = model
@@ -58,9 +57,9 @@ func (m *Module) GetPaginated(_ context.Context, r *grpcs.Pagination) (*grpcs.{{
 	}, nil
 }
 
-func (m *Module) Create(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
-    ctx := context.WithValue(context.Background(), "scope", "{{.ModuleLowercase}}")
-	m.Logger.Info(ctx, fmt.Sprintf("%+v", r))
+func (m *Module) Create(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
+    ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
+	m.Logger.Debug(ctx, fmt.Sprintf("%+v", r))
 
 	v := m.Model
 	copier.Copy(v, r)
@@ -80,13 +79,13 @@ func (m *Module) Create(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
 	r.Id = v.Id
 
 	return &grpcs.{{.Module}}Response{
-		Data: r,
+		{{.Module}}: r,
 	}, nil
 }
 
-func (m *Module) Update(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
-    ctx := context.WithValue(context.Background(), "scope", "{{.ModuleLowercase}}")
-	m.Logger.Info(ctx, fmt.Sprintf("%+v", r))
+func (m *Module) Update(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
+    ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
+	m.Logger.Debug(ctx, fmt.Sprintf("%+v", r))
 
 	v := m.Model
     hold := *v
@@ -117,13 +116,13 @@ func (m *Module) Update(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
     m.Cache.Invalidate(r.Id)
 
 	return &grpcs.{{.Module}}Response{
-		Data: r,
+		{{.Module}}: r,
 	}, nil
 }
 
-func (m *Module) Get(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
-    ctx := context.WithValue(context.Background(), "scope", "{{.ModuleLowercase}}")
-	m.Logger.Info(ctx, fmt.Sprintf("%+v", r))
+func (m *Module) Get(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
+    ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
+	m.Logger.Debug(ctx, fmt.Sprintf("%+v", r))
 
 	var v models.{{.Module}}
 	if data, found := m.Cache.Get(r.Id); found {
@@ -142,13 +141,13 @@ func (m *Module) Get(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}
 	copier.Copy(r, &v)
 
 	return &grpcs.{{.Module}}Response{
-		Data: r,
+		{{.Module}}: r,
 	}, nil
 }
 
-func (m *Module) Delete(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
-    ctx := context.WithValue(context.Background(), "scope", "{{.ModuleLowercase}}")
-	m.Logger.Info(ctx, fmt.Sprintf("%+v", r))
+func (m *Module) Delete(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
+    ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
+	m.Logger.Debug(ctx, fmt.Sprintf("%+v", r))
 
 	v := m.Model
 	if err := m.Handler.Bind(v, r.Id); err != nil {
@@ -162,6 +161,6 @@ func (m *Module) Delete(_ context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modu
     m.Cache.Invalidate(r.Id)
 
 	return &grpcs.{{.Module}}Response{
-		Data: nil,
+		{{.Module}}: nil,
 	}, nil
 }

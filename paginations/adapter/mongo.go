@@ -2,9 +2,10 @@ package adapter
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/events"
+	"github.com/KejawenLab/bima/v2/handlers"
 	"github.com/KejawenLab/bima/v2/paginations"
 	"github.com/kamva/mgm/v3"
 	"github.com/vcraescu/go-paginator/v2"
@@ -14,7 +15,7 @@ import (
 
 type (
 	MongodbAdapter struct {
-		Env        *configs.Env
+		Logger     *handlers.Logger
 		Dispatcher *events.Dispatcher
 	}
 
@@ -40,7 +41,8 @@ func (mg *MongodbAdapter) CreateAdapter(ctx context.Context, paginator paginatio
 		MongoDbFilter: bson.M{},
 	}
 
-	mg.Dispatcher.Dispatch(events.PAGINATION_EVENT, &event)
+	mg.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.PaginationEvent))
+	mg.Dispatcher.Dispatch(events.PaginationEvent.String(), &event)
 
 	return newMongodbPaginator(ctx, event.Query, event.MongoDbFilter)
 }

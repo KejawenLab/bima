@@ -10,9 +10,8 @@ import (
 )
 
 type Handler struct {
-	Context    context.Context
-	Dispatcher *events.Dispatcher
 	Logger     *Logger
+	Dispatcher *events.Dispatcher
 	Repository configs.Repository
 	Adapter    paginations.Adapter
 }
@@ -21,7 +20,7 @@ func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metada
 	ctx := context.WithValue(context.Background(), "scope", "handler")
 
 	var result []map[string]interface{}
-	adapter := h.Adapter.CreateAdapter(h.Context, paginator)
+	adapter := h.Adapter.CreateAdapter(ctx, paginator)
 	if adapter == nil {
 		h.Logger.Error(ctx, "Error when creating adapter")
 
@@ -31,7 +30,7 @@ func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metada
 	var total64 int64
 	paginator.Paginate(adapter, &result, &total64)
 
-	h.Logger.Info(ctx, fmt.Sprintf("Total result: %d", total64))
+	h.Logger.Debug(ctx, fmt.Sprintf("Total result: %d", total64))
 
 	var total = int(total64)
 	next := paginator.Page + 1
@@ -53,8 +52,8 @@ func (h *Handler) Create(v interface{}) error {
 	return h.Repository.Transaction(func(r configs.Repository) error {
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 
-		h.Logger.Info(ctx, "Dispatching before create event")
-		h.Dispatcher.Dispatch(events.BEFORE_CREATE_EVENT, &events.Model{
+		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.BeforeCreateEvent))
+		h.Dispatcher.Dispatch(events.BeforeCreateEvent.String(), &events.Model{
 			Data:       v,
 			Repository: r,
 		})
@@ -65,8 +64,8 @@ func (h *Handler) Create(v interface{}) error {
 			return err
 		}
 
-		h.Logger.Info(ctx, "Dispatching after create event")
-		h.Dispatcher.Dispatch(events.AFTER_CREATE_EVENT, &events.Model{
+		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.AfterCreateEvent))
+		h.Dispatcher.Dispatch(events.AfterCreateEvent.String(), &events.Model{
 			Data:       v,
 			Repository: r,
 		})
@@ -79,8 +78,8 @@ func (h *Handler) Update(v interface{}, id string) error {
 	return h.Repository.Transaction(func(r configs.Repository) error {
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 
-		h.Logger.Info(ctx, "Dispatching before update event")
-		h.Dispatcher.Dispatch(events.BEFORE_UPDATE_EVENT, &events.Model{
+		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.BeforeUpdateEvent))
+		h.Dispatcher.Dispatch(events.BeforeUpdateEvent.String(), &events.Model{
 			Id:         id,
 			Data:       v,
 			Repository: r,
@@ -92,8 +91,8 @@ func (h *Handler) Update(v interface{}, id string) error {
 			return err
 		}
 
-		h.Logger.Info(ctx, "Dispatching after update event")
-		h.Dispatcher.Dispatch(events.AFTER_UPDATE_EVENT, &events.Model{
+		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.AfterUpdateEvent))
+		h.Dispatcher.Dispatch(events.AfterUpdateEvent.String(), &events.Model{
 			Id:         id,
 			Data:       v,
 			Repository: r,
@@ -116,8 +115,8 @@ func (h *Handler) Delete(v interface{}, id string) error {
 	return h.Repository.Transaction(func(r configs.Repository) error {
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 
-		h.Logger.Info(ctx, "Dispatching before delete event")
-		h.Dispatcher.Dispatch(events.BEFORE_DELETE_EVENT, &events.Model{
+		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.BeforeDeleteEvent))
+		h.Dispatcher.Dispatch(events.BeforeDeleteEvent.String(), &events.Model{
 			Id:         id,
 			Data:       v,
 			Repository: r,
@@ -129,8 +128,8 @@ func (h *Handler) Delete(v interface{}, id string) error {
 			return err
 		}
 
-		h.Logger.Info(ctx, "Dispatching after delete event")
-		h.Dispatcher.Dispatch(events.AFTER_DELETE_EVENT, &events.Model{
+		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.AfterDeleteEvent))
+		h.Dispatcher.Dispatch(events.AfterDeleteEvent.String(), &events.Model{
 			Id:         id,
 			Data:       v,
 			Repository: r,

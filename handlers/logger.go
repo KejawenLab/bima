@@ -22,75 +22,67 @@ func (l *Logger) Add(key string, value interface{}) {
 }
 
 func (l *Logger) Trace(ctx context.Context, message string) {
-	if l.Verbose {
-		var file, caller string
-		var line int
+	var file, caller string
+	var line int
 
-		pc, file, line, ok := runtime.Caller(1)
-		detail := runtime.FuncForPC(pc)
-		if ok && detail != nil {
-			caller = detail.Name()
-		}
-
-		l.Add("scope", ctx.Value("scope"))
-		l.fields(caller, file, line)
-
-		go l.Logger.WithFields(l.Data).Trace(message)
+	pc, file, line, ok := runtime.Caller(1)
+	detail := runtime.FuncForPC(pc)
+	if ok && detail != nil {
+		caller = detail.Name()
 	}
+
+	l.Add("scope", ctx.Value("scope"))
+	l.fields(caller, file, line)
+
+	go l.Logger.WithFields(l.Data).Trace(message)
 }
 
 func (l *Logger) Debug(ctx context.Context, message string) {
-	if l.Verbose {
-		var file, caller string
-		var line int
+	var file, caller string
+	var line int
 
-		pc, file, line, ok := runtime.Caller(1)
-		detail := runtime.FuncForPC(pc)
-		if ok && detail != nil {
-			caller = detail.Name()
-		}
-
-		l.Add("scope", ctx.Value("scope"))
-		l.fields(caller, file, line)
-
-		go l.Logger.WithFields(l.Data).Info(message)
+	pc, file, line, ok := runtime.Caller(1)
+	detail := runtime.FuncForPC(pc)
+	if ok && detail != nil {
+		caller = detail.Name()
 	}
+
+	l.Add("scope", ctx.Value("scope"))
+	l.fields(caller, file, line)
+
+	go l.Logger.WithFields(l.Data).Info(message)
 }
 
 func (l *Logger) Info(ctx context.Context, message string) {
-	if l.Verbose {
-		var file, caller string
-		var line int
+	var file, caller string
+	var line int
 
-		pc, file, line, ok := runtime.Caller(1)
-		detail := runtime.FuncForPC(pc)
-		if ok && detail != nil {
-			caller = detail.Name()
-		}
-
-		l.Add("scope", ctx.Value("scope"))
-		l.fields(caller, file, line)
-
-		go l.Logger.WithFields(l.Data).Info(message)
+	pc, file, line, ok := runtime.Caller(1)
+	detail := runtime.FuncForPC(pc)
+	if ok && detail != nil {
+		caller = detail.Name()
 	}
+
+	l.Add("scope", ctx.Value("scope"))
+	l.fields(caller, file, line)
+
+	go l.Logger.WithFields(l.Data).Info(message)
 }
 
 func (l *Logger) Warning(ctx context.Context, message string) {
-	if l.Verbose {
-		var file, caller string
-		var line int
+	var file, caller string
+	var line int
 
-		pc, file, line, ok := runtime.Caller(1)
-		detail := runtime.FuncForPC(pc)
-		if ok && detail != nil {
-			caller = detail.Name()
-		}
-
-		l.Add("scope", ctx.Value("scope"))
-		l.fields(caller, file, line)
-
-		go l.Logger.WithFields(l.Data).Warning(message)
+	pc, file, line, ok := runtime.Caller(1)
+	detail := runtime.FuncForPC(pc)
+	if ok && detail != nil {
+		caller = detail.Name()
 	}
+
+	l.Add("scope", ctx.Value("scope"))
+	l.fields(caller, file, line)
+
+	go l.Logger.WithFields(l.Data).Warning(message)
 }
 
 func (l *Logger) Error(ctx context.Context, message string) {

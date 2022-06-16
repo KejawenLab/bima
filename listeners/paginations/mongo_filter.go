@@ -35,7 +35,7 @@ func (u *MongoDbFilter) Handle(event interface{}) interface{} {
 }
 
 func (u *MongoDbFilter) Listen() string {
-	return events.PAGINATION_EVENT
+	return events.PaginationEvent.String()
 }
 
 func (u *MongoDbFilter) Priority() int {
