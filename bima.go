@@ -9,7 +9,12 @@ import (
 	"gorm.io/gorm"
 )
 
-const VERSION_STRING = "v2.5.1"
+const (
+	Version = "v2.5.2"
+
+	HighestPriority = 255
+	LowestPriority  = -255
+)
 
 type (
 	Module struct {

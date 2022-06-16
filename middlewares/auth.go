@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/handlers"
 )
@@ -53,5 +54,5 @@ func (a *Auth) Attach(request *http.Request, response http.ResponseWriter) bool 
 }
 
 func (a *Auth) Priority() int {
-	return configs.HIGEST_PRIORITY + 1
+	return bima.HighestPriority + 1
 }

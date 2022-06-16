@@ -14,6 +14,7 @@ func Test_RequestIDHeader(t *testing.T) {
 		Logger: &handlers.Logger{
 			Verbose: true,
 			Logger:  logrus.New(),
+			Data:    logrus.Fields{},
 		},
 		RequestIDHeader: "X-Request-ID",
 	}
@@ -21,6 +22,6 @@ func Test_RequestIDHeader(t *testing.T) {
 	req := httptest.NewRequest("GET", "http://bima.framework/foo", nil)
 	w := httptest.NewRecorder()
 
-	assert.Equal(t, -252, middleware.Priority())
+	assert.Equal(t, 257, middleware.Priority())
 	assert.Equal(t, false, middleware.Attach(req, w))
 }

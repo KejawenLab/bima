@@ -10,10 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const HIGEST_PRIORITY = 255
-
-const LOWEST_PRIORITY = -255
-
 type (
 	Transaction func(Repository) error
 

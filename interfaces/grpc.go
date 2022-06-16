@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 
+	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/configs"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -42,5 +43,5 @@ func (g *GRpc) IsBackground() bool {
 }
 
 func (g *GRpc) Priority() int {
-	return configs.HIGEST_PRIORITY + 1
+	return bima.HighestPriority + 1
 }

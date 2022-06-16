@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/connectivity"
 )
 
-const HEALTH_PATH = "/health"
+const HelthPath = "/health"
 
 type Health struct {
 	client *grpc.ClientConn
@@ -23,7 +23,7 @@ type Health struct {
 }
 
 func (h *Health) Path() string {
-	return HEALTH_PATH
+	return HelthPath
 }
 
 func (h *Health) Method() string {
@@ -50,7 +50,7 @@ func (h *Health) Handle(w http.ResponseWriter, r *http.Request, _ map[string]str
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
 	payload := map[string]interface{}{
-		"version": bima.VERSION_STRING,
+		"version": bima.Version,
 		"name":    "Bima",
 		"author":  "Muhamad Surya Iksanudin<surya.iksanudin@gmail.com>",
 		"link":    "https://github.com/KejawenLab/skeleton",

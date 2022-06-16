@@ -7,6 +7,7 @@ import (
 
 	"github.com/goccy/go-json"
 
+	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/events"
 	"github.com/olivere/elastic/v7"
@@ -45,5 +46,5 @@ func (u *Elasticsearch) Listen() string {
 }
 
 func (c *Elasticsearch) Priority() int {
-	return configs.HIGEST_PRIORITY + 1
+	return bima.HighestPriority + 1
 }

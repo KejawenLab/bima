@@ -3,7 +3,7 @@ package paginations
 import (
 	"fmt"
 
-	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/events"
 )
 
@@ -30,5 +30,5 @@ func (u *GormFilter) Listen() string {
 }
 
 func (u *GormFilter) Priority() int {
-	return configs.HIGEST_PRIORITY + 1
+	return bima.HighestPriority + 1
 }

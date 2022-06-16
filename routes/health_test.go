@@ -39,6 +39,7 @@ func Test_Hello_Route_Success(t *testing.T) {
 		Logger: &handlers.Logger{
 			Verbose: true,
 			Logger:  logrus.New(),
+			Data:    logrus.Fields{},
 		},
 	}
 
@@ -47,7 +48,7 @@ func Test_Hello_Route_Success(t *testing.T) {
 	health.SetClient(conn)
 
 	assert.Equal(t, http.MethodGet, health.Method())
-	assert.Equal(t, HEALTH_PATH, health.Path())
+	assert.Equal(t, HelthPath, health.Path())
 	assert.Nil(t, health.Middlewares())
 
 	req := httptest.NewRequest("GET", "http://bima.framework/foo", nil)
@@ -72,6 +73,7 @@ func Test_Hello_Route_Down(t *testing.T) {
 		Logger: &handlers.Logger{
 			Verbose: true,
 			Logger:  logrus.New(),
+			Data:    logrus.Fields{},
 		},
 	}
 
@@ -80,7 +82,7 @@ func Test_Hello_Route_Down(t *testing.T) {
 	health.SetClient(conn)
 
 	assert.Equal(t, http.MethodGet, health.Method())
-	assert.Equal(t, HEALTH_PATH, health.Path())
+	assert.Equal(t, HelthPath, health.Path())
 	assert.Nil(t, health.Middlewares())
 
 	req := httptest.NewRequest("GET", "http://bima.framework/foo", nil)

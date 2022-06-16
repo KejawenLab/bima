@@ -35,4 +35,19 @@ func Test_Api_Doc(t *testing.T) {
 	assert.Nil(t, route.Middlewares())
 
 	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
+
+	route = ApiDoc{
+		Debug: false,
+	}
+	route.SetClient(conn)
+
+	route.Handle(w, req, map[string]string{})
+
+	resp = w.Result()
+
+	assert.Equal(t, http.MethodGet, route.Method())
+	assert.Equal(t, fmt.Sprintf("%s/{path}", API_DOC_PATH), route.Path())
+	assert.Nil(t, route.Middlewares())
+
+	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 }

@@ -3,7 +3,7 @@ package middlewares
 import (
 	"net/http"
 
-	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/handlers"
 	"github.com/google/uuid"
 )
@@ -26,5 +26,5 @@ func (r *RequestID) Attach(request *http.Request, response http.ResponseWriter) 
 }
 
 func (r *RequestID) Priority() int {
-	return configs.HIGEST_PRIORITY + 2
+	return bima.HighestPriority + 2
 }

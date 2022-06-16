@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/handlers"
 	"google.golang.org/grpc"
@@ -54,5 +55,5 @@ func (r *Rest) IsBackground() bool {
 }
 
 func (r *Rest) Priority() int {
-	return configs.LOWEST_PRIORITY - 1
+	return bima.LowestPriority - 1
 }

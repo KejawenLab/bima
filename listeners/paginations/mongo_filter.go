@@ -3,7 +3,7 @@ package paginations
 import (
 	"strings"
 
-	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/events"
 	"github.com/kamva/mgm/v3/operator"
 	"go.mongodb.org/mongo-driver/bson"
@@ -39,5 +39,5 @@ func (u *MongoDbFilter) Listen() string {
 }
 
 func (u *MongoDbFilter) Priority() int {
-	return configs.HIGEST_PRIORITY + 1
+	return bima.HighestPriority + 1
 }
