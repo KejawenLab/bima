@@ -2,7 +2,6 @@ package configs
 
 import (
 	"database/sql"
-	"net/http"
 	"time"
 
 	"github.com/google/uuid"
@@ -12,8 +11,6 @@ import (
 )
 
 type (
-	MuxMiddlewares func(http.Handler) http.Handler
-
 	Filter struct {
 		Field    string
 		Operator string

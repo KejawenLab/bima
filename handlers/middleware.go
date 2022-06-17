@@ -21,11 +21,10 @@ import (
 
 type (
 	Middleware struct {
-		Debug          bool
-		Dispatcher     *events.Dispatcher
-		Middlewares    []configs.Middleware
-		MuxMiddlewares []configs.MuxMiddlewares
-		Logger         *Logger
+		Debug       bool
+		Dispatcher  *events.Dispatcher
+		Middlewares []configs.Middleware
+		Logger      *Logger
 	}
 
 	responseWrapper struct {
@@ -159,10 +158,5 @@ func (m *Middleware) Attach(handler http.Handler) http.Handler {
 		m.Logger.Fatal(ctx, err.Error())
 	}
 
-	last := compress(internal)
-	for _, middleware := range m.MuxMiddlewares {
-		last = middleware(last)
-	}
-
-	return last
+	return compress(internal)
 }
