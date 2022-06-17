@@ -65,6 +65,7 @@ func (m *Middleware) Sort() {
 
 func (m *Middleware) Attach(handler http.Handler) http.Handler {
 	ctx := context.WithValue(context.Background(), "scope", "middleware")
+	start := time.Now()
 	internal := http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		if !m.Debug {
 			for _, middleware := range m.Middlewares {
@@ -75,10 +76,13 @@ func (m *Middleware) Attach(handler http.Handler) http.Handler {
 
 			handler.ServeHTTP(response, request)
 
+			elapsed := time.Since(start)
+
+			m.Logger.Info(ctx, fmt.Sprintf("Execution time: %s", elapsed))
+
 			return
 		}
 
-		start := time.Now()
 		wrapper := responseWrapper{ResponseWriter: response}
 		for _, middleware := range m.Middlewares {
 			if stop := middleware.Attach(request, response); stop {
