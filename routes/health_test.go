@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/KejawenLab/bima/v2/handlers"
+	"github.com/KejawenLab/bima/v2/loggers"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
@@ -36,7 +36,7 @@ func Test_Hello_Route_Success(t *testing.T) {
 	}
 
 	health := Health{
-		Logger: &handlers.Logger{
+		Logger: &loggers.Logger{
 			Verbose: true,
 			Logger:  logrus.New(),
 			Data:    logrus.Fields{},
@@ -70,7 +70,7 @@ func Test_Hello_Route_Down(t *testing.T) {
 	conn, _ := grpc.DialContext(ctx, endpoint, grpc.WithInsecure())
 
 	health := Health{
-		Logger: &handlers.Logger{
+		Logger: &loggers.Logger{
 			Verbose: true,
 			Logger:  logrus.New(),
 			Data:    logrus.Fields{},

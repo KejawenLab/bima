@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/middlewares"
 	"google.golang.org/grpc"
 )
 
@@ -25,7 +25,7 @@ func (a *ApiDoc) Method() string {
 
 func (a *ApiDoc) SetClient(client *grpc.ClientConn) {}
 
-func (a *ApiDoc) Middlewares() []configs.Middleware {
+func (a *ApiDoc) Middlewares() []middlewares.Middleware {
 	return nil
 }
 

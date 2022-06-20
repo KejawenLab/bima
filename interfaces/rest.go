@@ -6,9 +6,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/configs"
-	"github.com/KejawenLab/bima/v2/handlers"
+	"github.com/KejawenLab/bima/v2/middlewares"
+	"github.com/KejawenLab/bima/v2/routers"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/encoding/gzip"
@@ -18,8 +18,8 @@ import (
 type Rest struct {
 	GRpcPort   int
 	HttpPort   int
-	Middleware *handlers.Middleware
-	Router     *handlers.Router
+	Middleware *middlewares.Factory
+	Router     *routers.Factory
 }
 
 func (r *Rest) Run(servers []configs.Server) {
@@ -55,5 +55,5 @@ func (r *Rest) IsBackground() bool {
 }
 
 func (r *Rest) Priority() int {
-	return bima.LowestPriority - 1
+	return -253
 }

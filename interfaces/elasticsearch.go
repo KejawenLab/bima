@@ -1,8 +1,6 @@
 package interfaces
 
-import (
-	"github.com/KejawenLab/bima/v2/configs"
-)
+import "github.com/KejawenLab/bima/v2/configs"
 
 type Elasticsearch struct {
 }

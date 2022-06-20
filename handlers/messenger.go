@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/KejawenLab/bima/v2/loggers"
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
 	"github.com/ThreeDotsLabs/watermill/message"
@@ -12,7 +13,7 @@ import (
 type Messenger struct {
 	Publisher *amqp.Publisher
 	Consumer  *amqp.Subscriber
-	Logger    *Logger
+	Logger    *loggers.Logger
 }
 
 func (m *Messenger) Publish(queueName string, data []byte) error {

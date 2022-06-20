@@ -20,6 +20,7 @@ import (
 	"github.com/KejawenLab/bima/v2/listeners/deletes"
 	filters "github.com/KejawenLab/bima/v2/listeners/paginations"
 	"github.com/KejawenLab/bima/v2/listeners/updates"
+	"github.com/KejawenLab/bima/v2/loggers"
 	"github.com/KejawenLab/bima/v2/middlewares"
 	paginations "github.com/KejawenLab/bima/v2/paginations"
 	"github.com/KejawenLab/bima/v2/paginations/adapter"
@@ -203,14 +204,14 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:application",
 		Build: func(
-			database configs.Application,
-			elasticsearch configs.Application,
-			grpc configs.Application,
-			queue configs.Application,
-			rest configs.Application,
-		) (*interfaces.Application, error) {
-			return &interfaces.Application{
-				Applications: []configs.Application{database, elasticsearch, grpc, queue, rest},
+			database interfaces.Application,
+			elasticsearch interfaces.Application,
+			grpc interfaces.Application,
+			queue interfaces.Application,
+			rest interfaces.Application,
+		) (*interfaces.Factory, error) {
+			return &interfaces.Factory{
+				Applications: []interfaces.Application{database, elasticsearch, grpc, queue, rest},
 			}, nil
 		},
 		Params: dingo.Params{
@@ -226,9 +227,9 @@ var Container = []dingo.Def{
 		Build: (*events.Dispatcher)(nil),
 	},
 	{
-		Name: "bima:handler:middleware",
-		Build: func(env *configs.Env, dipatcher *events.Dispatcher, logger *handlers.Logger) (*handlers.Middleware, error) {
-			middleware := handlers.Middleware{
+		Name: "bima:middleware:factory",
+		Build: func(env *configs.Env, dipatcher *events.Dispatcher, logger *loggers.Logger) (*middlewares.Factory, error) {
+			middleware := middlewares.Factory{
 				Debug:      env.Debug,
 				Dispatcher: dipatcher,
 				Logger:     logger,
@@ -245,7 +246,7 @@ var Container = []dingo.Def{
 	},
 	{
 		Name:  "bima:logger:extension",
-		Build: (*configs.LoggerExtension)(nil),
+		Build: (*loggers.LoggerExtension)(nil),
 	},
 	{
 		Name: "bima:connection:database",
@@ -395,8 +396,8 @@ var Container = []dingo.Def{
 		Name: "bima:interface:rest",
 		Build: func(
 			env *configs.Env,
-			middleware *handlers.Middleware,
-			router *handlers.Router,
+			middleware *middlewares.Factory,
+			router *routers.Factory,
 		) (*interfaces.Rest, error) {
 			return &interfaces.Rest{
 				GRpcPort:   env.RpcPort,
@@ -407,7 +408,7 @@ var Container = []dingo.Def{
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config:env"),
-			"1": dingo.Service("bima:handler:middleware"),
+			"1": dingo.Service("bima:middleware:factory"),
 			"2": dingo.Service("bima:handler:router"),
 		},
 	},
@@ -415,8 +416,8 @@ var Container = []dingo.Def{
 		Name: "bima:handler:logger",
 		Build: func(
 			env *configs.Env,
-			extension *configs.LoggerExtension,
-		) (*handlers.Logger, error) {
+			extension *loggers.LoggerExtension,
+		) (*loggers.Logger, error) {
 			logger := logrus.New()
 			if env.Debug {
 				logger.SetLevel(logrus.DebugLevel)
@@ -429,7 +430,7 @@ var Container = []dingo.Def{
 				logger.AddHook(e)
 			}
 
-			return &handlers.Logger{
+			return &loggers.Logger{
 				Verbose: env.Debug,
 				Service: env.Service,
 				Logger:  logger,
@@ -452,8 +453,8 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:handler:router",
-		Build: func(gateway routers.Router, mux routers.Router) (*handlers.Router, error) {
-			return &handlers.Router{
+		Build: func(gateway routers.Router, mux routers.Router) (*routers.Factory, error) {
+			return &routers.Factory{
 				Routers: []routers.Router{
 					gateway,
 					mux,
@@ -475,7 +476,7 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:middleware:requestid",
-		Build: func(env *configs.Env, logger *handlers.Logger) (*middlewares.RequestID, error) {
+		Build: func(env *configs.Env, logger *loggers.Logger) (*middlewares.RequestID, error) {
 			return &middlewares.RequestID{
 				Logger:          logger,
 				RequestIDHeader: env.RequestIDHeader,
@@ -489,12 +490,12 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:router:mux",
 		Build: func(
-			apiDoc configs.Route,
-			apiDocRedirection configs.Route,
-			health configs.Route,
+			apiDoc routes.Route,
+			apiDocRedirection routes.Route,
+			health routes.Route,
 		) (*routers.MuxRouter, error) {
 			routers := routers.MuxRouter{}
-			routers.Register([]configs.Route{apiDoc, apiDocRedirection, health})
+			routers.Register([]routes.Route{apiDoc, apiDocRedirection, health})
 
 			return &routers, nil
 		},
@@ -587,7 +588,7 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:pagination:adapter:elasticsearch",
-		Build: func(env *configs.Env, logger *handlers.Logger, client *elastic.Client, dispatcher *events.Dispatcher) (*adapter.ElasticsearchAdapter, error) {
+		Build: func(env *configs.Env, logger *loggers.Logger, client *elastic.Client, dispatcher *events.Dispatcher) (*adapter.ElasticsearchAdapter, error) {
 			return &adapter.ElasticsearchAdapter{
 				Service:    env.Service.ConnonicalName,
 				Logger:     logger,
@@ -637,7 +638,7 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:module",
 		Build: func(
-			logger *handlers.Logger,
+			logger *loggers.Logger,
 			client *elastic.Client,
 			handler *handlers.Handler,
 			cache *utils.Cache,

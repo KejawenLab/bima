@@ -13,6 +13,6 @@ func Test_Bima_Header(t *testing.T) {
 	req := httptest.NewRequest("GET", "http://bima.framework/foo", nil)
 	w := httptest.NewRecorder()
 
-	assert.Equal(t, -256, middleware.Priority())
+	assert.Equal(t, -257, middleware.Priority())
 	assert.Equal(t, false, middleware.Attach(req, w))
 }

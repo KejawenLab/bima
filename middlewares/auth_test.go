@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/KejawenLab/bima/v2/configs"
-	"github.com/KejawenLab/bima/v2/handlers"
+	"github.com/KejawenLab/bima/v2/loggers"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
@@ -20,7 +20,7 @@ func Test_Auth(t *testing.T) {
 				Role:  "",
 			},
 		},
-		Logger: &handlers.Logger{
+		Logger: &loggers.Logger{
 			Verbose: true,
 			Logger:  logrus.New(),
 			Data:    logrus.Fields{},
@@ -30,7 +30,7 @@ func Test_Auth(t *testing.T) {
 	req := httptest.NewRequest("GET", "http://bima.framework/foo", nil)
 	w := httptest.NewRecorder()
 
-	assert.Equal(t, 256, middleware.Priority())
+	assert.Equal(t, 257, middleware.Priority())
 	assert.Equal(t, false, middleware.Attach(req, w))
 	assert.Equal(t, http.StatusOK, w.Result().StatusCode)
 
@@ -43,7 +43,7 @@ func Test_Auth(t *testing.T) {
 				Whitelist: "/foo",
 			},
 		},
-		Logger: &handlers.Logger{
+		Logger: &loggers.Logger{
 			Verbose: true,
 			Logger:  logrus.New(),
 			Data:    logrus.Fields{},
@@ -53,7 +53,7 @@ func Test_Auth(t *testing.T) {
 	req = httptest.NewRequest("GET", "http://bima.framework/foo", nil)
 	w = httptest.NewRecorder()
 
-	assert.Equal(t, 256, middleware.Priority())
+	assert.Equal(t, 257, middleware.Priority())
 	assert.Equal(t, false, middleware.Attach(req, w))
 	assert.Equal(t, http.StatusOK, w.Result().StatusCode)
 
@@ -67,7 +67,7 @@ func Test_Auth(t *testing.T) {
 				MinRole:   2,
 			},
 		},
-		Logger: &handlers.Logger{
+		Logger: &loggers.Logger{
 			Verbose: true,
 			Logger:  logrus.New(),
 			Data:    logrus.Fields{},
@@ -77,7 +77,7 @@ func Test_Auth(t *testing.T) {
 	req = httptest.NewRequest("GET", "http://bima.framework/foo", nil)
 	w = httptest.NewRecorder()
 
-	assert.Equal(t, 256, middleware.Priority())
+	assert.Equal(t, 257, middleware.Priority())
 	assert.Equal(t, true, middleware.Attach(req, w))
 	assert.Equal(t, http.StatusUnauthorized, w.Result().StatusCode)
 
@@ -91,7 +91,7 @@ func Test_Auth(t *testing.T) {
 				MinRole:   2,
 			},
 		},
-		Logger: &handlers.Logger{
+		Logger: &loggers.Logger{
 			Verbose: true,
 			Logger:  logrus.New(),
 			Data:    logrus.Fields{},
@@ -105,7 +105,7 @@ func Test_Auth(t *testing.T) {
 	req.Header.Add("X-User-Email", "surya@bima.com")
 	req.Header.Add("X-User-Role", "1")
 
-	assert.Equal(t, 256, middleware.Priority())
+	assert.Equal(t, 257, middleware.Priority())
 	assert.Equal(t, true, middleware.Attach(req, w))
 	assert.Equal(t, http.StatusUnauthorized, w.Result().StatusCode)
 
@@ -119,7 +119,7 @@ func Test_Auth(t *testing.T) {
 				MinRole:   2,
 			},
 		},
-		Logger: &handlers.Logger{
+		Logger: &loggers.Logger{
 			Verbose: true,
 			Logger:  logrus.New(),
 			Data:    logrus.Fields{},
@@ -133,7 +133,7 @@ func Test_Auth(t *testing.T) {
 	req.Header.Add("X-User-Email", "surya@bima.com")
 	req.Header.Add("X-User-Role", "2")
 
-	assert.Equal(t, 256, middleware.Priority())
+	assert.Equal(t, 257, middleware.Priority())
 	assert.Equal(t, false, middleware.Attach(req, w))
 	assert.Equal(t, http.StatusOK, w.Result().StatusCode)
 }

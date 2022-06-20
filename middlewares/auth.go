@@ -7,14 +7,13 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/configs"
-	"github.com/KejawenLab/bima/v2/handlers"
+	"github.com/KejawenLab/bima/v2/loggers"
 )
 
 type Auth struct {
 	Env    *configs.Env
-	Logger *handlers.Logger
+	Logger *loggers.Logger
 }
 
 func (a *Auth) Attach(request *http.Request, response http.ResponseWriter) bool {
@@ -54,5 +53,5 @@ func (a *Auth) Attach(request *http.Request, response http.ResponseWriter) bool 
 }
 
 func (a *Auth) Priority() int {
-	return bima.HighestPriority + 1
+	return 257
 }

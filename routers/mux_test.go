@@ -6,8 +6,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/KejawenLab/bima/v2/configs"
-	mocks "github.com/KejawenLab/bima/v2/mocks/configs"
+	"github.com/KejawenLab/bima/v2/middlewares"
+	middlewareMocks "github.com/KejawenLab/bima/v2/mocks/middlewares"
+	routeMocks "github.com/KejawenLab/bima/v2/mocks/routes"
+	"github.com/KejawenLab/bima/v2/routes"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -23,7 +25,7 @@ func Test_Mux_Router(t *testing.T) {
 
 	server := runtime.NewServeMux()
 
-	route := mocks.NewRoute(t)
+	route := routeMocks.NewRoute(t)
 	route.On("Path").Return("/without-middleware").Once()
 	route.On("Method").Return(http.MethodGet).Once()
 	route.On("SetClient", mock.Anything).Once()
@@ -31,7 +33,7 @@ func Test_Mux_Router(t *testing.T) {
 	route.On("Handle", mock.Anything, mock.Anything, mock.Anything).Once()
 
 	router := MuxRouter{}
-	router.Register([]configs.Route{route})
+	router.Register([]routes.Route{route})
 
 	assert.Equal(t, -255, router.Priority())
 	assert.Equal(t, 1, len(router.routes))
@@ -45,18 +47,18 @@ func Test_Mux_Router(t *testing.T) {
 
 	route.AssertExpectations(t)
 
-	middleware := mocks.NewMiddleware(t)
+	middleware := middlewareMocks.NewMiddleware(t)
 	middleware.On("Attach", mock.Anything, mock.Anything).Return(false).Once()
 
-	route = mocks.NewRoute(t)
+	route = routeMocks.NewRoute(t)
 	route.On("Path").Return("/middleware").Once()
 	route.On("Method").Return(http.MethodGet).Once()
 	route.On("SetClient", mock.Anything).Once()
-	route.On("Middlewares").Return([]configs.Middleware{middleware}).Once()
+	route.On("Middlewares").Return([]middlewares.Middleware{middleware}).Once()
 	route.On("Handle", mock.Anything, mock.Anything, mock.Anything).Once()
 
 	router = MuxRouter{}
-	router.Register([]configs.Route{route})
+	router.Register([]routes.Route{route})
 
 	assert.Equal(t, -255, router.Priority())
 	assert.Equal(t, 1, len(router.routes))
@@ -70,17 +72,17 @@ func Test_Mux_Router(t *testing.T) {
 
 	route.AssertExpectations(t)
 
-	middleware = mocks.NewMiddleware(t)
+	middleware = middlewareMocks.NewMiddleware(t)
 	middleware.On("Attach", mock.Anything, mock.Anything).Return(true).Once()
 
-	route = mocks.NewRoute(t)
+	route = routeMocks.NewRoute(t)
 	route.On("Path").Return("/middleware-stop").Once()
 	route.On("Method").Return(http.MethodGet).Once()
 	route.On("SetClient", mock.Anything).Once()
-	route.On("Middlewares").Return([]configs.Middleware{middleware}).Once()
+	route.On("Middlewares").Return([]middlewares.Middleware{middleware}).Once()
 
 	router = MuxRouter{}
-	router.Register([]configs.Route{route})
+	router.Register([]routes.Route{route})
 
 	assert.Equal(t, -255, router.Priority())
 	assert.Equal(t, 1, len(router.routes))

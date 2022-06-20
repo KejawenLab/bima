@@ -6,7 +6,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/kamva/mgm/v3"
-	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -77,10 +76,6 @@ type (
 		RequestIDHeader  string
 	}
 
-	LoggerExtension struct {
-		Extensions []logrus.Hook
-	}
-
 	GormBase struct {
 		Id        string `gorm:"type:string;primaryKey;autoIncrement:false"`
 		CreatedAt sql.NullTime
@@ -102,10 +97,6 @@ type (
 		UpdatedBy        string    `bson:"updated_by"`
 	}
 )
-
-func (l *LoggerExtension) Register(extensions []logrus.Hook) {
-	l.Extensions = extensions
-}
 
 func (b *GormBase) SetCreatedBy(user *User) {
 	if user != nil {

@@ -16,5 +16,5 @@ func (a *Header) Attach(_ *http.Request, response http.ResponseWriter) bool {
 }
 
 func (a *Header) Priority() int {
-	return bima.LowestPriority - 1
+	return -257
 }

@@ -4,14 +4,14 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/KejawenLab/bima/v2/handlers"
+	"github.com/KejawenLab/bima/v2/loggers"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
 
 func Test_RequestIDHeader(t *testing.T) {
 	middleware := RequestID{
-		Logger: &handlers.Logger{
+		Logger: &loggers.Logger{
 			Verbose: true,
 			Logger:  logrus.New(),
 			Data:    logrus.Fields{},
@@ -22,6 +22,6 @@ func Test_RequestIDHeader(t *testing.T) {
 	req := httptest.NewRequest("GET", "http://bima.framework/foo", nil)
 	w := httptest.NewRecorder()
 
-	assert.Equal(t, 257, middleware.Priority())
+	assert.Equal(t, 259, middleware.Priority())
 	assert.Equal(t, false, middleware.Attach(req, w))
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/goccy/go-json"
 
 	"github.com/KejawenLab/bima/v2/events"
-	"github.com/KejawenLab/bima/v2/handlers"
+	"github.com/KejawenLab/bima/v2/loggers"
 	"github.com/KejawenLab/bima/v2/paginations"
 	"github.com/olivere/elastic/v7"
 	"github.com/vcraescu/go-paginator/v2"
@@ -16,7 +16,7 @@ import (
 type (
 	ElasticsearchAdapter struct {
 		Service    string
-		Logger     *handlers.Logger
+		Logger     *loggers.Logger
 		Client     *elastic.Client
 		Dispatcher *events.Dispatcher
 	}

@@ -5,12 +5,13 @@ import (
 	"fmt"
 
 	"github.com/KejawenLab/bima/v2/events"
+	"github.com/KejawenLab/bima/v2/loggers"
 	"github.com/KejawenLab/bima/v2/paginations"
 	"github.com/KejawenLab/bima/v2/repositories"
 )
 
 type Handler struct {
-	Logger     *Logger
+	Logger     *loggers.Logger
 	Dispatcher *events.Dispatcher
 	Repository repositories.Repository
 	Adapter    paginations.Adapter

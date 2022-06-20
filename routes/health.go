@@ -9,8 +9,8 @@ import (
 	"github.com/goccy/go-json"
 
 	"github.com/KejawenLab/bima/v2"
-	"github.com/KejawenLab/bima/v2/configs"
-	"github.com/KejawenLab/bima/v2/handlers"
+	"github.com/KejawenLab/bima/v2/loggers"
+	"github.com/KejawenLab/bima/v2/middlewares"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 )
@@ -19,7 +19,7 @@ const HelthPath = "/health"
 
 type Health struct {
 	client *grpc.ClientConn
-	Logger *handlers.Logger
+	Logger *loggers.Logger
 }
 
 func (h *Health) Path() string {
@@ -30,7 +30,7 @@ func (h *Health) Method() string {
 	return http.MethodGet
 }
 
-func (h *Health) Middlewares() []configs.Middleware {
+func (h *Health) Middlewares() []middlewares.Middleware {
 	return nil
 }
 

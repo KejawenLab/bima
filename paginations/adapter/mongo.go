@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/KejawenLab/bima/v2/events"
-	"github.com/KejawenLab/bima/v2/handlers"
+	"github.com/KejawenLab/bima/v2/loggers"
 	"github.com/KejawenLab/bima/v2/paginations"
 	"github.com/kamva/mgm/v3"
 	"github.com/vcraescu/go-paginator/v2"
@@ -15,7 +15,7 @@ import (
 
 type (
 	MongodbAdapter struct {
-		Logger     *handlers.Logger
+		Logger     *loggers.Logger
 		Dispatcher *events.Dispatcher
 	}
 

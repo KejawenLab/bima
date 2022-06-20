@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/middlewares"
 	"google.golang.org/grpc"
 )
 
@@ -21,7 +21,7 @@ func (a *ApiDocRedirect) Method() string {
 
 func (a *ApiDocRedirect) SetClient(client *grpc.ClientConn) {}
 
-func (a *ApiDocRedirect) Middlewares() []configs.Middleware {
+func (a *ApiDocRedirect) Middlewares() []middlewares.Middleware {
 	return nil
 }
 

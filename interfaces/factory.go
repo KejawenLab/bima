@@ -7,11 +7,19 @@ import (
 	"github.com/KejawenLab/bima/v2/configs"
 )
 
-type Application struct {
-	Applications []configs.Application
-}
+type (
+	Application interface {
+		Run(servers []configs.Server)
+		IsBackground() bool
+		Priority() int
+	}
 
-func (a *Application) Run(servers []configs.Server) {
+	Factory struct {
+		Applications []Application
+	}
+)
+
+func (a *Factory) Run(servers []configs.Server) {
 	sort.Slice(a.Applications, func(i int, j int) bool {
 		return a.Applications[i].Priority() > a.Applications[j].Priority()
 	})

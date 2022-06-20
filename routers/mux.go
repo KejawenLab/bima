@@ -4,16 +4,16 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/routes"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )
 
 type MuxRouter struct {
-	routes []configs.Route
+	routes []routes.Route
 }
 
-func (m *MuxRouter) Register(routes []configs.Route) {
+func (m *MuxRouter) Register(routes []routes.Route) {
 	m.routes = append(m.routes, routes...)
 }
 
