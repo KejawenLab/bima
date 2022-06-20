@@ -7,14 +7,9 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
-	"gorm.io/gorm"
 )
 
 type (
-	Driver interface {
-		Connect(host string, port int, user string, password string, dbname string, debug bool) *gorm.DB
-	}
-
 	Model interface {
 		TableName() string
 		SetCreatedBy(user *User)

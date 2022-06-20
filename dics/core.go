@@ -11,7 +11,7 @@ import (
 
 	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/configs"
-	"github.com/KejawenLab/bima/v2/configs/drivers"
+	"github.com/KejawenLab/bima/v2/drivers"
 	"github.com/KejawenLab/bima/v2/events"
 	"github.com/KejawenLab/bima/v2/generators"
 	"github.com/KejawenLab/bima/v2/handlers"
@@ -249,9 +249,9 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:connection:database",
-		Build: func(env *configs.Env, mysql configs.Driver, postgresql configs.Driver) (*gorm.DB, error) {
+		Build: func(env *configs.Env, mysql drivers.Driver, postgresql drivers.Driver) (*gorm.DB, error) {
 			util := color.New(color.FgCyan, color.Bold)
-			var db configs.Driver
+			var db drivers.Driver
 
 			util.Print("✓ ")
 			fmt.Print("Database configured using ")
