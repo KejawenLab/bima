@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/routers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )
 
 type Router struct {
-	Routers []configs.Router
+	Routers []routers.Router
 }
 
 func (r *Router) Sort() {

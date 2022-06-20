@@ -33,7 +33,7 @@ func Test_Mux_Router(t *testing.T) {
 	router := MuxRouter{}
 	router.Register([]configs.Route{route})
 
-	assert.Equal(t, -256, router.Priority())
+	assert.Equal(t, -255, router.Priority())
 	assert.Equal(t, 1, len(router.routes))
 
 	router.Handle(context.TODO(), server, conn)
@@ -58,7 +58,7 @@ func Test_Mux_Router(t *testing.T) {
 	router = MuxRouter{}
 	router.Register([]configs.Route{route})
 
-	assert.Equal(t, -256, router.Priority())
+	assert.Equal(t, -255, router.Priority())
 	assert.Equal(t, 1, len(router.routes))
 
 	router.Handle(context.TODO(), server, conn)
@@ -82,7 +82,7 @@ func Test_Mux_Router(t *testing.T) {
 	router = MuxRouter{}
 	router.Register([]configs.Route{route})
 
-	assert.Equal(t, -256, router.Priority())
+	assert.Equal(t, -255, router.Priority())
 	assert.Equal(t, 1, len(router.routes))
 
 	router.Handle(context.TODO(), server, conn)

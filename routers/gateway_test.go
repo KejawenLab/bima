@@ -28,7 +28,7 @@ func Test_Gateway_Router(t *testing.T) {
 	router := GRpcGateway{}
 	router.Register([]configs.Server{grpc})
 
-	assert.Equal(t, 256, router.Priority())
+	assert.Equal(t, 255, router.Priority())
 	assert.Equal(t, 1, len(router.servers))
 
 	router.Handle(context.TODO(), server, conn)

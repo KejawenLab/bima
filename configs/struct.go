@@ -11,12 +11,6 @@ import (
 )
 
 type (
-	Filter struct {
-		Field    string
-		Operator string
-		Value    interface{}
-	}
-
 	User struct {
 		Id    string
 		Email string

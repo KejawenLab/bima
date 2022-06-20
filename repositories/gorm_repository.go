@@ -17,7 +17,7 @@ func (r *GormRepository) Model(model string) {
 	r.model = model
 }
 
-func (r *GormRepository) Transaction(f configs.Transaction) error {
+func (r *GormRepository) Transaction(f Transaction) error {
 	r.pool = r.Database
 	r.Database = r.Database.Begin()
 
@@ -51,7 +51,7 @@ func (r *GormRepository) All(v interface{}) error {
 	return r.Database.Find(v).Error
 }
 
-func (r *GormRepository) FindBy(v interface{}, filters ...configs.Filter) error {
+func (r *GormRepository) FindBy(v interface{}, filters ...Filter) error {
 	db := r.Database
 	for _, f := range filters {
 		db = db.Where(fmt.Sprintf("%s %s ?", f.Field, f.Operator), f.Value)

@@ -3,7 +3,6 @@ package routers
 import (
 	"context"
 
-	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -24,5 +23,5 @@ func (g *GRpcGateway) Handle(ctx context.Context, server *runtime.ServeMux, clie
 }
 
 func (a *GRpcGateway) Priority() int {
-	return bima.HighestPriority + 1
+	return 255
 }

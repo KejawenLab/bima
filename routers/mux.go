@@ -4,7 +4,6 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -35,5 +34,5 @@ func (m *MuxRouter) Handle(context context.Context, server *runtime.ServeMux, cl
 }
 
 func (m *MuxRouter) Priority() int {
-	return bima.LowestPriority - 1
+	return -255
 }

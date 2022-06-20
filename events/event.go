@@ -1,22 +1,12 @@
 package events
 
 import (
-	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/paginations"
+	"github.com/KejawenLab/bima/v2/repositories"
 	"github.com/kamva/mgm/v3"
 	"github.com/olivere/elastic/v7"
 	"go.mongodb.org/mongo-driver/bson"
 	"gorm.io/gorm"
-)
-
-const (
-	PaginationEvent   = Event("pagination")
-	BeforeCreateEvent = Event("before_create")
-	BeforeUpdateEvent = Event("before_update")
-	BeforeDeleteEvent = Event("before_delete")
-	AfterCreateEvent  = Event("after_create")
-	AfterUpdateEvent  = Event("after_update")
-	AfterDeleteEvent  = Event("after_delete")
 )
 
 type (
@@ -25,7 +15,7 @@ type (
 	Model struct {
 		Data       interface{}
 		Id         string
-		Repository configs.Repository
+		Repository repositories.Repository
 	}
 
 	ElasticsearchPagination struct {
@@ -43,6 +33,16 @@ type (
 		Query   *gorm.DB
 		Filters []paginations.Filter
 	}
+)
+
+const (
+	PaginationEvent   = Event("pagination")
+	BeforeCreateEvent = Event("before_create")
+	BeforeUpdateEvent = Event("before_update")
+	BeforeDeleteEvent = Event("before_delete")
+	AfterCreateEvent  = Event("after_create")
+	AfterUpdateEvent  = Event("after_update")
+	AfterDeleteEvent  = Event("after_delete")
 )
 
 func (e Event) String() string {

@@ -452,9 +452,9 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:handler:router",
-		Build: func(gateway configs.Router, mux configs.Router) (*handlers.Router, error) {
+		Build: func(gateway routers.Router, mux routers.Router) (*handlers.Router, error) {
 			return &handlers.Router{
-				Routers: []configs.Router{
+				Routers: []routers.Router{
 					gateway,
 					mux,
 				},

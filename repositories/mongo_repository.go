@@ -3,7 +3,6 @@ package repositories
 import (
 	"errors"
 
-	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -18,7 +17,7 @@ func (r *MongoRepository) Model(model string) {
 	r.model = model
 }
 
-func (r *MongoRepository) Transaction(f configs.Transaction) error {
+func (r *MongoRepository) Transaction(f Transaction) error {
 	return mgm.TransactionWithCtx(mgm.Ctx(), func(session mongo.Session, context mongo.SessionContext) error {
 		if err := f(r); err != nil {
 			return session.AbortTransaction(context)
@@ -59,7 +58,7 @@ func (r *MongoRepository) All(v interface{}) error {
 	return mgm.CollectionByName(r.model).SimpleFind(v, bson.D{})
 }
 
-func (r *MongoRepository) FindBy(v interface{}, filters ...configs.Filter) error {
+func (r *MongoRepository) FindBy(v interface{}, filters ...Filter) error {
 	bFilters := bson.D{}
 	for _, f := range filters {
 		bFilters = append(bFilters, bson.E{

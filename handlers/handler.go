@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/events"
 	"github.com/KejawenLab/bima/v2/paginations"
+	"github.com/KejawenLab/bima/v2/repositories"
 )
 
 type Handler struct {
 	Logger     *Logger
 	Dispatcher *events.Dispatcher
-	Repository configs.Repository
+	Repository repositories.Repository
 	Adapter    paginations.Adapter
 }
 
@@ -49,7 +49,7 @@ func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metada
 }
 
 func (h *Handler) Create(v interface{}) error {
-	return h.Repository.Transaction(func(r configs.Repository) error {
+	return h.Repository.Transaction(func(r repositories.Repository) error {
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 
 		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.BeforeCreateEvent))
@@ -75,7 +75,7 @@ func (h *Handler) Create(v interface{}) error {
 }
 
 func (h *Handler) Update(v interface{}, id string) error {
-	return h.Repository.Transaction(func(r configs.Repository) error {
+	return h.Repository.Transaction(func(r repositories.Repository) error {
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 
 		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.BeforeUpdateEvent))
@@ -112,7 +112,7 @@ func (h *Handler) All(v interface{}) error {
 
 func (h *Handler) Delete(v interface{}, id string) error {
 
-	return h.Repository.Transaction(func(r configs.Repository) error {
+	return h.Repository.Transaction(func(r repositories.Repository) error {
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 
 		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.BeforeDeleteEvent))

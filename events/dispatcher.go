@@ -4,23 +4,29 @@ import (
 	"errors"
 	"fmt"
 	"sort"
-
-	"github.com/KejawenLab/bima/v2/configs"
 )
 
-type Dispatcher struct {
-	Events map[string][]configs.Listener
-}
+type (
+	Listener interface {
+		Handle(event interface{}) interface{}
+		Listen() string
+		Priority() int
+	}
 
-func (d *Dispatcher) Register(listeners []configs.Listener) {
-	d.Events = make(map[string][]configs.Listener)
+	Dispatcher struct {
+		Events map[string][]Listener
+	}
+)
+
+func (d *Dispatcher) Register(listeners []Listener) {
+	d.Events = make(map[string][]Listener)
 	sort.Slice(listeners, func(i, j int) bool {
 		return listeners[i].Priority() > listeners[j].Priority()
 	})
 
 	for _, listener := range listeners {
 		if _, ok := d.Events[listener.Listen()]; !ok {
-			d.Events[listener.Listen()] = []configs.Listener{}
+			d.Events[listener.Listen()] = []Listener{}
 		}
 
 		d.Events[listener.Listen()] = append(d.Events[listener.Listen()], listener)
