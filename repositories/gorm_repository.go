@@ -3,7 +3,7 @@ package repositories
 import (
 	"fmt"
 
-	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v2/models"
 	"gorm.io/gorm"
 )
 
@@ -61,7 +61,7 @@ func (r *GormRepository) FindBy(v interface{}, filters ...Filter) error {
 }
 
 func (r *GormRepository) Delete(v interface{}, id string) error {
-	m := v.(configs.Model)
+	m := v.(models.GormModel)
 	if m.IsSoftDelete() {
 		r.Database.Save(v)
 

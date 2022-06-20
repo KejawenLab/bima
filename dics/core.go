@@ -22,6 +22,7 @@ import (
 	"github.com/KejawenLab/bima/v2/listeners/updates"
 	"github.com/KejawenLab/bima/v2/loggers"
 	"github.com/KejawenLab/bima/v2/middlewares"
+	"github.com/KejawenLab/bima/v2/models"
 	paginations "github.com/KejawenLab/bima/v2/paginations"
 	"github.com/KejawenLab/bima/v2/paginations/adapter"
 	"github.com/KejawenLab/bima/v2/repositories"
@@ -678,7 +679,7 @@ var Container = []dingo.Def{
 		Name: "bima:model",
 		Build: func(env *configs.Env) (*bima.GormModel, error) {
 			return &bima.GormModel{
-				GormBase: configs.GormBase{
+				GormBase: models.GormBase{
 					Env: env,
 				},
 			}, nil

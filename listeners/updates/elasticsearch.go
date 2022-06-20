@@ -8,8 +8,8 @@ import (
 	"github.com/goccy/go-json"
 
 	"github.com/KejawenLab/bima/v2"
-	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/events"
+	"github.com/KejawenLab/bima/v2/models"
 	"github.com/olivere/elastic/v7"
 )
 
@@ -20,7 +20,7 @@ type Elasticsearch struct {
 
 func (u *Elasticsearch) Handle(event interface{}) interface{} {
 	e := event.(*events.Model)
-	m := e.Data.(configs.Model)
+	m := e.Data.(models.GormModel)
 
 	result := make(chan error)
 	go func(r chan<- error) {

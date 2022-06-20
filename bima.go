@@ -1,9 +1,9 @@
 package bima
 
 import (
-	"github.com/KejawenLab/bima/v2/configs"
 	"github.com/KejawenLab/bima/v2/handlers"
 	"github.com/KejawenLab/bima/v2/loggers"
+	"github.com/KejawenLab/bima/v2/models"
 	"github.com/KejawenLab/bima/v2/paginations"
 	"github.com/KejawenLab/bima/v2/utils"
 	"github.com/olivere/elastic/v7"
@@ -28,7 +28,7 @@ type (
 	}
 
 	GormModel struct {
-		configs.GormBase
+		models.GormBase
 	}
 
 	Server struct {
