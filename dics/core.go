@@ -229,11 +229,10 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:middleware:factory",
-		Build: func(env *configs.Env, dipatcher *events.Dispatcher, logger *loggers.Logger) (*middlewares.Factory, error) {
+		Build: func(env *configs.Env, logger *loggers.Logger) (*middlewares.Factory, error) {
 			middleware := middlewares.Factory{
-				Debug:      env.Debug,
-				Dispatcher: dipatcher,
-				Logger:     logger,
+				Debug:  env.Debug,
+				Logger: logger,
 			}
 			middleware.Add(&middlewares.Header{})
 
@@ -241,8 +240,7 @@ var Container = []dingo.Def{
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config:env"),
-			"1": dingo.Service("bima:event:dispatcher"),
-			"2": dingo.Service("bima:handler:logger"),
+			"1": dingo.Service("bima:handler:logger"),
 		},
 	},
 	{

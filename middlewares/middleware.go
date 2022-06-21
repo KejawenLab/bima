@@ -9,7 +9,6 @@ import (
 	"sort"
 	"time"
 
-	"github.com/KejawenLab/bima/v2/events"
 	"github.com/KejawenLab/bima/v2/loggers"
 	"github.com/fatih/color"
 
@@ -27,7 +26,6 @@ type (
 
 	Factory struct {
 		Debug       bool
-		Dispatcher  *events.Dispatcher
 		Middlewares []Middleware
 		Logger      *loggers.Logger
 	}
@@ -132,36 +130,21 @@ func (m *Factory) Attach(handler http.Handler) http.Handler {
 		fmt.Printf("\t%s\t%s\t%s\n", statusCode, elapsed, uri)
 	})
 
-	deflateEncoder, err := zlib.New(zlib.Options{})
-	if err != nil {
-		m.Logger.Fatal(ctx, err.Error())
-	}
-
-	brotliEncoder, err := brotli.New(brotli.Options{})
-	if err != nil {
-		m.Logger.Fatal(ctx, err.Error())
-	}
-
-	gzipEncoder, err := pgzip.New(pgzip.Options{
+	deflateEncoder, _ := zlib.New(zlib.Options{})
+	brotliEncoder, _ := brotli.New(brotli.Options{})
+	gzipEncoder, _ := pgzip.New(pgzip.Options{
 		Level:     pgzip.DefaultCompression,
 		BlockSize: 1 << 20,
 		Blocks:    4,
 	})
-	if err != nil {
-		m.Logger.Fatal(ctx, err.Error())
-	}
 
-	compress, err := httpcompression.Adapter(
+	compress, _ := httpcompression.Adapter(
 		httpcompression.Compressor(brotli.Encoding, 2, brotliEncoder),
 		httpcompression.Compressor(pgzip.Encoding, 1, gzipEncoder),
 		httpcompression.Compressor(zlib.Encoding, 0, deflateEncoder),
 		httpcompression.Prefer(httpcompression.PreferServer),
 		httpcompression.MinSize(165),
 	)
-
-	if err != nil {
-		m.Logger.Fatal(ctx, err.Error())
-	}
 
 	return compress(internal)
 }
