@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/KejawenLab/bima/v2/loggers"
+	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
 	"github.com/ThreeDotsLabs/watermill/message"

@@ -1,11 +1,11 @@
 package bima
 
 import (
-	"github.com/KejawenLab/bima/v2/handlers"
-	"github.com/KejawenLab/bima/v2/loggers"
-	"github.com/KejawenLab/bima/v2/models"
-	"github.com/KejawenLab/bima/v2/paginations"
-	"github.com/KejawenLab/bima/v2/utils"
+	"github.com/KejawenLab/bima/v3/handlers"
+	"github.com/KejawenLab/bima/v3/loggers"
+	"github.com/KejawenLab/bima/v3/models"
+	"github.com/KejawenLab/bima/v3/paginations"
+	"github.com/KejawenLab/bima/v3/utils"
 	"gorm.io/gorm"
 )
 

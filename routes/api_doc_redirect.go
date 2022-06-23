@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/KejawenLab/bima/v2/middlewares"
+	"github.com/KejawenLab/bima/v3/middlewares"
 	"google.golang.org/grpc"
 )
 

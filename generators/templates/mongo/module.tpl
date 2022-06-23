@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-    "github.com/KejawenLab/bima/v2"
+    "github.com/KejawenLab/bima/v3"
 	"github.com/jinzhu/copier"
 	"{{.PackageName}}/protos/builds"
 	"{{.PackageName}}/{{.ModulePluralLowercase}}/models"

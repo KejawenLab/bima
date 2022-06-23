@@ -7,7 +7,7 @@ import (
 
 	grpc "google.golang.org/grpc"
 
-	middlewares "github.com/KejawenLab/bima/v2/middlewares"
+	middlewares "github.com/KejawenLab/bima/v3/middlewares"
 
 	mock "github.com/stretchr/testify/mock"
 )

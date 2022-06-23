@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/KejawenLab/bima/v2/routes"
+	"github.com/KejawenLab/bima/v3/routes"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )

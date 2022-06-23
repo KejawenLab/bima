@@ -6,9 +6,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/KejawenLab/bima/v2/configs"
-	"github.com/KejawenLab/bima/v2/middlewares"
-	"github.com/KejawenLab/bima/v2/routers"
+	"github.com/KejawenLab/bima/v3/configs"
+	"github.com/KejawenLab/bima/v3/middlewares"
+	"github.com/KejawenLab/bima/v3/routers"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/encoding/gzip"

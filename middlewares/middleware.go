@@ -9,7 +9,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/KejawenLab/bima/v2/loggers"
+	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/fatih/color"
 
 	"github.com/CAFxX/httpcompression"

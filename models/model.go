@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v3/configs"
 	"github.com/google/uuid"
 	"github.com/kamva/mgm/v3"
 	"gorm.io/gorm"

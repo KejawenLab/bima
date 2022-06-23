@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/KejawenLab/bima/v2"
-	"github.com/KejawenLab/bima/v2/events"
-	"github.com/KejawenLab/bima/v2/models"
+	"github.com/KejawenLab/bima/v3"
+	"github.com/KejawenLab/bima/v3/events"
+	"github.com/KejawenLab/bima/v3/models"
 	"github.com/olivere/elastic/v7"
 )
 

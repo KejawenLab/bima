@@ -8,9 +8,9 @@ import (
 
 	"github.com/goccy/go-json"
 
-	"github.com/KejawenLab/bima/v2"
-	"github.com/KejawenLab/bima/v2/loggers"
-	"github.com/KejawenLab/bima/v2/middlewares"
+	"github.com/KejawenLab/bima/v3"
+	"github.com/KejawenLab/bima/v3/loggers"
+	"github.com/KejawenLab/bima/v3/middlewares"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 )

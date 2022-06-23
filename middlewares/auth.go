@@ -7,8 +7,8 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/KejawenLab/bima/v2/configs"
-	"github.com/KejawenLab/bima/v2/loggers"
+	"github.com/KejawenLab/bima/v3/configs"
+	"github.com/KejawenLab/bima/v3/loggers"
 )
 
 type Auth struct {

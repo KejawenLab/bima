@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/KejawenLab/bima/v2/loggers"
+	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"

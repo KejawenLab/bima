@@ -1,6 +1,6 @@
 package models
 
-import "github.com/KejawenLab/bima/v2"
+import "github.com/KejawenLab/bima/v3"
 
 type {{.Module}} struct {
 	*bima.GormModel

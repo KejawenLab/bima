@@ -5,7 +5,7 @@ import (
 	"os"
 	engine "text/template"
 
-	"github.com/KejawenLab/bima/v2/parsers"
+	"github.com/KejawenLab/bima/v3/parsers"
 	"gopkg.in/yaml.v2"
 )
 

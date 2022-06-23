@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"testing"
 
-	mocks "github.com/KejawenLab/bima/v2/mocks/routers"
+	mocks "github.com/KejawenLab/bima/v3/mocks/routers"
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc"
 )

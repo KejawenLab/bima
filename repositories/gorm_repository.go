@@ -3,7 +3,7 @@ package repositories
 import (
 	"fmt"
 
-	"github.com/KejawenLab/bima/v2/models"
+	"github.com/KejawenLab/bima/v3/models"
 	"gorm.io/gorm"
 )
 

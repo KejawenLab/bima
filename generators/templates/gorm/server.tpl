@@ -3,7 +3,7 @@ package {{.ModulePluralLowercase}}
 import (
     "context"
 
-	"github.com/KejawenLab/bima/v2"
+	"github.com/KejawenLab/bima/v3"
 	"{{.PackageName}}/protos/builds"
 	"{{.PackageName}}/{{.ModulePluralLowercase}}/models"
     "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"

@@ -3,7 +3,7 @@ package paginations
 import (
 	"fmt"
 
-	"github.com/KejawenLab/bima/v2/events"
+	"github.com/KejawenLab/bima/v3/events"
 	"github.com/olivere/elastic/v7"
 )
 

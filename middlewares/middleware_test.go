@@ -5,8 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/KejawenLab/bima/v2/loggers"
-	mocks "github.com/KejawenLab/bima/v2/mocks/middlewares"
+	"github.com/KejawenLab/bima/v3/loggers"
+	mocks "github.com/KejawenLab/bima/v3/mocks/middlewares"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/mock"
 )

@@ -5,7 +5,7 @@ import (
 	"log"
 	"net"
 
-	"github.com/KejawenLab/bima/v2/configs"
+	"github.com/KejawenLab/bima/v3/configs"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"google.golang.org/grpc"

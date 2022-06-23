@@ -5,8 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/KejawenLab/bima/v2/configs"
-	"github.com/KejawenLab/bima/v2/loggers"
+	"github.com/KejawenLab/bima/v3/configs"
+	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
