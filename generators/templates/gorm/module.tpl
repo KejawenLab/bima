@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/goccy/go-json"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -27,27 +26,18 @@ func (m *Module) GetPaginated(ctx context.Context, r *grpcs.Pagination) (*grpcs.
 	m.Logger.Debug(context.WithValue(ctx, "scope", "{{.ModuleLowercase}}"), fmt.Sprintf("%+v", r))
 	records := []*grpcs.{{.Module}}{}
 	model := models.{{.Module}}{}
+
 	m.Paginator.Model = model
 	m.Paginator.Table = model.TableName()
 
     copier.Copy(m.Request, r)
 	m.Paginator.Handle(m.Request)
 
-	metadata, result := m.Handler.Paginate(*m.Paginator)
-	for _, v := range result {
-	    record := &grpcs.{{.Module}}{}
-		data, _ := json.Marshal(v)
-		json.Unmarshal(data, &model)
-		copier.Copy(record, &model)
-
-		record.Id = model.Id
-		records = append(records, record)
-	}
+	metadata := m.Handler.Paginate(*m.Paginator, &records)
 
 	return &grpcs.{{.Module}}PaginatedResponse{
 		Data: records,
 		Meta: &grpcs.PaginationMetadata{
-			Record:   int32(metadata.Record),
 			Page:     int32(metadata.Page),
 			Previous: int32(metadata.Previous),
 			Next:     int32(metadata.Next),

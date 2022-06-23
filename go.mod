@@ -33,15 +33,15 @@ require (
 	github.com/xdg-go/scram v1.1.1 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
 	go.mongodb.org/mongo-driver v1.9.1
-	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
+	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
 	golang.org/x/mod v0.4.1
-	golang.org/x/net v0.0.0-20220621193019-9d032be2e588 // indirect
+	golang.org/x/net v0.0.0-20220622184535-263ec571b305 // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
-	golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c // indirect
+	golang.org/x/sys v0.0.0-20220622161953-175b2fd9d664 // indirect
 	golang.org/x/tools v0.1.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20220621134657-43db42f103f7 // indirect
+	google.golang.org/genproto v0.0.0-20220622171453-ea41d75dfa0f // indirect
 	google.golang.org/grpc v1.47.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.0.4

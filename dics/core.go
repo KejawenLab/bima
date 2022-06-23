@@ -61,7 +61,6 @@ var Container = []dingo.Def{
 		Build: func() (*configs.Env, error) {
 			env := configs.Env{}
 
-			env.Version = os.Getenv("APP_VERSION")
 			env.ApiVersion = os.Getenv("API_VERSION")
 			env.RequestIDHeader = os.Getenv("REQUEST_ID_HEADER")
 			env.Debug, _ = strconv.ParseBool(os.Getenv("APP_DEBUG"))
@@ -121,7 +120,6 @@ var Container = []dingo.Def{
 			}
 
 			env.CacheLifetime, _ = strconv.Atoi(os.Getenv("CACHE_LIFETIME"))
-			env.TemplateLocation = generators.TEMPLATE_PATH
 
 			return &env, nil
 		},
@@ -141,12 +139,11 @@ var Container = []dingo.Def{
 			template *generators.Template,
 		) (*generators.Factory, error) {
 			return &generators.Factory{
-				ApiVersion:       env.ApiVersion,
-				Driver:           env.Db.Driver,
-				TemplateLocation: env.TemplateLocation,
-				Pluralizer:       pluralize.NewClient(),
-				Template:         template,
-				Generators:       []generators.Generator{dic, model, module, proto, provider, server, validation, swagger},
+				ApiVersion: env.ApiVersion,
+				Driver:     env.Db.Driver,
+				Pluralizer: pluralize.NewClient(),
+				Template:   template,
+				Generators: []generators.Generator{dic, model, module, proto, provider, server, validation, swagger},
 			}, nil
 		},
 		Params: dingo.Params{

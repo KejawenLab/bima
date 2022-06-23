@@ -67,8 +67,8 @@ func (m *Factory) Sort() {
 
 func (m *Factory) Attach(handler http.Handler) http.Handler {
 	ctx := context.WithValue(context.Background(), "scope", "middleware")
-	start := time.Now()
 	internal := http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		start := time.Now()
 		if !m.Debug {
 			for _, middleware := range m.Middlewares {
 				if stop := middleware.Attach(request, response); stop {
@@ -127,7 +127,17 @@ func (m *Factory) Attach(handler http.Handler) http.Handler {
 			statusCode = color.New(color.FgRed, color.Bold).Sprintf("%d", wrapper.StatusCode())
 		}
 
-		fmt.Printf("\t%s\t%s\t%s\n", statusCode, elapsed, uri)
+		var elapsedString string
+		switch {
+		case elapsed.Seconds() < 1.00:
+			elapsedString = color.New(color.FgGreen, color.Bold).Sprint(elapsed)
+		case elapsed.Seconds() < 5.00:
+			elapsedString = color.New(color.FgYellow, color.Bold).Sprint(elapsed)
+		case elapsed.Seconds() > 5.00:
+			elapsedString = color.New(color.FgRed, color.Bold).Sprint(elapsed)
+		}
+
+		fmt.Printf("\t%s\t%s\t%s\n", statusCode, elapsedString, uri)
 	})
 
 	deflateEncoder, _ := zlib.New(zlib.Options{})

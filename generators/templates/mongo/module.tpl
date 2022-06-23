@@ -12,7 +12,6 @@ import (
 	"{{.PackageName}}/protos/builds"
 	"{{.PackageName}}/{{.ModulePluralLowercase}}/models"
 	"{{.PackageName}}/{{.ModulePluralLowercase}}/validations"
-    "gopkg.in/mgo.v2/bson"
 )
 
 type Module struct {
@@ -25,22 +24,14 @@ func (m *Module) GetPaginated(ctx context.Context, r *grpcs.Pagination) (*grpcs.
 	m.Logger.Debug(context.WithValue(ctx, "scope", "{{.ModuleLowercase}}"), fmt.Sprintf("%+v", r))
 	records := []*grpcs.{{.Module}}{}
 	model := models.{{.Module}}{}
+
 	m.Paginator.Model = &model
 	m.Paginator.Table = model.CollectionName()
 
     copier.Copy(m.Request, r)
 	m.Paginator.Handle(m.Request)
 
-	metadata, result := m.Handler.Paginate(*m.Paginator)
-	for _, v := range result {
-	    record := &grpcs.{{.Module}}{}
-		data, _ := bson.Marshal(v)
-		bson.Unmarshal(data, &model)
-		copier.Copy(record, &model)
-
-		record.Id = model.ID.Hex()
-		records = append(records, record)
-	}
+	metadata := m.Handler.Paginate(*m.Paginator, &records)
 
 	return &grpcs.{{.Module}}PaginatedResponse{
 		Code: http.StatusOK,

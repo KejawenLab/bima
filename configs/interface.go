@@ -15,9 +15,4 @@ type (
 		RegisterQueueConsumer()
 		RepopulateData()
 	}
-
-	Module interface {
-		Consume()
-		Populete()
-	}
 )

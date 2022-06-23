@@ -17,19 +17,18 @@ type Handler struct {
 	Adapter    paginations.Adapter
 }
 
-func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metadata, []map[string]interface{}) {
+func (h *Handler) Paginate(paginator paginations.Pagination, result interface{}) paginations.Metadata {
 	ctx := context.WithValue(context.Background(), "scope", "handler")
 
-	var result []map[string]interface{}
 	adapter := h.Adapter.CreateAdapter(ctx, paginator)
 	if adapter == nil {
 		h.Logger.Error(ctx, "Error when creating adapter")
 
-		return paginations.Metadata{}, []map[string]interface{}{}
+		return paginations.Metadata{}
 	}
 
 	var total64 int64
-	paginator.Paginate(adapter, &result, &total64)
+	paginator.Paginate(adapter, result, &total64)
 
 	h.Logger.Debug(ctx, fmt.Sprintf("Total result: %d", total64))
 
@@ -40,13 +39,12 @@ func (h *Handler) Paginate(paginator paginations.Pagination) (paginations.Metada
 	}
 
 	return paginations.Metadata{
-		Record:   len(result),
 		Page:     paginator.Page,
 		Previous: paginator.Page - 1,
 		Next:     next,
 		Limit:    paginator.Limit,
 		Total:    total,
-	}, result
+	}
 }
 
 func (h *Handler) Create(v interface{}) error {

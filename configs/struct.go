@@ -8,62 +8,60 @@ type (
 	}
 
 	Service struct {
-		Name           string
+		Name           string `json:"name" yaml:"name"`
 		ConnonicalName string
-		Host           string
+		Host           string `json:"host" yaml:"host"`
 	}
 
 	Db struct {
-		Host     string
-		Port     int
-		User     string
-		Password string
-		Name     string
-		Driver   string
+		Host     string `json:"host" yaml:"host"`
+		Port     int    `json:"port" yaml:"port"`
+		User     string `json:"user" yaml:"user"`
+		Password string `json:"password" yaml:"password"`
+		Name     string `json:"name" yaml:"name"`
+		Driver   string `json:"driver" yaml:"driver"`
 	}
 
 	Elasticsearch struct {
-		Host  string
-		Port  int
-		Index string
+		Host  string `json:"host" yaml:"host"`
+		Port  int    `json:"port" yaml:"port"`
+		Index string `json:"index" yaml:"index"`
 	}
 
 	MongoDb struct {
-		Host     string
-		Port     int
-		Database string
+		Host     string `json:"host" yaml:"host"`
+		Port     int    `json:"port" yaml:"port"`
+		Database string `json:"database" yaml:"database"`
 	}
 
 	Amqp struct {
-		Host     string
-		Port     int
-		User     string
-		Password string
+		Host     string `json:"host" yaml:"host"`
+		Port     int    `json:"port" yaml:"port"`
+		User     string `json:"user" yaml:"user"`
+		Password string `json:"password" yaml:"password"`
 	}
 
 	AuthHeader struct {
-		Id        string
-		Email     string
-		Role      string
-		Whitelist string
-		MinRole   int
+		Id        string `json:"id" yaml:"id"`
+		Email     string `json:"email" yaml:"email"`
+		Role      string `json:"role" yaml:"role"`
+		Whitelist string `json:"whitelist" yaml:"whitelist"`
+		MinRole   int    `json:"min_role" yaml:"min_role"`
 	}
 
 	Env struct {
-		Debug            bool
-		HttpPort         int
-		RpcPort          int
-		Version          string
-		ApiVersion       string
-		Service          Service
-		Db               Db
-		Elasticsearch    Elasticsearch
-		MongoDb          MongoDb
-		Amqp             Amqp
-		AuthHeader       AuthHeader
-		CacheLifetime    int
-		User             *User
-		TemplateLocation string
-		RequestIDHeader  string
+		Debug           bool          `json:"debug" yaml:"debug"`
+		HttpPort        int           `json:"http_port" yaml:"http_port"`
+		RpcPort         int           `json:"rpc_port" yaml:"rpc_port"`
+		ApiVersion      string        `json:"api_version" yaml:"api_version"`
+		Service         Service       `json:"service" yaml:"service"`
+		Db              Db            `json:"database" yaml:"database"`
+		Elasticsearch   Elasticsearch `json:"elasticsearch" yaml:"elasticsearch"`
+		MongoDb         MongoDb       `json:"mongodb" yaml:"mongodb"`
+		Amqp            Amqp          `json:"queue" yaml:"queue"`
+		AuthHeader      AuthHeader    `json:"auth_header" yaml:"auth_header"`
+		RequestIDHeader string        `json:"request_id_header" yaml:"request_id_header"`
+		CacheLifetime   int           `json:"cache_lifetime" yaml:"cache_lifetime"`
+		User            *User
 	}
 )

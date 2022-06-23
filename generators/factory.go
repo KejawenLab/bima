@@ -11,7 +11,7 @@ import (
 	"golang.org/x/mod/modfile"
 )
 
-const TEMPLATE_PATH = "templates"
+const templatePath = "templates"
 
 type (
 	Generator interface {
@@ -48,12 +48,11 @@ type (
 	}
 
 	Factory struct {
-		ApiVersion       string
-		TemplateLocation string
-		Driver           string
-		Pluralizer       *pluralize.Client
-		Template         *Template
-		Generators       []Generator
+		ApiVersion string
+		Driver     string
+		Pluralizer *pluralize.Client
+		Template   *Template
+		Generators []Generator
 	}
 )
 
@@ -69,7 +68,7 @@ func (f *Factory) Generate(module *ModuleTemplate) {
 	}
 
 	workDir, _ := os.Getwd()
-	packageName := f.GetPackageName(workDir)
+	packageName := f.packageName(workDir)
 	moduleName := strcase.ToCamel(module.Name)
 	modulePlural := f.Pluralizer.Plural(module.Name)
 	modulePluralLowercase := strcase.ToDelimited(modulePlural, '_')
@@ -83,9 +82,9 @@ func (f *Factory) Generate(module *ModuleTemplate) {
 	f.Template.ModulePluralLowercase = modulePluralLowercase
 	f.Template.Columns = module.Fields
 
-	templatePath := fmt.Sprintf("%s/gorm", f.TemplateLocation)
+	templatePath := fmt.Sprintf("%s/gorm", templatePath)
 	if f.Driver == "mongo" {
-		templatePath = fmt.Sprintf("%s/mongo", f.TemplateLocation)
+		templatePath = fmt.Sprintf("%s/mongo", templatePath)
 	}
 
 	os.MkdirAll(modulePath, 0755)
@@ -94,11 +93,7 @@ func (f *Factory) Generate(module *ModuleTemplate) {
 	}
 }
 
-func (f *Factory) GetDefaultTemplatePath() string {
-	return TEMPLATE_PATH
-}
-
-func (f *Factory) GetPackageName(workDir string) string {
+func (f *Factory) packageName(workDir string) string {
 	mod, err := os.ReadFile(fmt.Sprintf("%s/go.mod", workDir))
 	if err != nil {
 		panic(err)
