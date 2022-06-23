@@ -1,4 +1,4 @@
-package models
+package {{.ModulePluralLowercase}}
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 type {{.Module}} struct {
 	configs.MongoBase `bson:",inline"`
 {{range .Columns}}
-    {{.Name}} {{.GolangType}} `bson:"{{.NameUnderScore}}"`
+    {{.Name}} {{.GolangType}} `bson:"{{.NameUnderScore}}" {{if .IsRequired}}validate:"required"{{end}}`
 {{end}}
 }
 

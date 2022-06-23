@@ -9,23 +9,21 @@ import (
 
     "github.com/KejawenLab/bima/v3"
 	"github.com/KejawenLab/bima/v3/configs"
+	"github.com/KejawenLab/bima/v3/utils"
 	"github.com/jinzhu/copier"
 	"{{.PackageName}}/protos/builds"
-	"{{.PackageName}}/{{.ModulePluralLowercase}}/models"
-	"{{.PackageName}}/{{.ModulePluralLowercase}}/validations"
 )
 
 type Module struct {
     *bima.Module
-	Model     *models.{{.Module}}
-	Validator *validations.{{.Module}}
+	Model     *{{.Module}}
     grpcs.Unimplemented{{.Module}}sServer
 }
 
 func (m *Module) GetPaginated(ctx context.Context, r *grpcs.Pagination) (*grpcs.{{.Module}}PaginatedResponse, error) {
 	m.Logger.Debug(context.WithValue(ctx, "scope", "{{.ModuleLowercase}}"), fmt.Sprintf("%+v", r))
 	records := []*grpcs.{{.Module}}{}
-	model := models.{{.Module}}{}
+	model := {{.Module}}{}
 
 	m.Paginator.Model = model
 	m.Paginator.Table = model.TableName()
@@ -54,10 +52,10 @@ func (m *Module) Create(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
 	v := m.Model
 	copier.Copy(v, r)
 
-	if ok, err := m.Validator.Validate(v); !ok {
-		m.Logger.Error(ctx, err.Error())
+	if message, err := utils.Validate(v); err != nil {
+		m.Logger.Error(ctx, message)
 
-		return nil, status.Error(codes.InvalidArgument, err.Error())
+		return nil, status.Error(codes.InvalidArgument, message)
 	}
 
 	if err := m.Handler.Create(v); err != nil {
@@ -81,10 +79,10 @@ func (m *Module) Update(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
     hold := *v
 	copier.Copy(v, r)
 
-	if ok, err := m.Validator.Validate(v); !ok {
-		m.Logger.Error(ctx, err.Error())
+	if message, err := utils.Validate(v); err != nil {
+		m.Logger.Error(ctx, message)
 
-		return nil, status.Error(codes.InvalidArgument, err.Error())
+		return nil, status.Error(codes.InvalidArgument, message)
 	}
 
 	if err := m.Handler.Bind(&hold, r.Id); err != nil {
@@ -114,9 +112,9 @@ func (m *Module) Get(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modul
     ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
 	m.Logger.Debug(ctx, fmt.Sprintf("%+v", r))
 
-	var v models.{{.Module}}
+	var v {{.Module}}
 	if data, found := m.Cache.Get(r.Id); found {
-		v = data.(models.{{.Module}})
+		v = data.({{.Module}})
 	} else {
 		if err := m.Handler.Bind(&v, r.Id); err != nil {
 			msg := fmt.Sprintf("Data with ID '%s' not found.", r.Id)

@@ -41,12 +41,12 @@ func (p *Provider) Generate(template *Template, modulePath string, packagePath s
 
 	if !skipImport {
 		contents[importIdx] = fmt.Sprintf(`    //%s
-    %s %q`, MODULE_IMPORT, template.ModuleLowercase, fmt.Sprintf("%s/%s/dics", template.PackageName, template.ModulePluralLowercase))
+    %s %q`, MODULE_IMPORT, template.ModuleLowercase, fmt.Sprintf("%s/%s", template.PackageName, template.ModulePluralLowercase))
 	}
 
 	contents[moduleIdx] = fmt.Sprintf(`
-    /*@module:%s*/if err := p.AddDefSlice(%s.%s); err != nil {return err}
-    //%s`, template.ModuleLowercase, template.ModuleLowercase, template.Module, MODULE_REGISTER)
+    /*@module:%s*/if err := p.AddDefSlice(%s.Dic); err != nil {return err}
+    //%s`, template.ModuleLowercase, template.ModuleLowercase, MODULE_REGISTER)
 
 	body := strings.Join(contents, "\n")
 

@@ -9,6 +9,7 @@ require (
 	github.com/fatih/color v1.13.0
 	github.com/gadelkareem/cachita v0.2.3
 	github.com/gertd/go-pluralize v0.1.7
+	github.com/go-playground/validator/v10 v10.11.0
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/goccy/go-json v0.9.7
 	github.com/gofrs/uuid v4.0.0+incompatible // indirect

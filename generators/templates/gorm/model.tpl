@@ -1,11 +1,11 @@
-package models
+package {{.ModulePluralLowercase}}
 
 import "github.com/KejawenLab/bima/v3"
 
 type {{.Module}} struct {
 	*bima.GormModel
 {{range .Columns}}
-    {{.Name}} {{.GolangType}}
+    {{.Name}} {{.GolangType}} {{if .IsRequired}}`validate:"required"`{{end}}
 {{end}}
 }
 

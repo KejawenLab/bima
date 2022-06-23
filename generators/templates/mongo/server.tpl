@@ -5,7 +5,6 @@ import (
 
 	"github.com/KejawenLab/bima/v3"
 	"{{.PackageName}}/protos/builds"
-	"{{.PackageName}}/{{.ModulePluralLowercase}}/models"
     "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )
@@ -25,7 +24,7 @@ func (s *Server) GRpcHandler(context context.Context, server *runtime.ServeMux, 
 
 func (s *Server) RegisterAutoMigrate() {
 	if s.Database != nil && s.Debug {
-		s.Database.AutoMigrate(&models.{{.Module}}{})
+		s.Database.AutoMigrate(&{{.Module}}{})
 	}
 }
 

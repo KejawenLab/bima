@@ -66,7 +66,6 @@ var Container = []dingo.Def{
 			proto generators.Generator,
 			provider generators.Generator,
 			server generators.Generator,
-			validation generators.Generator,
 			swagger generators.Generator,
 			env *configs.Env,
 			template *generators.Template,
@@ -76,7 +75,7 @@ var Container = []dingo.Def{
 				Driver:     env.Db.Driver,
 				Pluralizer: pluralize.NewClient(),
 				Template:   template,
-				Generators: []generators.Generator{dic, model, module, proto, provider, server, validation, swagger},
+				Generators: []generators.Generator{dic, model, module, proto, provider, server, swagger},
 			}, nil
 		},
 		Params: dingo.Params{
@@ -86,10 +85,9 @@ var Container = []dingo.Def{
 			"3": dingo.Service("bima:generator:proto"),
 			"4": dingo.Service("bima:generator:provider"),
 			"5": dingo.Service("bima:generator:server"),
-			"6": dingo.Service("bima:generator:validation"),
-			"7": dingo.Service("bima:generator:swagger"),
-			"8": dingo.Service("bima:config"),
-			"9": dingo.Service("bima:config:template"),
+			"6": dingo.Service("bima:generator:swagger"),
+			"7": dingo.Service("bima:config"),
+			"8": dingo.Service("bima:config:template"),
 		},
 	},
 	{
@@ -115,10 +113,6 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:generator:server",
 		Build: (*generators.Server)(nil),
-	},
-	{
-		Name:  "bima:generator:validation",
-		Build: (*generators.Validation)(nil),
 	},
 	{
 		Name:  "bima:generator:swagger",

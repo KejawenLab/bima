@@ -15,10 +15,7 @@ func (g *Model) Generate(template *Template, modulePath string, packagePath stri
 		panic(err)
 	}
 
-	modelPath := fmt.Sprintf("%s/models", modulePath)
-	os.MkdirAll(modelPath, 0755)
-
-	modelFile, err := os.Create(fmt.Sprintf("%s/%s.go", modelPath, template.ModuleLowercase))
+	modelFile, err := os.Create(fmt.Sprintf("%s/model.go", modulePath))
 	if err != nil {
 		panic(err)
 	}

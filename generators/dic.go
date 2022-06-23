@@ -15,10 +15,7 @@ func (g *Dic) Generate(template *Template, modulePath string, packagePath string
 		panic(err)
 	}
 
-	dicPath := fmt.Sprintf("%s/dics", modulePath)
-	os.MkdirAll(dicPath, 0755)
-
-	dicFile, err := os.Create(fmt.Sprintf("%s/%s.go", dicPath, template.ModuleLowercase))
+	dicFile, err := os.Create(fmt.Sprintf("%s/dic.go", modulePath))
 	if err != nil {
 		panic(err)
 	}
