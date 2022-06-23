@@ -3,7 +3,6 @@ package paginations
 import (
 	"strings"
 
-	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/events"
 	"github.com/kamva/mgm/v3/operator"
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,7 +12,7 @@ import (
 type MongoDbFilter struct {
 }
 
-func (u *MongoDbFilter) Handle(event interface{}) interface{} {
+func (p *MongoDbFilter) Handle(event interface{}) interface{} {
 	e, ok := event.(*events.MongodbPagination)
 	if !ok {
 		return event
@@ -34,10 +33,10 @@ func (u *MongoDbFilter) Handle(event interface{}) interface{} {
 	return e
 }
 
-func (u *MongoDbFilter) Listen() string {
+func (p *MongoDbFilter) Listen() string {
 	return events.PaginationEvent.String()
 }
 
-func (u *MongoDbFilter) Priority() int {
-	return bima.HighestPriority + 1
+func (p *MongoDbFilter) Priority() int {
+	return 255
 }

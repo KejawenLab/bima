@@ -3,14 +3,13 @@ package paginations
 import (
 	"fmt"
 
-	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/events"
 )
 
 type GormFilter struct {
 }
 
-func (u *GormFilter) Handle(event interface{}) interface{} {
+func (p *GormFilter) Handle(event interface{}) interface{} {
 	e, ok := event.(*events.GormPagination)
 	if !ok {
 		return event
@@ -25,10 +24,10 @@ func (u *GormFilter) Handle(event interface{}) interface{} {
 	return e
 }
 
-func (u *GormFilter) Listen() string {
+func (p *GormFilter) Listen() string {
 	return events.PaginationEvent.String()
 }
 
-func (u *GormFilter) Priority() int {
-	return bima.HighestPriority + 1
+func (p *GormFilter) Priority() int {
+	return 255
 }

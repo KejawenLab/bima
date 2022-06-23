@@ -31,6 +31,12 @@ type (
 )
 
 func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator paginations.Pagination) paginator.Adapter {
+	if es.Client == nil {
+		es.Logger.Fatal(ctx, "Adapter not configured properly")
+
+		return nil
+	}
+
 	query := elastic.NewBoolQuery()
 	event := events.ElasticsearchPagination{
 		Query:   query,

@@ -31,6 +31,8 @@ type (
 func (mg *MongodbAdapter) CreateAdapter(ctx context.Context, paginator paginations.Pagination) paginator.Adapter {
 	model, ok := paginator.Model.(mgm.Model)
 	if !ok {
+		mg.Logger.Fatal(ctx, "Adapter not configured properly")
+
 		return nil
 	}
 

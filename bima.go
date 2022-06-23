@@ -6,7 +6,6 @@ import (
 	"github.com/KejawenLab/bima/v2/models"
 	"github.com/KejawenLab/bima/v2/paginations"
 	"github.com/KejawenLab/bima/v2/utils"
-	"github.com/olivere/elastic/v7"
 	"gorm.io/gorm"
 )
 
@@ -19,12 +18,11 @@ const (
 
 type (
 	Module struct {
-		Elasticsearch *elastic.Client
-		Handler       *handlers.Handler
-		Logger        *loggers.Logger
-		Cache         *utils.Cache
-		Paginator     *paginations.Pagination
-		Request       *paginations.Request
+		Handler   *handlers.Handler
+		Logger    *loggers.Logger
+		Cache     *utils.Cache
+		Paginator *paginations.Pagination
+		Request   *paginations.Request
 	}
 
 	GormModel struct {

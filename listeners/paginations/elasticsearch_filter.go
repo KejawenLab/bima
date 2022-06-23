@@ -3,7 +3,6 @@ package paginations
 import (
 	"fmt"
 
-	"github.com/KejawenLab/bima/v2"
 	"github.com/KejawenLab/bima/v2/events"
 	"github.com/olivere/elastic/v7"
 )
@@ -11,7 +10,7 @@ import (
 type ElasticsearchFilter struct {
 }
 
-func (u *ElasticsearchFilter) Handle(event interface{}) interface{} {
+func (p *ElasticsearchFilter) Handle(event interface{}) interface{} {
 	e, ok := event.(*events.ElasticsearchPagination)
 	if !ok {
 		return event
@@ -28,10 +27,10 @@ func (u *ElasticsearchFilter) Handle(event interface{}) interface{} {
 	return e
 }
 
-func (u *ElasticsearchFilter) Listen() string {
+func (p *ElasticsearchFilter) Listen() string {
 	return events.PaginationEvent.String()
 }
 
-func (u *ElasticsearchFilter) Priority() int {
-	return bima.HighestPriority + 1
+func (p *ElasticsearchFilter) Priority() int {
+	return 255
 }

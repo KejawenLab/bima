@@ -5,8 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"os"
-	"strconv"
 	"time"
 
 	"github.com/KejawenLab/bima/v2"
@@ -33,7 +31,6 @@ import (
 	"github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
 	"github.com/fatih/color"
 	"github.com/gertd/go-pluralize"
-	"github.com/iancoleman/strcase"
 	"github.com/kamva/mgm/v3"
 	"github.com/olivere/elastic/v7"
 	"github.com/sarulabs/dingo/v4"
@@ -57,72 +54,8 @@ var Container = []dingo.Def{
 		Build: (*generators.FieldTemplate)(nil),
 	},
 	{
-		Name: "bima:config:env",
-		Build: func() (*configs.Env, error) {
-			env := configs.Env{}
-
-			env.ApiVersion = os.Getenv("API_VERSION")
-			env.RequestIDHeader = os.Getenv("REQUEST_ID_HEADER")
-			env.Debug, _ = strconv.ParseBool(os.Getenv("APP_DEBUG"))
-			env.HttpPort, _ = strconv.Atoi(os.Getenv("APP_PORT"))
-			env.RpcPort, _ = strconv.Atoi(os.Getenv("GRPC_PORT"))
-
-			if env.RequestIDHeader == "" {
-				env.RequestIDHeader = "X-Request-Id"
-			}
-
-			sName := os.Getenv("APP_NAME")
-			env.Service = configs.Service{
-				Name:           sName,
-				ConnonicalName: strcase.ToDelimited(sName, '_'),
-				Host:           os.Getenv("APP_HOST"),
-			}
-
-			dbPort, _ := strconv.Atoi(os.Getenv("DB_PORT"))
-			env.Db = configs.Db{
-				Host:     os.Getenv("DB_HOST"),
-				Port:     dbPort,
-				User:     os.Getenv("DB_USER"),
-				Password: os.Getenv("DB_PASSWORD"),
-				Name:     os.Getenv("DB_NAME"),
-				Driver:   os.Getenv("DB_DRIVER"),
-			}
-
-			esPort, _ := strconv.Atoi(os.Getenv("ELASTICSEARCH_PORT"))
-			env.Elasticsearch = configs.Elasticsearch{
-				Host:  os.Getenv("ELASTICSEARCH_HOST"),
-				Port:  esPort,
-				Index: env.Db.Name,
-			}
-
-			mgdbPort, _ := strconv.Atoi(os.Getenv("MONGODB_PORT"))
-			env.MongoDb = configs.MongoDb{
-				Host:     os.Getenv("MONGODB_HOST"),
-				Port:     mgdbPort,
-				Database: "data_logs",
-			}
-
-			amqpPort, _ := strconv.Atoi(os.Getenv("AMQP_PORT"))
-			env.Amqp = configs.Amqp{
-				Host:     os.Getenv("AMQP_HOST"),
-				Port:     amqpPort,
-				User:     os.Getenv("AMQP_USER"),
-				Password: os.Getenv("AMQP_PASSWORD"),
-			}
-
-			minRole, _ := strconv.Atoi(os.Getenv("AUTH_HEADER_MIN_ROLE"))
-			env.AuthHeader = configs.AuthHeader{
-				Id:        os.Getenv("AUTH_HEADER_ID"),
-				Email:     os.Getenv("AUTH_HEADER_EMAIL"),
-				Role:      os.Getenv("AUTH_HEADER_ROLE"),
-				Whitelist: os.Getenv("AUTH_HEADER_WHITELIST"),
-				MinRole:   minRole,
-			}
-
-			env.CacheLifetime, _ = strconv.Atoi(os.Getenv("CACHE_LIFETIME"))
-
-			return &env, nil
-		},
+		Name:  "bima:config",
+		Build: (*configs.Env)(nil),
 	},
 	{
 		Name: "bima:module:generator",
@@ -155,7 +88,7 @@ var Container = []dingo.Def{
 			"5": dingo.Service("bima:generator:server"),
 			"6": dingo.Service("bima:generator:validation"),
 			"7": dingo.Service("bima:generator:swagger"),
-			"8": dingo.Service("bima:config:env"),
+			"8": dingo.Service("bima:config"),
 			"9": dingo.Service("bima:config:template"),
 		},
 	},
@@ -236,7 +169,7 @@ var Container = []dingo.Def{
 			return &middleware, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:handler:logger"),
 		},
 	},
@@ -289,7 +222,7 @@ var Container = []dingo.Def{
 			), nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:database:driver:mysql"),
 			"2": dingo.Service("bima:database:driver:postgresql"),
 		},
@@ -305,13 +238,16 @@ var Container = []dingo.Def{
 			)
 
 			if err != nil {
-				return nil, err
+				return nil, nil
 			}
 
 			color.New(color.FgCyan, color.Bold).Print("✓ ")
 			fmt.Println("Elasticsearch configured")
 
 			return client, nil
+		},
+		Params: dingo.Params{
+			"0": dingo.Service("bima:config"),
 		},
 	},
 	{
@@ -323,7 +259,7 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:connection:elasticsearch"),
 		},
 	},
@@ -336,7 +272,7 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:connection:elasticsearch"),
 		},
 	},
@@ -349,7 +285,7 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:connection:elasticsearch"),
 		},
 	},
@@ -381,7 +317,7 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 		},
 	},
 	{
@@ -403,7 +339,7 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:middleware:factory"),
 			"2": dingo.Service("bima:handler:router"),
 		},
@@ -434,7 +370,7 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:logger:extension"),
 		},
 	},
@@ -466,7 +402,7 @@ var Container = []dingo.Def{
 		Name:  "bima:middleware:auth",
 		Build: (*middlewares.Auth)(nil),
 		Params: dingo.Params{
-			"Env":    dingo.Service("bima:config:env"),
+			"Env":    dingo.Service("bima:config"),
 			"Logger": dingo.Service("bima:handler:logger"),
 		},
 	},
@@ -479,7 +415,7 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:handler:logger"),
 		},
 	},
@@ -513,7 +449,7 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 		},
 	},
 	{
@@ -536,7 +472,7 @@ var Container = []dingo.Def{
 			return amqp.NewDurableQueueConfig(fmt.Sprintf("amqp://%s:%s@%s:%d/", env.Amqp.User, env.Amqp.Password, env.Amqp.Host, env.Amqp.Port)), nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 		},
 	},
 	{
@@ -550,7 +486,7 @@ var Container = []dingo.Def{
 			return publisher, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:message:config"),
 		},
 	},
@@ -565,7 +501,7 @@ var Container = []dingo.Def{
 			return consumer, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:message:config"),
 		},
 	},
@@ -593,7 +529,7 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:handler:logger"),
 			"2": dingo.Service("bima:connection:elasticsearch"),
 			"3": dingo.Service("bima:event:dispatcher"),
@@ -628,33 +564,30 @@ var Container = []dingo.Def{
 			return utils.NewCache(time.Duration(env.CacheLifetime) * time.Second), nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 		},
 	},
 	{
 		Name: "bima:module",
 		Build: func(
 			logger *loggers.Logger,
-			client *elastic.Client,
 			handler *handlers.Handler,
 			cache *utils.Cache,
 			paginator *paginations.Pagination,
 		) (*bima.Module, error) {
 			return &bima.Module{
-				Logger:        logger,
-				Elasticsearch: client,
-				Handler:       handler,
-				Cache:         cache,
-				Paginator:     paginator,
-				Request:       &paginations.Request{},
+				Logger:    logger,
+				Handler:   handler,
+				Cache:     cache,
+				Paginator: paginator,
+				Request:   &paginations.Request{},
 			}, nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:handler:logger"),
-			"1": dingo.Service("bima:connection:elasticsearch"),
-			"2": dingo.Service("bima:handler:handler"),
-			"3": dingo.Service("bima:cache:memory"),
-			"4": dingo.Service("bima:pagination:paginator"),
+			"1": dingo.Service("bima:handler:handler"),
+			"2": dingo.Service("bima:cache:memory"),
+			"3": dingo.Service("bima:pagination:paginator"),
 		},
 	},
 	{
@@ -666,7 +599,7 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:connection:database"),
 		},
 	},
@@ -680,7 +613,7 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:config:env"),
+			"0": dingo.Service("bima:config"),
 		},
 	},
 }

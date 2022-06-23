@@ -20,6 +20,10 @@ type Elasticsearch struct {
 
 func (c *Elasticsearch) Handle(event interface{}) interface{} {
 	e := event.(*events.Model)
+	if c.Elasticsearch == nil {
+		return e
+	}
+
 	m := e.Data.(models.GormModel)
 
 	result := make(chan error)

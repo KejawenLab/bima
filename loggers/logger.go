@@ -146,10 +146,7 @@ func (l *Logger) Panic(ctx context.Context, message string) {
 func (l *Logger) fields(caller string, file string, line int) {
 	workDir, _ := os.Getwd()
 	l.Data["debug"] = l.Verbose
-	l.Data["service"] = map[string]string{
-		"name": l.Service.ConnonicalName,
-		"host": l.Service.Host,
-	}
+	l.Data["service"] = l.Service.ConnonicalName
 	l.Data["trace"] = map[string]interface{}{
 		"caller": caller,
 		"file":   strings.Replace(file, workDir, ".", 1),
