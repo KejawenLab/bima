@@ -28,7 +28,7 @@ require (
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/sarulabs/dingo/v4 v4.0.2
 	github.com/sirupsen/logrus v1.8.1
-	github.com/stretchr/testify v1.7.4
+	github.com/stretchr/testify v1.7.5
 	github.com/vcraescu/go-paginator/v2 v2.0.0
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/xdg-go/scram v1.1.1 // indirect
@@ -42,7 +42,7 @@ require (
 	golang.org/x/tools v0.1.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20220622171453-ea41d75dfa0f // indirect
+	google.golang.org/genproto v0.0.0-20220623142657-077d458a5694 // indirect
 	google.golang.org/grpc v1.47.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.0.4
