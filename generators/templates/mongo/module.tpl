@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/status"
 
     "github.com/KejawenLab/bima/v3"
+	"github.com/KejawenLab/bima/v3/paginations"
     "github.com/KejawenLab/bima/v3/utils"
 	"github.com/jinzhu/copier"
 	"{{.PackageName}}/protos/builds"
@@ -22,12 +23,13 @@ func (m *Module) GetPaginated(ctx context.Context, r *grpcs.Pagination) (*grpcs.
 	m.Logger.Debug(context.WithValue(ctx, "scope", "{{.ModuleLowercase}}"), fmt.Sprintf("%+v", r))
 	records := []*grpcs.{{.Module}}{}
 	model := {{.Module}}{}
+	reqeust := paginations.Request{}
 
 	m.Paginator.Model = &model
 	m.Paginator.Table = model.CollectionName()
 
-    copier.Copy(m.Request, r)
-	m.Paginator.Handle(m.Request)
+    copier.Copy(&reqeust, r)
+	m.Paginator.Handle(reqeust)
 
 	metadata := m.Handler.Paginate(*m.Paginator, &records)
 

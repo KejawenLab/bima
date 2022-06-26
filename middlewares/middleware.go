@@ -169,7 +169,7 @@ func (m *Factory) Attach(handler http.Handler) http.Handler {
 		httpcompression.Compressor(brotli.Encoding, 2, brotliEncoder),
 		httpcompression.Compressor(pgzip.Encoding, 1, gzipEncoder),
 		httpcompression.Compressor(zlib.Encoding, 0, deflateEncoder),
-		httpcompression.Prefer(httpcompression.PreferServer),
+		httpcompression.Prefer(httpcompression.PreferClient),
 		httpcompression.MinSize(165),
 	)
 

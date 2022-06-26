@@ -32,7 +32,7 @@ func Test_Pagination_Handle_Request(t *testing.T) {
 		Limit: 17,
 	}
 
-	pagination.Handle(&request)
+	pagination.Handle(request)
 
 	assert.Equal(t, pagination.Limit, int(request.Limit))
 	assert.Equal(t, pagination.Page, int(request.Page))
@@ -42,7 +42,7 @@ func Test_Pagination_Handle_Request(t *testing.T) {
 		Limit: 0,
 	}
 
-	pagination.Handle(&request)
+	pagination.Handle(request)
 
 	assert.Equal(t, pagination.Limit, 17)
 	assert.Equal(t, pagination.Page, 1)
@@ -51,7 +51,7 @@ func Test_Pagination_Handle_Request(t *testing.T) {
 		Fields: []string{"a"},
 	}
 
-	pagination.Handle(&request)
+	pagination.Handle(request)
 
 	assert.Nil(t, pagination.Filters)
 
@@ -60,7 +60,7 @@ func Test_Pagination_Handle_Request(t *testing.T) {
 		Values: []string{"b"},
 	}
 
-	pagination.Handle(&request)
+	pagination.Handle(request)
 
 	assert.Equal(t, len(pagination.Filters), 1)
 
@@ -69,7 +69,7 @@ func Test_Pagination_Handle_Request(t *testing.T) {
 		Values: []string{""},
 	}
 
-	pagination.Handle(&request)
+	pagination.Handle(request)
 
 	assert.Equal(t, len(pagination.Filters), 0)
 
@@ -78,7 +78,7 @@ func Test_Pagination_Handle_Request(t *testing.T) {
 		Values: []string{"b"},
 	}
 
-	pagination.Handle(&request)
+	pagination.Handle(request)
 
 	assert.Equal(t, len(pagination.Filters), 0)
 }
@@ -87,7 +87,7 @@ func Test_Pagination_Paginate(t *testing.T) {
 	var total int64
 	result := []interface{}{}
 	pagination := Pagination{}
-	pagination.Handle(&Request{})
+	pagination.Handle(Request{})
 	pagination.Paginate(TestAdapter{}, &result, &total)
 
 	assert.Equal(t, int64(10), total)

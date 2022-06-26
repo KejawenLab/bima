@@ -608,7 +608,6 @@ var Container = []dingo.Def{
 				Handler:   handler,
 				Cache:     cache,
 				Paginator: paginator,
-				Request:   &paginations.Request{},
 			}, nil
 		},
 		Params: dingo.Params{

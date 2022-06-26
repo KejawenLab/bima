@@ -42,7 +42,7 @@ type (
 	}
 )
 
-func (p *Pagination) Handle(request *Request) {
+func (p *Pagination) Handle(request Request) {
 	if request.Page == 0 {
 		request.Page = 1
 	}

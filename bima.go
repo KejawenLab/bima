@@ -22,7 +22,6 @@ type (
 		Logger    *loggers.Logger
 		Cache     *utils.Cache
 		Paginator *paginations.Pagination
-		Request   *paginations.Request
 	}
 
 	GormModel struct {
