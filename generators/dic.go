@@ -1,7 +1,7 @@
 package generators
 
 import (
-	"fmt"
+	"bytes"
 	"os"
 	engine "text/template"
 )
@@ -10,12 +10,23 @@ type Dic struct {
 }
 
 func (g *Dic) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
-	dicTemplate, err := engine.ParseFiles(fmt.Sprintf("%s/%s/dic.tpl", packagePath, templatePath))
+	var path bytes.Buffer
+
+	path.WriteString(packagePath)
+	path.WriteString("/")
+	path.WriteString(templatePath)
+	path.WriteString("/dic.tpl")
+
+	dicTemplate, err := engine.ParseFiles(path.String())
 	if err != nil {
 		panic(err)
 	}
 
-	dicFile, err := os.Create(fmt.Sprintf("%s/dic.go", modulePath))
+	path.Reset()
+	path.WriteString(modulePath)
+	path.WriteString("/dic.go")
+
+	dicFile, err := os.Create(path.String())
 	if err != nil {
 		panic(err)
 	}

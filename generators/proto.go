@@ -1,7 +1,7 @@
 package generators
 
 import (
-	"fmt"
+	"bytes"
 	"os"
 	engine "text/template"
 )
@@ -10,13 +10,27 @@ type Proto struct {
 }
 
 func (g *Proto) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
-	workDir, _ := os.Getwd()
-	protoTemplate, err := engine.ParseFiles(fmt.Sprintf("%s/%s/proto.tpl", packagePath, templatePath))
+	var path bytes.Buffer
+
+	path.WriteString(packagePath)
+	path.WriteString("/")
+	path.WriteString(templatePath)
+	path.WriteString("/proto.tpl")
+
+	protoTemplate, err := engine.ParseFiles(path.String())
 	if err != nil {
 		panic(err)
 	}
 
-	protoFile, err := os.Create(fmt.Sprintf("%s/protos/%s.proto", workDir, template.ModuleLowercase))
+	workDir, _ := os.Getwd()
+
+	path.Reset()
+	path.WriteString(workDir)
+	path.WriteString("/protos/")
+	path.WriteString(template.ModuleLowercase)
+	path.WriteString(".proto")
+
+	protoFile, err := os.Create(path.String())
 	if err != nil {
 		panic(err)
 	}

@@ -17,9 +17,7 @@ func (p *ElasticsearchFilter) Handle(event interface{}) interface{} {
 	}
 
 	var wildCard bytes.Buffer
-	query := e.Query
-	filters := e.Filters
-	for _, v := range filters {
+	for _, v := range e.Filters {
 		wildCard.Reset()
 		wildCard.WriteString("*")
 		wildCard.WriteString(v.Value)
@@ -27,7 +25,7 @@ func (p *ElasticsearchFilter) Handle(event interface{}) interface{} {
 
 		q := elastic.NewWildcardQuery(v.Field, wildCard.String())
 		q.Boost(1.0)
-		query.Must(q)
+		e.Query.Must(q)
 	}
 
 	return e

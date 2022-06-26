@@ -1,7 +1,7 @@
 package generators
 
 import (
-	"fmt"
+	"bytes"
 	"os"
 	engine "text/template"
 )
@@ -10,12 +10,23 @@ type Server struct {
 }
 
 func (g *Server) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
-	serverTemplate, err := engine.ParseFiles(fmt.Sprintf("%s/%s/server.tpl", packagePath, templatePath))
+	var path bytes.Buffer
+
+	path.WriteString(packagePath)
+	path.WriteString("/")
+	path.WriteString(templatePath)
+	path.WriteString("/server.tpl")
+
+	serverTemplate, err := engine.ParseFiles(path.String())
 	if err != nil {
 		panic(err)
 	}
 
-	serverFile, err := os.Create(fmt.Sprintf("%s/server.go", modulePath))
+	path.Reset()
+	path.WriteString(modulePath)
+	path.WriteString("/server.go")
+
+	serverFile, err := os.Create(path.String())
 	if err != nil {
 		panic(err)
 	}

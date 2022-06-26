@@ -1,7 +1,7 @@
 package generators
 
 import (
-	"fmt"
+	"bytes"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -10,8 +10,6 @@ import (
 	"github.com/iancoleman/strcase"
 	"golang.org/x/mod/modfile"
 )
-
-const templatePath = "templates"
 
 type (
 	Generator interface {
@@ -72,7 +70,12 @@ func (f *Factory) Generate(module *ModuleTemplate) {
 	moduleName := strcase.ToCamel(module.Name)
 	modulePlural := f.Pluralizer.Plural(module.Name)
 	modulePluralLowercase := strcase.ToDelimited(modulePlural, '_')
-	modulePath := fmt.Sprintf("%s/%s", workDir, modulePluralLowercase)
+
+	var modulePath bytes.Buffer
+
+	modulePath.WriteString(workDir)
+	modulePath.WriteString("/")
+	modulePath.WriteString(modulePluralLowercase)
 
 	f.Template.ApiVersion = f.ApiVersion
 	f.Template.PackageName = packageName
@@ -82,19 +85,29 @@ func (f *Factory) Generate(module *ModuleTemplate) {
 	f.Template.ModulePluralLowercase = modulePluralLowercase
 	f.Template.Columns = module.Fields
 
-	templatePath := fmt.Sprintf("%s/gorm", templatePath)
-	if f.Driver == "mongo" {
-		templatePath = fmt.Sprintf("%s/mongo", templatePath)
+	var templatePath bytes.Buffer
+
+	templatePath.WriteString("templates")
+	switch f.Driver {
+	case "mongo":
+		templatePath.WriteString("/mongo")
+	default:
+		templatePath.WriteString("/gorm")
 	}
 
-	os.MkdirAll(modulePath, 0755)
+	os.MkdirAll(modulePath.String(), 0755)
 	for _, generator := range f.Generators {
-		generator.Generate(f.Template, modulePath, packagePath, templatePath)
+		generator.Generate(f.Template, modulePath.String(), packagePath, templatePath.String())
 	}
 }
 
 func (f *Factory) packageName(workDir string) string {
-	mod, err := os.ReadFile(fmt.Sprintf("%s/go.mod", workDir))
+	var path bytes.Buffer
+
+	path.WriteString(workDir)
+	path.WriteString("/go.mod")
+
+	mod, err := os.ReadFile(path.String())
 	if err != nil {
 		panic(err)
 	}

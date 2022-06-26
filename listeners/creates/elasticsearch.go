@@ -27,6 +27,7 @@ func (c *Elasticsearch) Handle(event interface{}) interface{} {
 	m := e.Data.(models.GormModel)
 
 	var index bytes.Buffer
+
 	index.WriteString(c.Service)
 	index.WriteString("_")
 	index.WriteString(m.TableName())

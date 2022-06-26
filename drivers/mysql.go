@@ -1,9 +1,10 @@
 package drivers
 
 import (
-	"fmt"
+	"bytes"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -17,10 +18,21 @@ type Mysql struct {
 func (d *Mysql) Connect(host string, port int, user string, password string, dbname string, debug bool) *gorm.DB {
 	var db *gorm.DB
 	var err error
+	var dsn bytes.Buffer
 
-	conn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=true&loc=Local", user, password, host, port, dbname)
+	dsn.WriteString(user)
+	dsn.WriteString(":")
+	dsn.WriteString(password)
+	dsn.WriteString("@tcp(")
+	dsn.WriteString(host)
+	dsn.WriteString(":")
+	dsn.WriteString(strconv.Itoa(port))
+	dsn.WriteString(")/")
+	dsn.WriteString(dbname)
+	dsn.WriteString("?charset=utf8&parseTime=true&loc=UTC")
+
 	if debug {
-		db, err = gorm.Open(mysql.Open(conn), &gorm.Config{
+		db, err = gorm.Open(mysql.Open(dsn.String()), &gorm.Config{
 			SkipDefaultTransaction: true,
 			Logger: logger.New(
 				log.New(os.Stdout, "\r\n", log.LstdFlags),
@@ -32,7 +44,7 @@ func (d *Mysql) Connect(host string, port int, user string, password string, dbn
 			),
 		})
 	} else {
-		db, err = gorm.Open(mysql.Open(conn), &gorm.Config{
+		db, err = gorm.Open(mysql.Open(dsn.String()), &gorm.Config{
 			SkipDefaultTransaction: true,
 			Logger: logger.New(
 				log.New(os.Stdout, "\r\n", log.LstdFlags),

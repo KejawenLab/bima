@@ -1,10 +1,12 @@
 package dics
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/KejawenLab/bima/v3"
@@ -188,13 +190,28 @@ var Container = []dingo.Def{
 			case "postgresql":
 				db = postgresql
 			case "mongo":
-				err := mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s:%d", env.Db.User, env.Db.Password, env.Db.Host, env.Db.Port)).SetMonitor(&event.CommandMonitor{
+				var dsn bytes.Buffer
+
+				dsn.WriteString("mongodb://")
+				dsn.WriteString(env.Db.User)
+				dsn.WriteString(":")
+				dsn.WriteString(env.Db.Password)
+				dsn.WriteString("@")
+				dsn.WriteString(env.Db.Host)
+				dsn.WriteString(":")
+				dsn.WriteString(strconv.Itoa(env.Db.Port))
+
+				err := mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(dsn.String()).SetMonitor(&event.CommandMonitor{
 					Started: func(_ context.Context, evt *event.CommandStartedEvent) {
 						log.Print(evt.Command)
 					},
 				}))
 				if err != nil {
-					err = mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s", env.Db.Host)).SetMonitor(&event.CommandMonitor{
+					dsn.Reset()
+					dsn.WriteString("mongodb://")
+					dsn.WriteString(env.Db.Host)
+
+					err = mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(dsn.String()).SetMonitor(&event.CommandMonitor{
 						Started: func(_ context.Context, evt *event.CommandStartedEvent) {
 							log.Print(evt.Command)
 						},
@@ -224,8 +241,14 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:connection:elasticsearch",
 		Build: func(env *configs.Env) (*elastic.Client, error) {
+			var dsn bytes.Buffer
+
+			dsn.WriteString(env.Elasticsearch.Host)
+			dsn.WriteString(":")
+			dsn.WriteString(strconv.Itoa(env.Elasticsearch.Port))
+
 			client, err := elastic.NewClient(
-				elastic.SetURL(fmt.Sprintf("%s:%d", env.Elasticsearch.Host, env.Elasticsearch.Port)),
+				elastic.SetURL(dsn.String()),
 				elastic.SetSniff(false),
 				elastic.SetHealthcheck(false),
 				elastic.SetGzip(true),
@@ -463,7 +486,18 @@ var Container = []dingo.Def{
 			color.New(color.FgCyan, color.Bold).Print("✓ ")
 			fmt.Println("Pub/Sub configured")
 
-			return amqp.NewDurableQueueConfig(fmt.Sprintf("amqp://%s:%s@%s:%d/", env.Amqp.User, env.Amqp.Password, env.Amqp.Host, env.Amqp.Port)), nil
+			var dsn bytes.Buffer
+
+			dsn.WriteString("amqp://")
+			dsn.WriteString(env.Amqp.User)
+			dsn.WriteString(":")
+			dsn.WriteString(env.Amqp.Password)
+			dsn.WriteString("@")
+			dsn.WriteString(env.Amqp.Host)
+			dsn.WriteString(":")
+			dsn.WriteString(strconv.Itoa(env.Amqp.Port))
+
+			return amqp.NewDurableQueueConfig(dsn.String()), nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),

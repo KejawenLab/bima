@@ -3,7 +3,6 @@ package adapter
 import (
 	"bytes"
 	"context"
-	"fmt"
 
 	"github.com/goccy/go-json"
 
@@ -51,7 +50,13 @@ func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator pag
 	es.Logger.Debug(ctx, log.String())
 	es.Dispatcher.Dispatch(events.PaginationEvent.String(), &event)
 
-	return newElasticsearchPaginator(ctx, es.Client, fmt.Sprintf("%s_%s", es.Service, paginator.Table), event.Query)
+	var index bytes.Buffer
+
+	index.WriteString(es.Service)
+	index.WriteString("_")
+	index.WriteString(paginator.Table)
+
+	return newElasticsearchPaginator(ctx, es.Client, index.String(), event.Query)
 }
 
 func newElasticsearchPaginator(context context.Context, client *elastic.Client, index string, query *elastic.BoolQuery) paginator.Adapter {

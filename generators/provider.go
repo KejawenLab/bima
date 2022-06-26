@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-const MODULE_IMPORT = "@modules:import"
-const MODULE_REGISTER = "@modules:register"
+const ModuleImport = "@modules:import"
+const ModuleRegister = "@modules:register"
 
 type Provider struct {
 }
@@ -27,13 +27,13 @@ func (p *Provider) Generate(template *Template, modulePath string, packagePath s
 	skipImport := true
 
 	for k, v := range contents {
-		if strings.Contains(v, MODULE_IMPORT) {
+		if strings.Contains(v, ModuleImport) {
 			importIdx = k
 			skipImport = false
 			continue
 		}
 
-		if strings.Contains(v, MODULE_REGISTER) {
+		if strings.Contains(v, ModuleRegister) {
 			moduleIdx = k
 			break
 		}
@@ -41,12 +41,12 @@ func (p *Provider) Generate(template *Template, modulePath string, packagePath s
 
 	if !skipImport {
 		contents[importIdx] = fmt.Sprintf(`    //%s
-    %s %q`, MODULE_IMPORT, template.ModuleLowercase, fmt.Sprintf("%s/%s", template.PackageName, template.ModulePluralLowercase))
+    %s %q`, ModuleImport, template.ModuleLowercase, fmt.Sprintf("%s/%s", template.PackageName, template.ModulePluralLowercase))
 	}
 
 	contents[moduleIdx] = fmt.Sprintf(`
     /*@module:%s*/if err := p.AddDefSlice(%s.Dic); err != nil {return err}
-    //%s`, template.ModuleLowercase, template.ModuleLowercase, MODULE_REGISTER)
+    //%s`, template.ModuleLowercase, template.ModuleLowercase, ModuleRegister)
 
 	body := strings.Join(contents, "\n")
 

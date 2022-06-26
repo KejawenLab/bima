@@ -1,7 +1,7 @@
 package generators
 
 import (
-	"fmt"
+	"bytes"
 	"net/url"
 	"os"
 	"strconv"
@@ -10,14 +10,18 @@ import (
 	"github.com/goccy/go-json"
 )
 
-const MODULES_FILE = "swaggers/modules.json"
-
 type Swagger struct {
 }
 
 func (g *Swagger) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
 	workDir, _ := os.Getwd()
-	modules, err := os.ReadFile(fmt.Sprintf("%s/%s", workDir, MODULES_FILE))
+	var path bytes.Buffer
+
+	path.WriteString(workDir)
+	path.WriteString("/")
+	path.WriteString("swaggers/modules.json")
+
+	modules, err := os.ReadFile(path.String())
 	if err != nil {
 		panic(err)
 	}
@@ -25,9 +29,15 @@ func (g *Swagger) Generate(template *Template, modulePath string, packagePath st
 	modulesJson := []ModuleJson{}
 
 	json.Unmarshal(modules, &modulesJson)
+
+	path.Reset()
+	path.WriteString("./")
+	path.WriteString(template.ModuleLowercase)
+	path.WriteString(".swagger.json")
+
 	modulesJson = append(modulesJson, ModuleJson{
 		Name: template.Module,
-		Url:  fmt.Sprintf("./%s.swagger.json", template.ModuleLowercase),
+		Url:  path.String(),
 	})
 
 	modulesJson = g.makeUnique(modulesJson)
@@ -44,7 +54,12 @@ func (g *Swagger) Generate(template *Template, modulePath string, packagePath st
 
 	modules, _ = json.Marshal(modulesJson)
 
-	err = os.WriteFile(fmt.Sprintf("%s/%s", workDir, MODULES_FILE), modules, 0644)
+	path.Reset()
+	path.WriteString(workDir)
+	path.WriteString("/")
+	path.WriteString("swaggers/modules.json")
+
+	err = os.WriteFile(path.String(), modules, 0644)
 	if err != nil {
 		panic(err)
 	}

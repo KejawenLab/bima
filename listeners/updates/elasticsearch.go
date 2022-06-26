@@ -1,8 +1,8 @@
 package updates
 
 import (
+	"bytes"
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/goccy/go-json"
@@ -26,21 +26,27 @@ func (u *Elasticsearch) Handle(event interface{}) interface{} {
 
 	m := e.Data.(models.GormModel)
 
+	var index bytes.Buffer
+
+	index.WriteString(u.Service)
+	index.WriteString("_")
+	index.WriteString(m.TableName())
+
 	result := make(chan error)
 	go func(r chan<- error) {
 		query := elastic.NewMatchQuery("Id", e.Id)
 
 		ctx := context.Background()
-		result, _ := u.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", u.Service, m.TableName())).Query(query).Do(ctx)
+		result, _ := u.Elasticsearch.Search().Index(index.String()).Query(query).Do(ctx)
 		if result != nil {
 			for _, hit := range result.Hits.Hits {
-				u.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", u.Service, m.TableName())).Id(hit.Id).Do(ctx)
+				u.Elasticsearch.Delete().Index(index.String()).Id(hit.Id).Do(ctx)
 			}
 		}
 
 		data, _ := json.Marshal(e.Data)
 
-		_, err := u.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", u.Service, m.TableName())).BodyJson(string(data)).Do(ctx)
+		_, err := u.Elasticsearch.Index().Index(index.String()).BodyJson(string(data)).Do(ctx)
 		r <- err
 	}(result)
 

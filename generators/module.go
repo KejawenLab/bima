@@ -1,7 +1,7 @@
 package generators
 
 import (
-	"fmt"
+	"bytes"
 	"os"
 	engine "text/template"
 
@@ -14,19 +14,33 @@ type Module struct {
 }
 
 func (g *Module) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
+	var str bytes.Buffer
+	str.WriteString(packagePath)
+	str.WriteString("/")
+	str.WriteString(templatePath)
+	str.WriteString("/module.tpl")
+
+	moduleTemplate, err := engine.ParseFiles(str.String())
+	if err != nil {
+		panic(err)
+	}
+
+	str.Reset()
+	str.WriteString(modulePath)
+	str.WriteString("/module.go")
+
+	moduleFile, err := os.Create(str.String())
+	if err != nil {
+		panic(err)
+	}
+
+	str.Reset()
+	str.WriteString("module:")
+	str.WriteString(template.ModuleLowercase)
+
 	workDir, _ := os.Getwd()
-	moduleTemplate, err := engine.ParseFiles(fmt.Sprintf("%s/%s/module.tpl", packagePath, templatePath))
-	if err != nil {
-		panic(err)
-	}
-
-	moduleFile, err := os.Create(fmt.Sprintf("%s/module.go", modulePath))
-	if err != nil {
-		panic(err)
-	}
-
 	g.Config = parsers.ParseModule(workDir)
-	g.Config = append(g.Config, fmt.Sprintf("module:%s", template.ModuleLowercase))
+	g.Config = append(g.Config, str.String())
 	g.Config = g.makeUnique(g.Config)
 
 	modules, err := yaml.Marshal(g)
@@ -34,7 +48,12 @@ func (g *Module) Generate(template *Template, modulePath string, packagePath str
 		panic(err)
 	}
 
-	err = os.WriteFile(fmt.Sprintf("%s/%s", workDir, parsers.ModulePath), modules, 0644)
+	str.Reset()
+	str.WriteString(workDir)
+	str.WriteString("/")
+	str.WriteString(parsers.ModulePath)
+
+	err = os.WriteFile(str.String(), modules, 0644)
 	if err != nil {
 		panic(err)
 	}

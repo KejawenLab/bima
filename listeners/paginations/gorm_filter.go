@@ -17,9 +17,7 @@ func (p *GormFilter) Handle(event interface{}) interface{} {
 
 	var likeClausal bytes.Buffer
 	var likeValue bytes.Buffer
-	query := e.Query
-	filters := e.Filters
-	for _, v := range filters {
+	for _, v := range e.Filters {
 		likeClausal.Reset()
 		likeClausal.WriteString(v.Field)
 		likeClausal.WriteString(" LIKE ?")
@@ -29,7 +27,7 @@ func (p *GormFilter) Handle(event interface{}) interface{} {
 		likeValue.WriteString(v.Value)
 		likeValue.WriteString("%")
 
-		query.Where(likeClausal.String(), likeValue.String())
+		e.Query.Where(likeClausal.String(), likeValue.String())
 	}
 
 	return e
