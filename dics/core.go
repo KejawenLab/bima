@@ -166,7 +166,7 @@ var Container = []dingo.Def{
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:handler:logger"),
+			"1": dingo.Service("bima:logger"),
 		},
 	},
 	{
@@ -328,13 +328,16 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:interface:grpc",
-		Build: func(env *configs.Env) (*interfaces.GRpc, error) {
+		Build: func(env *configs.Env, logger *loggers.Logger) (*interfaces.GRpc, error) {
 			return &interfaces.GRpc{
 				GRpcPort: env.RpcPort,
+				Debug:    env.Debug,
+				Logger:   logger.Logger,
 			}, nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
+			"1": dingo.Service("bima:logger"),
 		},
 	},
 	{
@@ -362,7 +365,7 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name: "bima:handler:logger",
+		Name: "bima:logger",
 		Build: func(
 			env *configs.Env,
 			extension *loggers.LoggerExtension,
@@ -395,7 +398,7 @@ var Container = []dingo.Def{
 		Name:  "bima:handler:messager",
 		Build: (*handlers.Messenger)(nil),
 		Params: dingo.Params{
-			"Logger":    dingo.Service("bima:handler:logger"),
+			"Logger":    dingo.Service("bima:logger"),
 			"Publisher": dingo.Service("bima:message:publisher"),
 			"Consumer":  dingo.Service("bima:message:consumer"),
 		},
@@ -420,7 +423,7 @@ var Container = []dingo.Def{
 		Build: (*middlewares.Auth)(nil),
 		Params: dingo.Params{
 			"Env":    dingo.Service("bima:config"),
-			"Logger": dingo.Service("bima:handler:logger"),
+			"Logger": dingo.Service("bima:logger"),
 		},
 	},
 	{
@@ -433,25 +436,32 @@ var Container = []dingo.Def{
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:handler:logger"),
+			"1": dingo.Service("bima:logger"),
 		},
 	},
 	{
 		Name: "bima:router:mux",
 		Build: func(
+			env *configs.Env,
+			logger *loggers.Logger,
 			apiDoc routes.Route,
 			apiDocRedirection routes.Route,
 			health routes.Route,
 		) (*routers.MuxRouter, error) {
-			routers := routers.MuxRouter{}
+			routers := routers.MuxRouter{
+				Debug:  env.Debug,
+				Logger: logger,
+			}
 			routers.Register([]routes.Route{apiDoc, apiDocRedirection, health})
 
 			return &routers, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:route:api-doc"),
-			"1": dingo.Service("bima:route:api-doc-redirect"),
-			"2": dingo.Service("bima:route:health"),
+			"0": dingo.Service("bima:config"),
+			"1": dingo.Service("bima:logger"),
+			"2": dingo.Service("bima:route:api-doc"),
+			"3": dingo.Service("bima:route:api-doc-redirect"),
+			"4": dingo.Service("bima:route:health"),
 		},
 	},
 	{
@@ -477,7 +487,7 @@ var Container = []dingo.Def{
 		Name:  "bima:route:health",
 		Build: (*routes.Health)(nil),
 		Params: dingo.Params{
-			"Logger": dingo.Service("bima:handler:logger"),
+			"Logger": dingo.Service("bima:logger"),
 		},
 	},
 	{
@@ -541,7 +551,7 @@ var Container = []dingo.Def{
 		Name:  "bima:pagination:adapter:gorm",
 		Build: (*adapter.GormAdapter)(nil),
 		Params: dingo.Params{
-			"Logger":     dingo.Service("bima:handler:logger"),
+			"Logger":     dingo.Service("bima:logger"),
 			"Database":   dingo.Service("bima:connection:database"),
 			"Dispatcher": dingo.Service("bima:event:dispatcher"),
 		},
@@ -558,7 +568,7 @@ var Container = []dingo.Def{
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:handler:logger"),
+			"1": dingo.Service("bima:logger"),
 			"2": dingo.Service("bima:connection:elasticsearch"),
 			"3": dingo.Service("bima:event:dispatcher"),
 		},
@@ -567,7 +577,7 @@ var Container = []dingo.Def{
 		Name:  "bima:pagination:adapter:mongo",
 		Build: (*adapter.MongodbAdapter)(nil),
 		Params: dingo.Params{
-			"Logger":     dingo.Service("bima:handler:logger"),
+			"Logger":     dingo.Service("bima:logger"),
 			"Dispatcher": dingo.Service("bima:event:dispatcher"),
 		},
 	},
@@ -611,7 +621,7 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:handler:logger"),
+			"0": dingo.Service("bima:logger"),
 			"1": dingo.Service("bima:handler:handler"),
 			"2": dingo.Service("bima:cache:memory"),
 			"3": dingo.Service("bima:pagination:paginator"),

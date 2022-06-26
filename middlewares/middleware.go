@@ -85,7 +85,7 @@ func (m *Factory) Attach(handler http.Handler) http.Handler {
 			execution.WriteString("Execution time: ")
 			execution.WriteString(elapsed.String())
 
-			m.Logger.Info(ctx, execution.String())
+			fmt.Println(execution.String())
 
 			return
 		}

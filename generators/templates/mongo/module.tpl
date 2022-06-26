@@ -63,7 +63,7 @@ func (m *Module) Create(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
 	if err := m.Handler.Create(&v); err != nil {
 		m.Logger.Error(ctx, err.Error())
 
-		return nil, status.Error(codes.Internal, err.Error())
+		return nil, status.Error(codes.Internal, "Internal server error")
 	}
 
 	r.Id = v.ID.Hex()
@@ -88,10 +88,9 @@ func (m *Module) Update(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
 	}
 
 	if err := m.Handler.Bind(&hold, r.Id); err != nil {
-		msg := fmt.Sprintf("Data with ID '%s' not found.", r.Id)
-		m.Logger.Error(ctx, msg)
+		m.Logger.Error(ctx, err.Error())
 
-		return nil, status.Error(codes.NotFound, msg)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Data with ID '%s' not found.", r.Id))
 	}
 
     v.SetID(hold.GetID())
@@ -99,7 +98,7 @@ func (m *Module) Update(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
 	if err := m.Handler.Update(&v, v.ID.Hex()); err != nil {
 		m.Logger.Error(ctx, err.Error())
 
-		return nil, status.Error(codes.Internal, err.Error())
+		return nil, status.Error(codes.Internal, "Internal server error")
 	}
 
     m.Cache.Invalidate(r.Id)
@@ -118,10 +117,9 @@ func (m *Module) Get(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modul
 		v = data.({{.Module}})
 	} else {
 		if err := m.Handler.Bind(&v, r.Id); err != nil {
-			msg := fmt.Sprintf("Data with ID '%s' not found.", r.Id)
-			m.Logger.Error(ctx, msg)
+			m.Logger.Error(ctx, err.Error())
 
-			return nil, status.Error(codes.NotFound, msg)
+			return nil, status.Error(codes.NotFound, fmt.Sprintf("Data with ID '%s' not found.", r.Id))
 		}
 
 		m.Cache.Set(r.Id, v)
@@ -140,10 +138,9 @@ func (m *Module) Delete(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
 
 	v := {{.Module}}{}
 	if err := m.Handler.Bind(&v, r.Id); err != nil {
-		msg := fmt.Sprintf("Data with ID '%s' not found.", r.Id)
-		m.Logger.Error(ctx, msg)
+		m.Logger.Error(ctx, err.Error())
 
-		return nil, status.Error(codes.NotFound, msg)
+		return nil, status.Error(codes.NotFound, fmt.Sprintf("Data with ID '%s' not found.", r.Id))
 	}
 
     m.Handler.Delete(&v, r.Id)

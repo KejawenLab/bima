@@ -60,7 +60,7 @@ func (l *Logger) Debug(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Logger.WithFields(l.Data).Info(message)
+	go l.Logger.WithFields(l.Data).Debug(message)
 }
 
 func (l *Logger) Info(ctx context.Context, message string) {
