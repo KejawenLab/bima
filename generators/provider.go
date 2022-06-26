@@ -1,6 +1,7 @@
 package generators
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"strings"
@@ -14,9 +15,12 @@ type Provider struct {
 
 func (p *Provider) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
 	workDir, _ := os.Getwd()
-	path := fmt.Sprintf("%s/configs/provider.go", workDir)
 
-	file, err := os.ReadFile(path)
+	var path bytes.Buffer
+	path.WriteString(workDir)
+	path.WriteString("/configs/provider.go")
+
+	file, err := os.ReadFile(path.String())
 	if err != nil {
 		panic(err)
 	}
@@ -25,7 +29,6 @@ func (p *Provider) Generate(template *Template, modulePath string, packagePath s
 	importIdx := 0
 	moduleIdx := 0
 	skipImport := true
-
 	for k, v := range contents {
 		if strings.Contains(v, ModuleImport) {
 			importIdx = k
@@ -50,5 +53,5 @@ func (p *Provider) Generate(template *Template, modulePath string, packagePath s
 
 	body := strings.Join(contents, "\n")
 
-	os.WriteFile(path, []byte(body), 0644)
+	os.WriteFile(path.String(), []byte(body), 0644)
 }
