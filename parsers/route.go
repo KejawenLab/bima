@@ -1,21 +1,24 @@
 package parsers
 
 import (
-	"fmt"
+	"bytes"
 	"log"
 	"os"
 
 	"gopkg.in/yaml.v2"
 )
 
-const ROUTES_FILE = "configs/routes.yaml"
-
 type route struct {
 	Config []string `yaml:"routes"`
 }
 
 func ParseRoute(dir string) []string {
-	config, err := os.ReadFile(fmt.Sprintf("%s/%s", dir, ROUTES_FILE))
+	var path bytes.Buffer
+	path.WriteString(dir)
+	path.WriteString("/")
+	path.WriteString("configs/routes.yaml")
+
+	config, err := os.ReadFile(path.String())
 	mapping := route{}
 	if err != nil {
 		log.Println(err)

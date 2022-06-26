@@ -1,7 +1,7 @@
 package parsers
 
 import (
-	"fmt"
+	"bytes"
 	"log"
 	"os"
 
@@ -15,7 +15,12 @@ type logger struct {
 }
 
 func ParseLogger(dir string) []string {
-	config, err := os.ReadFile(fmt.Sprintf("%s/%s", dir, LOGGERS_FILE))
+	var path bytes.Buffer
+	path.WriteString(dir)
+	path.WriteString("/")
+	path.WriteString("configs/loggers.yaml")
+
+	config, err := os.ReadFile(path.String())
 	mapping := logger{}
 	if err != nil {
 		log.Println(err)

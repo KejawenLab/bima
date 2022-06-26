@@ -1,10 +1,11 @@
 package interfaces
 
 import (
+	"bytes"
 	"context"
-	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/KejawenLab/bima/v3/configs"
 	"github.com/KejawenLab/bima/v3/middlewares"
@@ -31,8 +32,11 @@ func (r *Rest) Run(servers []configs.Server) {
 		grpc.WithDefaultCallOptions(grpc.UseCompressor(gzip.Name)),
 	}
 
-	endpoint := fmt.Sprintf("0.0.0.0:%d", r.GRpcPort)
-	gRpcClient, err := grpc.DialContext(ctx, endpoint, options...)
+	var gRpcAddress bytes.Buffer
+	gRpcAddress.WriteString("0.0.0.0:")
+	gRpcAddress.WriteString(strconv.Itoa(r.GRpcPort))
+
+	gRpcClient, err := grpc.DialContext(ctx, gRpcAddress.String(), options...)
 	if err != nil {
 		log.Fatalf("Server is not ready. %v", err)
 	}
@@ -40,14 +44,18 @@ func (r *Rest) Run(servers []configs.Server) {
 	go func() {
 		<-ctx.Done()
 		if cerr := gRpcClient.Close(); cerr != nil {
-			grpclog.Infof("Error closing connection to %s: %v", endpoint, cerr)
+			grpclog.Infof("Error closing connection to %s: %v", gRpcAddress, cerr)
 		}
 	}()
 
 	r.Middleware.Sort()
 	r.Router.Sort()
 
-	http.ListenAndServe(fmt.Sprintf(":%d", r.HttpPort), r.Middleware.Attach(r.Router.Handle(ctx, http.NewServeMux(), gRpcClient)))
+	var httpAddress bytes.Buffer
+	httpAddress.WriteString(":")
+	httpAddress.WriteString(strconv.Itoa(r.HttpPort))
+
+	http.ListenAndServe(httpAddress.String(), r.Middleware.Attach(r.Router.Handle(ctx, http.NewServeMux(), gRpcClient)))
 }
 
 func (r *Rest) IsBackground() bool {

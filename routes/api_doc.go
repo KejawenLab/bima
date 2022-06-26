@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"fmt"
+	"bytes"
 	"net/http"
 	"regexp"
 
@@ -9,14 +9,18 @@ import (
 	"google.golang.org/grpc"
 )
 
-const API_DOC_PATH = "/api/docs"
+const ApiDocPath = "/api/docs"
 
 type ApiDoc struct {
 	Debug bool
 }
 
 func (a *ApiDoc) Path() string {
-	return fmt.Sprintf("%s/{path}", API_DOC_PATH)
+	var path bytes.Buffer
+	path.WriteString(ApiDocPath)
+	path.WriteString("/{path}")
+
+	return path.String()
 }
 
 func (a *ApiDoc) Method() string {
@@ -36,6 +40,10 @@ func (a *ApiDoc) Handle(w http.ResponseWriter, r *http.Request, _ map[string]str
 		return
 	}
 
-	regex := regexp.MustCompile(fmt.Sprintf("%s/", API_DOC_PATH))
+	var path bytes.Buffer
+	path.WriteString(ApiDocPath)
+	path.WriteString("/")
+
+	regex := regexp.MustCompile(path.String())
 	http.ServeFile(w, r, regex.ReplaceAllString(r.URL.Path, "swaggers/"))
 }

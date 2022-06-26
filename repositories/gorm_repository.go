@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"fmt"
+	"bytes"
 
 	"github.com/KejawenLab/bima/v3/models"
 	"gorm.io/gorm"
@@ -53,8 +53,15 @@ func (r *GormRepository) All(v interface{}) error {
 
 func (r *GormRepository) FindBy(v interface{}, filters ...Filter) error {
 	db := r.Database
+	var filter bytes.Buffer
 	for _, f := range filters {
-		db = db.Where(fmt.Sprintf("%s %s ?", f.Field, f.Operator), f.Value)
+		filter.Reset()
+		filter.WriteString(f.Field)
+		filter.WriteString(" ")
+		filter.WriteString(f.Operator)
+		filter.WriteString(" ?")
+
+		db = db.Where(filter.String(), f.Value)
 	}
 
 	return db.Find(v).Error

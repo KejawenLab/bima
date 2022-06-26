@@ -1,21 +1,24 @@
 package parsers
 
 import (
-	"fmt"
+	"bytes"
 	"log"
 	"os"
 
 	"gopkg.in/yaml.v2"
 )
 
-const MIDDLEWARES_FILE = "configs/middlewares.yaml"
-
 type middleware struct {
 	Config []string `yaml:"middlewares"`
 }
 
 func ParseMiddleware(dir string) []string {
-	config, err := os.ReadFile(fmt.Sprintf("%s/%s", dir, MIDDLEWARES_FILE))
+	var path bytes.Buffer
+	path.WriteString(dir)
+	path.WriteString("/")
+	path.WriteString("configs/middlewares.yaml")
+
+	config, err := os.ReadFile(path.String())
 	mapping := middleware{}
 	if err != nil {
 		log.Println(err)

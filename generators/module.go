@@ -34,7 +34,7 @@ func (g *Module) Generate(template *Template, modulePath string, packagePath str
 		panic(err)
 	}
 
-	err = os.WriteFile(fmt.Sprintf("%s/%s", workDir, parsers.MODULES_FILE), modules, 0644)
+	err = os.WriteFile(fmt.Sprintf("%s/%s", workDir, parsers.ModulePath), modules, 0644)
 	if err != nil {
 		panic(err)
 	}

@@ -1,8 +1,8 @@
 package middlewares
 
 import (
+	"bytes"
 	"context"
-	"fmt"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -26,7 +26,11 @@ func (a *Auth) Attach(request *http.Request, response http.ResponseWriter) bool 
 
 	match, _ := regexp.MatchString(a.Env.AuthHeader.Whitelist, request.RequestURI)
 	if match {
-		a.Logger.Debug(ctx, fmt.Sprintf("Whitelisting url %s", request.RequestURI))
+		var log bytes.Buffer
+		log.WriteString("Whitelisting url ")
+		log.WriteString(request.RequestURI)
+
+		a.Logger.Debug(ctx, log.String())
 
 		return false
 	}

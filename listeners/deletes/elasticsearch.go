@@ -1,8 +1,8 @@
 package deletes
 
 import (
+	"bytes"
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/KejawenLab/bima/v3"
@@ -24,15 +24,20 @@ func (d *Elasticsearch) Handle(event interface{}) interface{} {
 
 	m := e.Data.(models.GormModel)
 
+	var index bytes.Buffer
+	index.WriteString(d.Service)
+	index.WriteString("_")
+	index.WriteString(m.TableName())
+
 	result := make(chan error)
 	go func(c chan<- error) {
 		query := elastic.NewMatchQuery("Id", e.Id)
 
 		ctx := context.Background()
-		result, _ := d.Elasticsearch.Search().Index(fmt.Sprintf("%s_%s", d.Service, m.TableName())).Query(query).Do(ctx)
+		result, _ := d.Elasticsearch.Search().Index(index.String()).Query(query).Do(ctx)
 		if result != nil {
 			for _, hit := range result.Hits.Hits {
-				d.Elasticsearch.Delete().Index(fmt.Sprintf("%s_%s", d.Service, m.TableName())).Id(hit.Id).Do(ctx)
+				d.Elasticsearch.Delete().Index(index.String()).Id(hit.Id).Do(ctx)
 			}
 		}
 

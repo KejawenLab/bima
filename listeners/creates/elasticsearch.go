@@ -1,8 +1,8 @@
 package creates
 
 import (
+	"bytes"
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/goccy/go-json"
@@ -26,11 +26,16 @@ func (c *Elasticsearch) Handle(event interface{}) interface{} {
 
 	m := e.Data.(models.GormModel)
 
+	var index bytes.Buffer
+	index.WriteString(c.Service)
+	index.WriteString("_")
+	index.WriteString(m.TableName())
+
 	result := make(chan error)
 	go func(r chan<- error) {
 		data, _ := json.Marshal(e.Data)
 
-		_, err := c.Elasticsearch.Index().Index(fmt.Sprintf("%s_%s", c.Service, m.TableName())).BodyJson(string(data)).Do(context.Background())
+		_, err := c.Elasticsearch.Index().Index(index.String()).BodyJson(string(data)).Do(context.Background())
 
 		r <- err
 	}(result)

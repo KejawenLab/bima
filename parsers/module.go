@@ -1,21 +1,26 @@
 package parsers
 
 import (
-	"fmt"
+	"bytes"
 	"log"
 	"os"
 
 	"gopkg.in/yaml.v2"
 )
 
-const MODULES_FILE = "configs/modules.yaml"
+const ModulePath = "configs/modules.yaml"
 
 type module struct {
 	Config []string `yaml:"modules"`
 }
 
 func ParseModule(dir string) []string {
-	config, err := os.ReadFile(fmt.Sprintf("%s/%s", dir, MODULES_FILE))
+	var path bytes.Buffer
+	path.WriteString(dir)
+	path.WriteString("/")
+	path.WriteString(ModulePath)
+
+	config, err := os.ReadFile(path.String())
 	mapping := module{}
 	if err != nil {
 		log.Println(err)

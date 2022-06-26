@@ -31,7 +31,7 @@ func Test_Api_Doc(t *testing.T) {
 	resp := w.Result()
 
 	assert.Equal(t, http.MethodGet, route.Method())
-	assert.Equal(t, fmt.Sprintf("%s/{path}", API_DOC_PATH), route.Path())
+	assert.Equal(t, fmt.Sprintf("%s/{path}", ApiDocPath), route.Path())
 	assert.Nil(t, route.Middlewares())
 
 	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
@@ -46,7 +46,7 @@ func Test_Api_Doc(t *testing.T) {
 	resp = w.Result()
 
 	assert.Equal(t, http.MethodGet, route.Method())
-	assert.Equal(t, fmt.Sprintf("%s/{path}", API_DOC_PATH), route.Path())
+	assert.Equal(t, fmt.Sprintf("%s/{path}", ApiDocPath), route.Path())
 	assert.Nil(t, route.Middlewares())
 
 	assert.Equal(t, http.StatusNotFound, resp.StatusCode)

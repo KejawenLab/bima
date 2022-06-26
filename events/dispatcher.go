@@ -1,8 +1,8 @@
 package events
 
 import (
+	"bytes"
 	"errors"
-	"fmt"
 	"sort"
 )
 
@@ -35,7 +35,12 @@ func (d *Dispatcher) Register(listeners []Listener) {
 
 func (d *Dispatcher) Dispatch(event string, payload interface{}) error {
 	if _, ok := d.Events[event]; !ok {
-		return errors.New(fmt.Sprintf("Event '%s' not registered", event))
+		var message bytes.Buffer
+		message.WriteString("Event '")
+		message.WriteString(event)
+		message.WriteString("' not registered")
+
+		return errors.New(message.String())
 	}
 
 	for _, listener := range d.Events[event] {

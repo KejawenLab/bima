@@ -28,7 +28,7 @@ func Test_Api_Doc_Redirect_Route(t *testing.T) {
 	resp := w.Result()
 
 	assert.Equal(t, http.MethodGet, route.Method())
-	assert.Equal(t, API_DOC_PATH, route.Path())
+	assert.Equal(t, ApiDocPath, route.Path())
 	assert.Nil(t, route.Middlewares())
 
 	assert.Equal(t, http.StatusPermanentRedirect, resp.StatusCode)

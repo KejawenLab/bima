@@ -1,10 +1,11 @@
 package routes
 
 import (
+	"bytes"
 	"context"
-	"fmt"
 	"net/http"
 	"runtime"
+	"strconv"
 
 	"github.com/goccy/go-json"
 
@@ -48,16 +49,28 @@ func (h *Health) Handle(w http.ResponseWriter, r *http.Request, _ map[string]str
 	}
 
 	var m runtime.MemStats
+	var alloc bytes.Buffer
+	var totalAlloc bytes.Buffer
+	var system bytes.Buffer
+
 	runtime.ReadMemStats(&m)
+
+	alloc.WriteString(strconv.Itoa(h.byteToMb(m.Alloc)))
+	alloc.WriteString(" MiB")
+	totalAlloc.WriteString(strconv.Itoa(h.byteToMb(m.TotalAlloc)))
+	totalAlloc.WriteString(" MiB")
+	system.WriteString(strconv.Itoa(h.byteToMb(m.Sys)))
+	system.WriteString(" MiB")
+
 	payload := map[string]interface{}{
 		"version": bima.Version,
 		"name":    "Bima",
 		"author":  "Muhamad Surya Iksanudin<surya.iksanudin@gmail.com>",
 		"link":    "https://github.com/KejawenLab/skeleton",
 		"memory_usage": map[string]string{
-			"allocation":       fmt.Sprintf("%d MiB", h.byteToMb(m.Alloc)),
-			"total_allocation": fmt.Sprintf("%d MiB", h.byteToMb(m.TotalAlloc)),
-			"system":           fmt.Sprintf("%d MiB", h.byteToMb(m.Sys)),
+			"allocation":       alloc.String(),
+			"total_allocation": totalAlloc.String(),
+			"system":           system.String(),
 		},
 	}
 
@@ -65,6 +78,6 @@ func (h *Health) Handle(w http.ResponseWriter, r *http.Request, _ map[string]str
 	json.NewEncoder(w).Encode(payload)
 }
 
-func (h *Health) byteToMb(b uint64) uint64 {
-	return b / 1024 / 1024
+func (h *Health) byteToMb(b uint64) int {
+	return int(b / 1024 / 1024)
 }

@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"fmt"
+	"bytes"
 	"net/http"
 
 	"github.com/KejawenLab/bima/v3/middlewares"
@@ -12,7 +12,7 @@ type ApiDocRedirect struct {
 }
 
 func (a *ApiDocRedirect) Path() string {
-	return API_DOC_PATH
+	return ApiDocPath
 }
 
 func (a *ApiDocRedirect) Method() string {
@@ -26,5 +26,9 @@ func (a *ApiDocRedirect) Middlewares() []middlewares.Middleware {
 }
 
 func (a *ApiDocRedirect) Handle(w http.ResponseWriter, r *http.Request, _ map[string]string) {
-	http.Redirect(w, r, fmt.Sprintf("%s/", r.URL.RequestURI()), http.StatusPermanentRedirect)
+	var path bytes.Buffer
+	path.WriteString(r.URL.RequestURI())
+	path.WriteString("/")
+
+	http.Redirect(w, r, path.String(), http.StatusPermanentRedirect)
 }

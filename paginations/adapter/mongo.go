@@ -1,8 +1,8 @@
 package adapter
 
 import (
+	"bytes"
 	"context"
-	"fmt"
 
 	"github.com/KejawenLab/bima/v3/events"
 	"github.com/KejawenLab/bima/v3/loggers"
@@ -43,7 +43,11 @@ func (mg *MongodbAdapter) CreateAdapter(ctx context.Context, paginator paginatio
 		MongoDbFilter: bson.M{},
 	}
 
-	mg.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.PaginationEvent))
+	var log bytes.Buffer
+	log.WriteString("Dispatching ")
+	log.WriteString(events.PaginationEvent.String())
+
+	mg.Logger.Debug(ctx, log.String())
 	mg.Dispatcher.Dispatch(events.PaginationEvent.String(), &event)
 
 	return newMongodbPaginator(ctx, event.Query, event.MongoDbFilter)

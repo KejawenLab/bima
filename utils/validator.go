@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"fmt"
+	"bytes"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/iancoleman/strcase"
@@ -13,11 +13,14 @@ func Validate(v interface{}) (string, error) {
 		return "", nil
 	}
 
-	var message string
+	var message bytes.Buffer
 	for _, ve := range err.(validator.ValidationErrors) {
-		message = fmt.Sprintf("%s is %s", strcase.ToDelimited(ve.Field(), '_'), ve.Tag())
+		message.WriteString(strcase.ToDelimited(ve.Field(), '_'))
+		message.WriteString(" is ")
+		message.WriteString(ve.Tag())
+
 		break
 	}
 
-	return message, err
+	return message.String(), err
 }

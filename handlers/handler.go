@@ -1,8 +1,9 @@
 package handlers
 
 import (
+	"bytes"
 	"context"
-	"fmt"
+	"strconv"
 
 	"github.com/KejawenLab/bima/v3/events"
 	"github.com/KejawenLab/bima/v3/loggers"
@@ -30,7 +31,11 @@ func (h *Handler) Paginate(paginator paginations.Pagination, result interface{})
 	var total64 int64
 	paginator.Paginate(adapter, result, &total64)
 
-	h.Logger.Debug(ctx, fmt.Sprintf("Total result: %d", total64))
+	var log bytes.Buffer
+	log.WriteString("Total result: ")
+	log.WriteString(strconv.Itoa(int(total64)))
+
+	h.Logger.Debug(ctx, log.String())
 
 	var total = int(total64)
 	next := paginator.Page + 1
@@ -51,7 +56,11 @@ func (h *Handler) Create(v interface{}) error {
 	return h.Repository.Transaction(func(r repositories.Repository) error {
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 
-		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.BeforeCreateEvent))
+		var log bytes.Buffer
+		log.WriteString("Dispatching ")
+		log.WriteString(events.BeforeCreateEvent.String())
+
+		h.Logger.Debug(ctx, log.String())
 		h.Dispatcher.Dispatch(events.BeforeCreateEvent.String(), &events.Model{
 			Data:       v,
 			Repository: r,
@@ -63,7 +72,11 @@ func (h *Handler) Create(v interface{}) error {
 			return err
 		}
 
-		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.AfterCreateEvent))
+		log.Reset()
+		log.WriteString("Dispatching ")
+		log.WriteString(events.AfterCreateEvent.String())
+
+		h.Logger.Debug(ctx, log.String())
 		h.Dispatcher.Dispatch(events.AfterCreateEvent.String(), &events.Model{
 			Data:       v,
 			Repository: r,
@@ -77,7 +90,11 @@ func (h *Handler) Update(v interface{}, id string) error {
 	return h.Repository.Transaction(func(r repositories.Repository) error {
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 
-		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.BeforeUpdateEvent))
+		var log bytes.Buffer
+		log.WriteString("Dispatching ")
+		log.WriteString(events.BeforeUpdateEvent.String())
+
+		h.Logger.Debug(ctx, log.String())
 		h.Dispatcher.Dispatch(events.BeforeUpdateEvent.String(), &events.Model{
 			Id:         id,
 			Data:       v,
@@ -90,7 +107,11 @@ func (h *Handler) Update(v interface{}, id string) error {
 			return err
 		}
 
-		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.AfterUpdateEvent))
+		log.Reset()
+		log.WriteString("Dispatching ")
+		log.WriteString(events.AfterUpdateEvent.String())
+
+		h.Logger.Debug(ctx, log.String())
 		h.Dispatcher.Dispatch(events.AfterUpdateEvent.String(), &events.Model{
 			Id:         id,
 			Data:       v,
@@ -114,7 +135,11 @@ func (h *Handler) Delete(v interface{}, id string) error {
 	return h.Repository.Transaction(func(r repositories.Repository) error {
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 
-		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.BeforeDeleteEvent))
+		var log bytes.Buffer
+		log.WriteString("Dispatching ")
+		log.WriteString(events.BeforeDeleteEvent.String())
+
+		h.Logger.Debug(ctx, log.String())
 		h.Dispatcher.Dispatch(events.BeforeDeleteEvent.String(), &events.Model{
 			Id:         id,
 			Data:       v,
@@ -127,7 +152,11 @@ func (h *Handler) Delete(v interface{}, id string) error {
 			return err
 		}
 
-		h.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.AfterDeleteEvent))
+		log.Reset()
+		log.WriteString("Dispatching ")
+		log.WriteString(events.AfterDeleteEvent.String())
+
+		h.Logger.Debug(ctx, log.String())
 		h.Dispatcher.Dispatch(events.AfterDeleteEvent.String(), &events.Model{
 			Id:         id,
 			Data:       v,

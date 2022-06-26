@@ -1,7 +1,7 @@
 package paginations
 
 import (
-	"fmt"
+	"bytes"
 
 	"github.com/KejawenLab/bima/v3/events"
 )
@@ -15,10 +15,21 @@ func (p *GormFilter) Handle(event interface{}) interface{} {
 		return event
 	}
 
+	var likeClausal bytes.Buffer
+	var likeValue bytes.Buffer
 	query := e.Query
 	filters := e.Filters
 	for _, v := range filters {
-		query.Where(fmt.Sprintf("%s LIKE ?", v.Field), fmt.Sprintf("%%%s%%", v.Value))
+		likeClausal.Reset()
+		likeClausal.WriteString(v.Field)
+		likeClausal.WriteString(" LIKE ?")
+
+		likeValue.Reset()
+		likeValue.WriteString("%")
+		likeValue.WriteString(v.Value)
+		likeValue.WriteString("%")
+
+		query.Where(likeClausal.String(), likeValue.String())
 	}
 
 	return e

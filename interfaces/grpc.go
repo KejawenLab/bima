@@ -1,9 +1,10 @@
 package interfaces
 
 import (
-	"fmt"
+	"bytes"
 	"log"
 	"net"
+	"strconv"
 
 	"github.com/KejawenLab/bima/v3/configs"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -16,7 +17,11 @@ type GRpc struct {
 }
 
 func (g *GRpc) Run(servers []configs.Server) {
-	listen, err := net.Listen("tcp", fmt.Sprintf(":%d", g.GRpcPort))
+	var gRpcAddress bytes.Buffer
+	gRpcAddress.WriteString(":")
+	gRpcAddress.WriteString(strconv.Itoa(g.GRpcPort))
+
+	listen, err := net.Listen("tcp", gRpcAddress.String())
 	if err != nil {
 		log.Fatalf("Port %d is not available. %v", g.GRpcPort, err)
 	}

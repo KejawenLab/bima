@@ -1,8 +1,8 @@
 package handlers
 
 import (
+	"bytes"
 	"context"
-	"fmt"
 
 	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/ThreeDotsLabs/watermill"
@@ -18,7 +18,12 @@ type Messenger struct {
 
 func (m *Messenger) Publish(queueName string, data []byte) error {
 	ctx := context.WithValue(context.Background(), "scope", "messenger")
-	m.Logger.Debug(ctx, fmt.Sprintf("Publishing message to: %s", queueName))
+
+	var log bytes.Buffer
+	log.WriteString("Publishing message to: ")
+	log.WriteString(queueName)
+
+	m.Logger.Debug(ctx, log.String())
 
 	msg := message.NewMessage(watermill.NewUUID(), data)
 	if err := m.Publisher.Publish(queueName, msg); err != nil {
@@ -32,7 +37,12 @@ func (m *Messenger) Publish(queueName string, data []byte) error {
 
 func (m *Messenger) Consume(queueName string) (<-chan *message.Message, error) {
 	ctx := context.WithValue(context.Background(), "scope", "messenger")
-	m.Logger.Debug(ctx, fmt.Sprintf("Consuming: %s", queueName))
+
+	var log bytes.Buffer
+	log.WriteString("Consuming: ")
+	log.WriteString(queueName)
+
+	m.Logger.Debug(ctx, log.String())
 
 	messages, err := m.Consumer.Subscribe(context.Background(), queueName)
 	if err != nil {

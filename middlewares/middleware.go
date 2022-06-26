@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"net/http"
@@ -80,7 +81,11 @@ func (m *Factory) Attach(handler http.Handler) http.Handler {
 
 			elapsed := time.Since(start)
 
-			m.Logger.Info(ctx, fmt.Sprintf("Execution time: %s", elapsed))
+			var execution bytes.Buffer
+			execution.WriteString("Execution time: ")
+			execution.WriteString(elapsed.String())
+
+			m.Logger.Info(ctx, execution.String())
 
 			return
 		}
@@ -88,7 +93,11 @@ func (m *Factory) Attach(handler http.Handler) http.Handler {
 		wrapper := responseWrapper{ResponseWriter: response}
 		for _, middleware := range m.Middlewares {
 			if stop := middleware.Attach(request, response); stop {
-				m.Logger.Debug(ctx, fmt.Sprintf("Middleware stopped by: %s", reflect.TypeOf(middleware).Name()))
+				var stopper bytes.Buffer
+				stopper.WriteString("Middleware stopped by: ")
+				stopper.WriteString(reflect.TypeOf(middleware).Name())
+
+				m.Logger.Debug(ctx, stopper.String())
 
 				return
 			}
@@ -137,7 +146,15 @@ func (m *Factory) Attach(handler http.Handler) http.Handler {
 			elapsedString = color.New(color.FgRed, color.Bold).Sprint(elapsed)
 		}
 
-		fmt.Printf("\t%s\t%s\t%s\n", statusCode, elapsedString, uri)
+		var stdLog bytes.Buffer
+		stdLog.WriteString("\t")
+		stdLog.WriteString(statusCode)
+		stdLog.WriteString("\t")
+		stdLog.WriteString(elapsedString)
+		stdLog.WriteString("\t")
+		stdLog.WriteString(uri)
+
+		fmt.Println(stdLog.String())
 	})
 
 	deflateEncoder, _ := zlib.New(zlib.Options{})

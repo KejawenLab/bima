@@ -1,21 +1,24 @@
 package parsers
 
 import (
-	"fmt"
+	"bytes"
 	"log"
 	"os"
 
 	"gopkg.in/yaml.v2"
 )
 
-const LISTENERS_FILE = "configs/listeners.yaml"
-
 type listener struct {
 	Config []string `yaml:"listeners"`
 }
 
 func ParseListener(dir string) []string {
-	config, err := os.ReadFile(fmt.Sprintf("%s/%s", dir, LISTENERS_FILE))
+	var path bytes.Buffer
+	path.WriteString(dir)
+	path.WriteString("/")
+	path.WriteString("configs/listeners.yaml")
+
+	config, err := os.ReadFile(path.String())
 	mapping := listener{}
 	if err != nil {
 		log.Println(err)

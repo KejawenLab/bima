@@ -1,8 +1,8 @@
 package adapter
 
 import (
+	"bytes"
 	"context"
-	"fmt"
 
 	"github.com/KejawenLab/bima/v3/events"
 	"github.com/KejawenLab/bima/v3/loggers"
@@ -25,7 +25,11 @@ func (g *GormAdapter) CreateAdapter(ctx context.Context, paginator paginations.P
 		Filters: paginator.Filters,
 	}
 
-	g.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.PaginationEvent))
+	var log bytes.Buffer
+	log.WriteString("Dispatching ")
+	log.WriteString(events.PaginationEvent.String())
+
+	g.Logger.Debug(ctx, log.String())
 	g.Dispatcher.Dispatch(events.PaginationEvent.String(), &event)
 
 	return adapter.NewGORMAdapter(event.Query)

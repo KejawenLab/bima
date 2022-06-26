@@ -1,6 +1,7 @@
 package adapter
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 
@@ -43,7 +44,11 @@ func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator pag
 		Filters: paginator.Filters,
 	}
 
-	es.Logger.Debug(ctx, fmt.Sprintf("Dispatching %s", events.PaginationEvent))
+	var log bytes.Buffer
+	log.WriteString("Dispatching ")
+	log.WriteString(events.PaginationEvent.String())
+
+	es.Logger.Debug(ctx, log.String())
 	es.Dispatcher.Dispatch(events.PaginationEvent.String(), &event)
 
 	return newElasticsearchPaginator(ctx, es.Client, fmt.Sprintf("%s_%s", es.Service, paginator.Table), event.Query)
