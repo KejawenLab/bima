@@ -131,7 +131,6 @@ func (h *Handler) All(v interface{}) error {
 }
 
 func (h *Handler) Delete(v interface{}, id string) error {
-
 	return h.Repository.Transaction(func(r repositories.Repository) error {
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 

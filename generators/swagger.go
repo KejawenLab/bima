@@ -40,12 +40,19 @@ func (g *Swagger) Generate(template *Template, modulePath string, packagePath st
 		Url:  path.String(),
 	})
 
-	modulesJson = g.makeUnique(modulesJson)
+	occured := make(map[string]bool)
 	for k, m := range modulesJson {
+		if occured[m.Name] == true {
+			continue
+		}
+
+		occured[m.Name] = true
+
 		mUrl, _ := url.Parse(m.Url)
 		query := mUrl.Query()
 
 		query.Set("v", strconv.Itoa(int(time.Now().UnixMicro())))
+
 		mUrl.RawQuery = query.Encode()
 		m.Url = mUrl.String()
 
@@ -63,18 +70,4 @@ func (g *Swagger) Generate(template *Template, modulePath string, packagePath st
 	if err != nil {
 		panic(err)
 	}
-}
-
-func (g *Swagger) makeUnique(modules []ModuleJson) []ModuleJson {
-	occured := make(map[string]bool)
-	var result []ModuleJson
-	for _, e := range modules {
-		if occured[e.Name] != true {
-			occured[e.Name] = true
-
-			result = append(result, e)
-		}
-	}
-
-	return result
 }

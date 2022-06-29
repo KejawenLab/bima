@@ -43,6 +43,7 @@ func (g *GRpc) Run(servers []configs.Server) {
 		streams = append(streams, grpc_logrus.StreamServerInterceptor(logrus.NewEntry(g.Logger), opts...))
 		unaries = append(unaries, grpc_logrus.UnaryServerInterceptor(logrus.NewEntry(g.Logger), opts...))
 	}
+
 	gRpc := grpc.NewServer(
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(streams...)),
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(unaries...)),
