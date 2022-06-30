@@ -15,6 +15,7 @@ import (
 
 type (
 	ElasticsearchAdapter struct {
+		Debug      bool
 		Service    string
 		Logger     *loggers.Logger
 		Client     *elastic.Client
@@ -43,12 +44,13 @@ func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator pag
 		Filters: paginator.Filters,
 	}
 
-	var log bytes.Buffer
-	log.WriteString("Dispatching ")
-	log.WriteString(events.PaginationEvent.String())
+	if es.Debug {
+		var log bytes.Buffer
+		log.WriteString("Dispatching ")
+		log.WriteString(events.PaginationEvent.String())
 
-	es.Logger.Debug(ctx, log.String())
-	es.Dispatcher.Dispatch(events.PaginationEvent.String(), &event)
+		es.Logger.Debug(ctx, log.String())
+	}
 
 	var index bytes.Buffer
 

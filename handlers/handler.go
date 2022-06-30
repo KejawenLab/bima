@@ -12,6 +12,7 @@ import (
 )
 
 type Handler struct {
+	Debug      bool
 	Logger     *loggers.Logger
 	Dispatcher *events.Dispatcher
 	Repository repositories.Repository
@@ -31,11 +32,13 @@ func (h *Handler) Paginate(paginator paginations.Pagination, result interface{})
 	var total64 int64
 	paginator.Paginate(adapter, result, &total64)
 
-	var log bytes.Buffer
-	log.WriteString("Total result: ")
-	log.WriteString(strconv.Itoa(int(total64)))
+	if h.Debug {
+		var log bytes.Buffer
+		log.WriteString("Total result: ")
+		log.WriteString(strconv.Itoa(int(total64)))
 
-	h.Logger.Debug(ctx, log.String())
+		h.Logger.Debug(ctx, log.String())
+	}
 
 	var total = int(total64)
 	next := paginator.Page + 1
@@ -54,13 +57,15 @@ func (h *Handler) Paginate(paginator paginations.Pagination, result interface{})
 
 func (h *Handler) Create(v interface{}) error {
 	return h.Repository.Transaction(func(r repositories.Repository) error {
-		ctx := context.WithValue(context.Background(), "scope", "handler")
-
 		var log bytes.Buffer
-		log.WriteString("Dispatching ")
-		log.WriteString(events.BeforeCreateEvent.String())
+		ctx := context.WithValue(context.Background(), "scope", "handler")
+		if h.Debug {
+			log.WriteString("Dispatching ")
+			log.WriteString(events.BeforeCreateEvent.String())
 
-		h.Logger.Debug(ctx, log.String())
+			h.Logger.Debug(ctx, log.String())
+		}
+
 		h.Dispatcher.Dispatch(events.BeforeCreateEvent.String(), &events.Model{
 			Data:       v,
 			Repository: r,
@@ -71,12 +76,14 @@ func (h *Handler) Create(v interface{}) error {
 
 			return err
 		}
+		if h.Debug {
+			log.Reset()
+			log.WriteString("Dispatching ")
+			log.WriteString(events.AfterCreateEvent.String())
 
-		log.Reset()
-		log.WriteString("Dispatching ")
-		log.WriteString(events.AfterCreateEvent.String())
+			h.Logger.Debug(ctx, log.String())
+		}
 
-		h.Logger.Debug(ctx, log.String())
 		h.Dispatcher.Dispatch(events.AfterCreateEvent.String(), &events.Model{
 			Data:       v,
 			Repository: r,
@@ -88,13 +95,15 @@ func (h *Handler) Create(v interface{}) error {
 
 func (h *Handler) Update(v interface{}, id string) error {
 	return h.Repository.Transaction(func(r repositories.Repository) error {
-		ctx := context.WithValue(context.Background(), "scope", "handler")
-
 		var log bytes.Buffer
-		log.WriteString("Dispatching ")
-		log.WriteString(events.BeforeUpdateEvent.String())
+		ctx := context.WithValue(context.Background(), "scope", "handler")
+		if h.Debug {
+			log.WriteString("Dispatching ")
+			log.WriteString(events.BeforeUpdateEvent.String())
 
-		h.Logger.Debug(ctx, log.String())
+			h.Logger.Debug(ctx, log.String())
+		}
+
 		h.Dispatcher.Dispatch(events.BeforeUpdateEvent.String(), &events.Model{
 			Id:         id,
 			Data:       v,
@@ -106,12 +115,14 @@ func (h *Handler) Update(v interface{}, id string) error {
 
 			return err
 		}
+		if h.Debug {
+			log.Reset()
+			log.WriteString("Dispatching ")
+			log.WriteString(events.AfterUpdateEvent.String())
 
-		log.Reset()
-		log.WriteString("Dispatching ")
-		log.WriteString(events.AfterUpdateEvent.String())
+			h.Logger.Debug(ctx, log.String())
+		}
 
-		h.Logger.Debug(ctx, log.String())
 		h.Dispatcher.Dispatch(events.AfterUpdateEvent.String(), &events.Model{
 			Id:         id,
 			Data:       v,
@@ -132,13 +143,15 @@ func (h *Handler) All(v interface{}) error {
 
 func (h *Handler) Delete(v interface{}, id string) error {
 	return h.Repository.Transaction(func(r repositories.Repository) error {
-		ctx := context.WithValue(context.Background(), "scope", "handler")
-
 		var log bytes.Buffer
-		log.WriteString("Dispatching ")
-		log.WriteString(events.BeforeDeleteEvent.String())
+		ctx := context.WithValue(context.Background(), "scope", "handler")
+		if h.Debug {
+			log.WriteString("Dispatching ")
+			log.WriteString(events.BeforeDeleteEvent.String())
 
-		h.Logger.Debug(ctx, log.String())
+			h.Logger.Debug(ctx, log.String())
+		}
+
 		h.Dispatcher.Dispatch(events.BeforeDeleteEvent.String(), &events.Model{
 			Id:         id,
 			Data:       v,
@@ -151,11 +164,14 @@ func (h *Handler) Delete(v interface{}, id string) error {
 			return err
 		}
 
-		log.Reset()
-		log.WriteString("Dispatching ")
-		log.WriteString(events.AfterDeleteEvent.String())
+		if h.Debug {
+			log.Reset()
+			log.WriteString("Dispatching ")
+			log.WriteString(events.AfterDeleteEvent.String())
 
-		h.Logger.Debug(ctx, log.String())
+			h.Logger.Debug(ctx, log.String())
+		}
+
 		h.Dispatcher.Dispatch(events.AfterDeleteEvent.String(), &events.Model{
 			Id:         id,
 			Data:       v,

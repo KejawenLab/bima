@@ -20,7 +20,6 @@ type Module struct {
 }
 
 func (m *Module) GetPaginated(ctx context.Context, r *grpcs.Pagination) (*grpcs.{{.Module}}PaginatedResponse, error) {
-	m.Logger.Debug(context.WithValue(ctx, "scope", "{{.ModuleLowercase}}"), fmt.Sprintf("%+v", r))
 	records := []*grpcs.{{.Module}}{}
 	model := {{.Module}}{}
 	reqeust := paginations.Request{}
@@ -49,8 +48,6 @@ func (m *Module) GetPaginated(ctx context.Context, r *grpcs.Pagination) (*grpcs.
 
 func (m *Module) Create(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
     ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
-	m.Logger.Debug(ctx, fmt.Sprintf("%+v", r))
-
 	v := {{.Module}}{}
 	copier.Copy(&v, r)
 
@@ -75,8 +72,6 @@ func (m *Module) Create(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
 
 func (m *Module) Update(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
     ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
-	m.Logger.Debug(ctx, fmt.Sprintf("%+v", r))
-
 	v := {{.Module}}{}
     hold := v
 	copier.Copy(&v, r)
@@ -110,8 +105,6 @@ func (m *Module) Update(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
 
 func (m *Module) Get(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
     ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
-	m.Logger.Debug(ctx, fmt.Sprintf("%+v", r))
-
 	var v {{.Module}}
 	if data, found := m.Cache.Get(r.Id); found {
 		v = data.({{.Module}})
@@ -134,8 +127,6 @@ func (m *Module) Get(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modul
 
 func (m *Module) Delete(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
     ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
-	m.Logger.Debug(ctx, fmt.Sprintf("%+v", r))
-
 	v := {{.Module}}{}
 	if err := m.Handler.Bind(&v, r.Id); err != nil {
 		m.Logger.Error(ctx, err.Error())

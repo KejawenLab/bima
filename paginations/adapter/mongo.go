@@ -15,6 +15,7 @@ import (
 
 type (
 	MongodbAdapter struct {
+		Debug      bool
 		Logger     *loggers.Logger
 		Dispatcher *events.Dispatcher
 	}
@@ -43,11 +44,14 @@ func (mg *MongodbAdapter) CreateAdapter(ctx context.Context, paginator paginatio
 		MongoDbFilter: bson.M{},
 	}
 
-	var log bytes.Buffer
-	log.WriteString("Dispatching ")
-	log.WriteString(events.PaginationEvent.String())
+	if mg.Debug {
+		var log bytes.Buffer
+		log.WriteString("Dispatching ")
+		log.WriteString(events.PaginationEvent.String())
 
-	mg.Logger.Debug(ctx, log.String())
+		mg.Logger.Debug(ctx, log.String())
+	}
+
 	mg.Dispatcher.Dispatch(events.PaginationEvent.String(), &event)
 
 	return newMongodbPaginator(ctx, event.Query, event.MongoDbFilter)

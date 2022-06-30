@@ -11,7 +11,7 @@ var Dic = []dingo.Def{
 		Name:  "module:{{.ModuleLowercase}}",
 		Build: (*Module)(nil),
 		Params: dingo.Params{
-			"Module":    dingo.Service("bima:module"),
+			"Module": dingo.Service("bima:module"),
 		},
 	},
 	{

@@ -337,7 +337,7 @@ var Container = []dingo.Def{
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:middleware:factory"),
-			"2": dingo.Service("bima:handler:router"),
+			"2": dingo.Service("bima:router:factory"),
 		},
 	},
 	{
@@ -371,16 +371,29 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:handler:messager",
-		Build: (*handlers.Messenger)(nil),
+		Name: "bima:messenger",
+		Build: func(
+			env *configs.Env,
+			logger *loggers.Logger,
+			publisher *amqp.Publisher,
+			consumer *amqp.Subscriber,
+		) (*handlers.Messenger, error) {
+			return &handlers.Messenger{
+				Debug:     env.Debug,
+				Logger:    logger,
+				Publisher: publisher,
+				Consumer:  consumer,
+			}, nil
+		},
 		Params: dingo.Params{
-			"Logger":    dingo.Service("bima:logger"),
-			"Publisher": dingo.Service("bima:message:publisher"),
-			"Consumer":  dingo.Service("bima:message:consumer"),
+			"0": dingo.Service("bima:config"),
+			"1": dingo.Service("bima:logger"),
+			"2": dingo.Service("bima:message:publisher"),
+			"3": dingo.Service("bima:message:consumer"),
 		},
 	},
 	{
-		Name: "bima:handler:router",
+		Name: "bima:router:factory",
 		Build: func(gateway routers.Router, mux routers.Router) (*routers.Factory, error) {
 			return &routers.Factory{
 				Routers: []routers.Router{
@@ -520,18 +533,32 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:pagination:adapter:gorm",
-		Build: (*adapter.GormAdapter)(nil),
+		Name: "bima:pagination:adapter:gorm",
+		Build: func(
+			env *configs.Env,
+			logger *loggers.Logger,
+			db *gorm.DB,
+			dispatcher *events.Dispatcher,
+		) (*adapter.GormAdapter, error) {
+			return &adapter.GormAdapter{
+				Debug:      env.Debug,
+				Logger:     logger,
+				Database:   db,
+				Dispatcher: dispatcher,
+			}, nil
+		},
 		Params: dingo.Params{
-			"Logger":     dingo.Service("bima:logger"),
-			"Database":   dingo.Service("bima:connection:database"),
-			"Dispatcher": dingo.Service("bima:event:dispatcher"),
+			"0": dingo.Service("bima:config"),
+			"1": dingo.Service("bima:logger"),
+			"2": dingo.Service("bima:connection:database"),
+			"3": dingo.Service("bima:event:dispatcher"),
 		},
 	},
 	{
 		Name: "bima:pagination:adapter:elasticsearch",
 		Build: func(env *configs.Env, logger *loggers.Logger, client *elastic.Client, dispatcher *events.Dispatcher) (*adapter.ElasticsearchAdapter, error) {
 			return &adapter.ElasticsearchAdapter{
+				Debug:      env.Debug,
 				Service:    env.Service.ConnonicalName,
 				Logger:     logger,
 				Client:     client,
@@ -546,11 +573,18 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:pagination:adapter:mongo",
-		Build: (*adapter.MongodbAdapter)(nil),
+		Name: "bima:pagination:adapter:mongo",
+		Build: func(env *configs.Env, logger *loggers.Logger, dispatcher *events.Dispatcher) (*adapter.MongodbAdapter, error) {
+			return &adapter.MongodbAdapter{
+				Debug:      env.Debug,
+				Logger:     logger,
+				Dispatcher: dispatcher,
+			}, nil
+		},
 		Params: dingo.Params{
-			"Logger":     dingo.Service("bima:logger"),
-			"Dispatcher": dingo.Service("bima:event:dispatcher"),
+			"0": dingo.Service("bima:config"),
+			"1": dingo.Service("bima:logger"),
+			"2": dingo.Service("bima:event:dispatcher"),
 		},
 	},
 	{
@@ -576,11 +610,13 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:module",
 		Build: func(
+			env *configs.Env,
 			logger *loggers.Logger,
 			handler *handlers.Handler,
 			cache *utils.Cache,
 		) (*bima.Module, error) {
 			return &bima.Module{
+				Debug:     env.Debug,
 				Logger:    logger,
 				Handler:   handler,
 				Cache:     cache,
@@ -588,9 +624,10 @@ var Container = []dingo.Def{
 			}, nil
 		},
 		Params: dingo.Params{
-			"0": dingo.Service("bima:logger"),
-			"1": dingo.Service("bima:handler:handler"),
-			"2": dingo.Service("bima:cache:memory"),
+			"0": dingo.Service("bima:config"),
+			"1": dingo.Service("bima:logger"),
+			"2": dingo.Service("bima:handler"),
+			"3": dingo.Service("bima:cache:memory"),
 		},
 	},
 	{

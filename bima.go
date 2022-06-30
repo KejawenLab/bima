@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	Version = "v3.0.7"
+	Version = "v3.0.8"
 
 	HighestPriority = 255
 	LowestPriority  = -255
@@ -18,6 +18,7 @@ const (
 
 type (
 	Module struct {
+		Debug     bool
 		Handler   *handlers.Handler
 		Logger    *loggers.Logger
 		Cache     *utils.Cache

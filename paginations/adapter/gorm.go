@@ -13,6 +13,7 @@ import (
 
 type (
 	GormAdapter struct {
+		Debug      bool
 		Logger     *loggers.Logger
 		Dispatcher *events.Dispatcher
 		Database   *gorm.DB
@@ -31,11 +32,14 @@ func (g *GormAdapter) CreateAdapter(ctx context.Context, paginator paginations.P
 		Filters: paginator.Filters,
 	}
 
-	var log bytes.Buffer
-	log.WriteString("Dispatching ")
-	log.WriteString(events.PaginationEvent.String())
+	if g.Debug {
+		var log bytes.Buffer
+		log.WriteString("Dispatching ")
+		log.WriteString(events.PaginationEvent.String())
 
-	g.Logger.Debug(ctx, log.String())
+		g.Logger.Debug(ctx, log.String())
+	}
+
 	g.Dispatcher.Dispatch(events.PaginationEvent.String(), &event)
 
 	var total int64
