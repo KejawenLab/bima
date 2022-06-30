@@ -376,24 +376,6 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:middleware:auth",
-		Build: (*middlewares.Auth)(nil),
-		Params: dingo.Params{
-			"Env": dingo.Service("bima:config"),
-		},
-	},
-	{
-		Name: "bima:middleware:requestid",
-		Build: func(env *configs.Env) (*middlewares.RequestID, error) {
-			return &middlewares.RequestID{
-				RequestIDHeader: env.RequestIDHeader,
-			}, nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-		},
-	},
-	{
 		Name: "bima:router:mux",
 		Build: func(
 			env *configs.Env,

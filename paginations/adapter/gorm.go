@@ -25,6 +25,12 @@ type (
 )
 
 func (g *GormAdapter) CreateAdapter(ctx context.Context, paginator paginations.Pagination) paginator.Adapter {
+	if g.Database == nil {
+		loggers.Logger.Fatal(ctx, "adapter not configured properly")
+
+		return nil
+	}
+
 	query := g.Database.Model(paginator.Model)
 	event := events.GormPagination{
 		Query:   query,
@@ -33,7 +39,7 @@ func (g *GormAdapter) CreateAdapter(ctx context.Context, paginator paginations.P
 
 	if g.Debug {
 		var log bytes.Buffer
-		log.WriteString("Dispatching ")
+		log.WriteString("dispatching ")
 		log.WriteString(events.PaginationEvent.String())
 
 		loggers.Logger.Debug(ctx, log.String())

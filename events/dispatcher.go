@@ -36,7 +36,7 @@ func (d *Dispatcher) Register(listeners []Listener) {
 func (d *Dispatcher) Dispatch(event string, payload interface{}) error {
 	if _, ok := d.Events[event]; !ok {
 		var message bytes.Buffer
-		message.WriteString("Event '")
+		message.WriteString("event '")
 		message.WriteString(event)
 		message.WriteString("' not registered")
 

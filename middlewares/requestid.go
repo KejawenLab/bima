@@ -12,13 +12,13 @@ type RequestID struct {
 }
 
 func (r *RequestID) Attach(request *http.Request, response http.ResponseWriter) bool {
-	reqID := request.Header.Get(r.RequestIDHeader)
-	if reqID == "" {
-		reqID = uuid.NewString()
+	requestID := request.Header.Get(r.RequestIDHeader)
+	if requestID == "" {
+		requestID = uuid.NewString()
 	}
 
-	response.Header().Add(r.RequestIDHeader, reqID)
-	loggers.Logger.Add("request_id", reqID)
+	response.Header().Add(r.RequestIDHeader, requestID)
+	loggers.Logger.Add("request_id", requestID)
 
 	return false
 }

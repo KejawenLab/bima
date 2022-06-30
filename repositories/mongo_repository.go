@@ -30,7 +30,7 @@ func (r *MongoRepository) Transaction(f Transaction) error {
 func (r *MongoRepository) Create(v interface{}) error {
 	model, ok := v.(mgm.Model)
 	if !ok {
-		return errors.New("Invalid model")
+		return errors.New("invalid model")
 	}
 
 	return mgm.Coll(model).Create(model)
@@ -39,7 +39,7 @@ func (r *MongoRepository) Create(v interface{}) error {
 func (r *MongoRepository) Update(v interface{}) error {
 	model, ok := v.(mgm.Model)
 	if !ok {
-		return errors.New("Invalid model")
+		return errors.New("invalid model")
 	}
 
 	return mgm.Coll(model).Update(model)
@@ -48,7 +48,7 @@ func (r *MongoRepository) Update(v interface{}) error {
 func (r *MongoRepository) Bind(v interface{}, id string) error {
 	model, ok := v.(mgm.Model)
 	if !ok {
-		return errors.New("Invalid model")
+		return errors.New("invalid model")
 	}
 
 	return mgm.Coll(model).FindByID(id, model)
@@ -73,7 +73,7 @@ func (r *MongoRepository) FindBy(v interface{}, filters ...Filter) error {
 func (r *MongoRepository) Delete(v interface{}, id string) error {
 	model, ok := v.(mgm.Model)
 	if !ok {
-		return errors.New("Invalid model")
+		return errors.New("invalid model")
 	}
 
 	objectID, _ := primitive.ObjectIDFromHex(id)

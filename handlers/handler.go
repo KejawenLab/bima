@@ -23,7 +23,7 @@ func (h *Handler) Paginate(paginator paginations.Pagination, result interface{})
 
 	adapter := h.Adapter.CreateAdapter(ctx, paginator)
 	if adapter == nil {
-		loggers.Logger.Error(ctx, "Error when creating adapter")
+		loggers.Logger.Error(ctx, "error when creating adapter")
 
 		return paginations.Metadata{}
 	}
@@ -33,7 +33,7 @@ func (h *Handler) Paginate(paginator paginations.Pagination, result interface{})
 
 	if h.Debug {
 		var log bytes.Buffer
-		log.WriteString("Total result: ")
+		log.WriteString("total result: ")
 		log.WriteString(strconv.Itoa(int(total64)))
 
 		loggers.Logger.Debug(ctx, log.String())
@@ -59,7 +59,7 @@ func (h *Handler) Create(v interface{}) error {
 		var log bytes.Buffer
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 		if h.Debug {
-			log.WriteString("Dispatching ")
+			log.WriteString("dispatching ")
 			log.WriteString(events.BeforeCreateEvent.String())
 
 			loggers.Logger.Debug(ctx, log.String())
@@ -71,13 +71,13 @@ func (h *Handler) Create(v interface{}) error {
 		})
 
 		if err := r.Create(v); err != nil {
-			loggers.Logger.Error(ctx, "Error when creating resource(s), Rolling back")
+			loggers.Logger.Error(ctx, "error when creating resource(s), Rolling back")
 
 			return err
 		}
 		if h.Debug {
 			log.Reset()
-			log.WriteString("Dispatching ")
+			log.WriteString("dispatching ")
 			log.WriteString(events.AfterCreateEvent.String())
 
 			loggers.Logger.Debug(ctx, log.String())
@@ -97,7 +97,7 @@ func (h *Handler) Update(v interface{}, id string) error {
 		var log bytes.Buffer
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 		if h.Debug {
-			log.WriteString("Dispatching ")
+			log.WriteString("dispatching ")
 			log.WriteString(events.BeforeUpdateEvent.String())
 
 			loggers.Logger.Debug(ctx, log.String())
@@ -110,13 +110,13 @@ func (h *Handler) Update(v interface{}, id string) error {
 		})
 
 		if err := r.Update(v); err != nil {
-			loggers.Logger.Error(ctx, "Error when updating resource(s), Rolling back")
+			loggers.Logger.Error(ctx, "error when updating resource(s), Rolling back")
 
 			return err
 		}
 		if h.Debug {
 			log.Reset()
-			log.WriteString("Dispatching ")
+			log.WriteString("dispatching ")
 			log.WriteString(events.AfterUpdateEvent.String())
 
 			loggers.Logger.Debug(ctx, log.String())
@@ -145,7 +145,7 @@ func (h *Handler) Delete(v interface{}, id string) error {
 		var log bytes.Buffer
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 		if h.Debug {
-			log.WriteString("Dispatching ")
+			log.WriteString("dispatching ")
 			log.WriteString(events.BeforeDeleteEvent.String())
 
 			loggers.Logger.Debug(ctx, log.String())
@@ -158,14 +158,14 @@ func (h *Handler) Delete(v interface{}, id string) error {
 		})
 
 		if err := r.Delete(v, id); err != nil {
-			loggers.Logger.Error(ctx, "Error when deleting resource(s), Rolling back")
+			loggers.Logger.Error(ctx, "error when deleting resource(s), Rolling back")
 
 			return err
 		}
 
 		if h.Debug {
 			log.Reset()
-			log.WriteString("Dispatching ")
+			log.WriteString("dispatching ")
 			log.WriteString(events.AfterDeleteEvent.String())
 
 			loggers.Logger.Debug(ctx, log.String())

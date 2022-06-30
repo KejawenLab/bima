@@ -18,10 +18,9 @@ type Messenger struct {
 
 func (m *Messenger) Publish(queueName string, data []byte) error {
 	ctx := context.WithValue(context.Background(), "scope", "messenger")
-
 	if m.Debug {
 		var log bytes.Buffer
-		log.WriteString("Publishing message to: ")
+		log.WriteString("publishing message to: ")
 		log.WriteString(queueName)
 
 		loggers.Logger.Debug(ctx, log.String())
@@ -39,10 +38,9 @@ func (m *Messenger) Publish(queueName string, data []byte) error {
 
 func (m *Messenger) Consume(queueName string) (<-chan *message.Message, error) {
 	ctx := context.WithValue(context.Background(), "scope", "messenger")
-
 	if m.Debug {
 		var log bytes.Buffer
-		log.WriteString("Consuming: ")
+		log.WriteString("consuming: ")
 		log.WriteString(queueName)
 
 		loggers.Logger.Debug(ctx, log.String())

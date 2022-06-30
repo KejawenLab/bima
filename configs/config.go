@@ -59,6 +59,7 @@ type (
 
 	Env struct {
 		Debug           bool          `json:"debug" yaml:"debug"`
+		Secret          string        `json:"secret" yaml:"secret"`
 		HttpPort        int           `json:"http_port" yaml:"http_port"`
 		RpcPort         int           `json:"rpc_port" yaml:"rpc_port"`
 		ApiVersion      string        `json:"api_version" yaml:"api_version"`

@@ -32,7 +32,7 @@ type (
 
 func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator paginations.Pagination) paginator.Adapter {
 	if es.Client == nil {
-		loggers.Logger.Fatal(ctx, "Adapter not configured properly")
+		loggers.Logger.Fatal(ctx, "adapter not configured properly")
 
 		return nil
 	}
@@ -45,7 +45,7 @@ func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator pag
 
 	if es.Debug {
 		var log bytes.Buffer
-		log.WriteString("Dispatching ")
+		log.WriteString("dispatching ")
 		log.WriteString(events.PaginationEvent.String())
 
 		loggers.Logger.Debug(ctx, log.String())
