@@ -16,10 +16,6 @@ import (
 	"github.com/KejawenLab/bima/v3/generators"
 	"github.com/KejawenLab/bima/v3/handlers"
 	"github.com/KejawenLab/bima/v3/interfaces"
-	"github.com/KejawenLab/bima/v3/listeners/creates"
-	"github.com/KejawenLab/bima/v3/listeners/deletes"
-	filters "github.com/KejawenLab/bima/v3/listeners/paginations"
-	"github.com/KejawenLab/bima/v3/listeners/updates"
 	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/KejawenLab/bima/v3/middlewares"
 	"github.com/KejawenLab/bima/v3/models"
@@ -245,57 +241,6 @@ var Container = []dingo.Def{
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
 		},
-	},
-	{
-		Name: "bima:listener:create:elasticsearch",
-		Build: func(env *configs.Env, client *elastic.Client) (*creates.Elasticsearch, error) {
-			return &creates.Elasticsearch{
-				Service:       env.Service.ConnonicalName,
-				Elasticsearch: client,
-			}, nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:connection:elasticsearch"),
-		},
-	},
-	{
-		Name: "bima:listener:update:elasticsearch",
-		Build: func(env *configs.Env, client *elastic.Client) (*updates.Elasticsearch, error) {
-			return &updates.Elasticsearch{
-				Service:       env.Service.ConnonicalName,
-				Elasticsearch: client,
-			}, nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:connection:elasticsearch"),
-		},
-	},
-	{
-		Name: "bima:listener:delete:elasticsearch",
-		Build: func(env *configs.Env, client *elastic.Client) (*deletes.Elasticsearch, error) {
-			return &deletes.Elasticsearch{
-				Service:       env.Service.ConnonicalName,
-				Elasticsearch: client,
-			}, nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:connection:elasticsearch"),
-		},
-	},
-	{
-		Name:  "bima:listener:filter:elasticsearch",
-		Build: (*filters.ElasticsearchFilter)(nil),
-	},
-	{
-		Name:  "bima:listener:filter:gorm",
-		Build: (*filters.GormFilter)(nil),
-	},
-	{
-		Name:  "bima:listener:filter:mongo",
-		Build: (*filters.MongoDbFilter)(nil),
 	},
 	{
 		Name:  "bima:interface:database",
