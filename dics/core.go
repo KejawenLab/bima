@@ -36,7 +36,6 @@ import (
 	"github.com/kamva/mgm/v3"
 	"github.com/olivere/elastic/v7"
 	"github.com/sarulabs/dingo/v4"
-	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"gorm.io/gorm"
@@ -117,20 +116,7 @@ var Container = []dingo.Def{
 			queue interfaces.Application,
 			rest interfaces.Application,
 		) (*interfaces.Factory, error) {
-			logger := logrus.New()
-			if env.Debug {
-				logger.SetLevel(logrus.DebugLevel)
-			}
-
-			logger.SetFormatter(&logrus.TextFormatter{
-				FullTimestamp: true,
-			})
-
-			for _, e := range extension.Extensions {
-				logger.AddHook(e)
-			}
-
-			loggers.Configure(env.Debug, env.Service, logger)
+			loggers.Configure(env.Debug, env.Service.ConnonicalName, *extension)
 
 			return &interfaces.Factory{
 				Applications: []interfaces.Application{database, elasticsearch, grpc, queue, rest},

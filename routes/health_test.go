@@ -9,11 +9,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 )
 
 func Test_Hello_Route_Success(t *testing.T) {
+	loggers.Default("test")
+
 	listen, err := net.Listen("tcp", ":111")
 	if err != nil {
 		log.Fatal(err)

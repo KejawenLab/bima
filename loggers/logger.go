@@ -6,7 +6,6 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/KejawenLab/bima/v3/configs"
 	"github.com/sirupsen/logrus"
 )
 
@@ -19,13 +18,30 @@ type (
 
 	logger struct {
 		Verbose bool
-		Service configs.Service
+		Service string
 		Engine  *logrus.Logger
 		Data    logrus.Fields
 	}
 )
 
-func Configure(debug bool, service configs.Service, engine *logrus.Logger) {
+func Default(service string) {
+	Configure(true, service, LoggerExtension{})
+}
+
+func Configure(debug bool, service string, extensions LoggerExtension) {
+	engine := logrus.New()
+	if debug {
+		engine.SetLevel(logrus.DebugLevel)
+	}
+
+	engine.SetFormatter(&logrus.TextFormatter{
+		FullTimestamp: true,
+	})
+
+	for _, e := range extensions.Extensions {
+		engine.AddHook(e)
+	}
+
 	Logger = &logger{
 		Verbose: debug,
 		Service: service,
@@ -157,7 +173,7 @@ func (l *logger) Panic(ctx context.Context, message string) {
 func (l *logger) fields(caller string, file string, line int) {
 	workDir, _ := os.Getwd()
 	l.Data["debug"] = l.Verbose
-	l.Data["service"] = l.Service.ConnonicalName
+	l.Data["service"] = l.Service
 	l.Data["trace"] = map[string]interface{}{
 		"caller": caller,
 		"file":   strings.Replace(file, workDir, ".", 1),

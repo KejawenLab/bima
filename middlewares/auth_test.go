@@ -6,10 +6,13 @@ import (
 	"testing"
 
 	"github.com/KejawenLab/bima/v3/configs"
+	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/stretchr/testify/assert"
 )
 
 func Test_Auth(t *testing.T) {
+	loggers.Default("test")
+
 	middleware := Auth{
 		Env: &configs.Env{
 			AuthHeader: configs.AuthHeader{

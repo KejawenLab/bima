@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/KejawenLab/bima/v3/middlewares"
 	middlewareMocks "github.com/KejawenLab/bima/v3/mocks/middlewares"
 	routeMocks "github.com/KejawenLab/bima/v3/mocks/routes"
@@ -17,6 +18,8 @@ import (
 )
 
 func Test_Mux_Router(t *testing.T) {
+	loggers.Default("test")
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
