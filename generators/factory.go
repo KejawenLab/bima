@@ -54,7 +54,7 @@ type (
 	}
 )
 
-func (f *Factory) Generate(module *ModuleTemplate) {
+func (f *Factory) Generate(module ModuleTemplate) {
 	_, filename, _, ok := runtime.Caller(0)
 	if !ok {
 		panic("No caller information")

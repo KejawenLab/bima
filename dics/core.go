@@ -44,18 +44,6 @@ import (
 
 var Container = []dingo.Def{
 	{
-		Name:  "bima:config:template",
-		Build: (*generators.Template)(nil),
-	},
-	{
-		Name:  "bima:template:module",
-		Build: (*generators.ModuleTemplate)(nil),
-	},
-	{
-		Name:  "bima:template:field",
-		Build: (*generators.FieldTemplate)(nil),
-	},
-	{
 		Name:  "bima:config",
 		Build: (*configs.Env)(nil),
 	},
@@ -70,13 +58,12 @@ var Container = []dingo.Def{
 			server generators.Generator,
 			swagger generators.Generator,
 			env *configs.Env,
-			template *generators.Template,
 		) (*generators.Factory, error) {
 			return &generators.Factory{
 				ApiVersion: env.ApiVersion,
 				Driver:     env.Db.Driver,
 				Pluralizer: pluralize.NewClient(),
-				Template:   template,
+				Template:   &generators.Template{},
 				Generators: []generators.Generator{dic, model, module, proto, provider, server, swagger},
 			}, nil
 		},
@@ -89,7 +76,6 @@ var Container = []dingo.Def{
 			"5": dingo.Service("bima:generator:server"),
 			"6": dingo.Service("bima:generator:swagger"),
 			"7": dingo.Service("bima:config"),
-			"8": dingo.Service("bima:config:template"),
 		},
 	},
 	{
@@ -119,14 +105,6 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:generator:swagger",
 		Build: (*generators.Swagger)(nil),
-	},
-	{
-		Name:  "bima:database:driver:mysql",
-		Build: (*drivers.Mysql)(nil),
-	},
-	{
-		Name:  "bima:database:driver:postgresql",
-		Build: (*drivers.PostgreSql)(nil),
 	},
 	{
 		Name: "bima:application",
@@ -175,7 +153,7 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:connection:database",
-		Build: func(env *configs.Env, mysql drivers.Driver, postgresql drivers.Driver) (*gorm.DB, error) {
+		Build: func(env *configs.Env) (*gorm.DB, error) {
 			util := color.New(color.FgCyan, color.Bold)
 			var db drivers.Driver
 
@@ -186,9 +164,9 @@ var Container = []dingo.Def{
 
 			switch env.Db.Driver {
 			case "mysql":
-				db = mysql
+				db = drivers.Mysql{}
 			case "postgresql":
-				db = postgresql
+				db = drivers.PostgreSql{}
 			case "mongo":
 				var dsn bytes.Buffer
 
@@ -234,8 +212,6 @@ var Container = []dingo.Def{
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:database:driver:mysql"),
-			"2": dingo.Service("bima:database:driver:postgresql"),
 		},
 	},
 	{
@@ -544,10 +520,6 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:pagination:paginator",
-		Build: (*paginations.Pagination)(nil),
-	},
-	{
 		Name:  "bima:pagination:adapter:gorm",
 		Build: (*adapter.GormAdapter)(nil),
 		Params: dingo.Params{
@@ -582,10 +554,6 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:pagination:request",
-		Build: (*paginations.Request)(nil),
-	},
-	{
 		Name:  "bima:service:repository:gorm",
 		Build: (*repositories.GormRepository)(nil),
 		Params: dingo.Params{
@@ -611,20 +579,18 @@ var Container = []dingo.Def{
 			logger *loggers.Logger,
 			handler *handlers.Handler,
 			cache *utils.Cache,
-			paginator *paginations.Pagination,
 		) (*bima.Module, error) {
 			return &bima.Module{
 				Logger:    logger,
 				Handler:   handler,
 				Cache:     cache,
-				Paginator: paginator,
+				Paginator: &paginations.Pagination{},
 			}, nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:logger"),
 			"1": dingo.Service("bima:handler:handler"),
 			"2": dingo.Service("bima:cache:memory"),
-			"3": dingo.Service("bima:pagination:paginator"),
 		},
 	},
 	{

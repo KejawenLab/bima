@@ -40,13 +40,13 @@ func (g *Swagger) Generate(template *Template, modulePath string, packagePath st
 		Url:  path.String(),
 	})
 
-	occured := make(map[string]bool)
+	occurred := make(map[string]bool)
 	for k, m := range modulesJson {
-		if occured[m.Name] == true {
+		if occurred[m.Name] == true {
 			continue
 		}
 
-		occured[m.Name] = true
+		occurred[m.Name] = true
 
 		mUrl, _ := url.Parse(m.Url)
 		query := mUrl.Query()

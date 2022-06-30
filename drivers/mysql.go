@@ -15,7 +15,7 @@ import (
 type Mysql struct {
 }
 
-func (d *Mysql) Connect(host string, port int, user string, password string, dbname string, debug bool) *gorm.DB {
+func (_ Mysql) Connect(host string, port int, user string, password string, dbname string, debug bool) *gorm.DB {
 	var db *gorm.DB
 	var err error
 	var dsn bytes.Buffer
