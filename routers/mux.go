@@ -14,7 +14,6 @@ import (
 
 type MuxRouter struct {
 	Debug  bool
-	Logger *loggers.Logger
 	routes []routes.Route
 }
 
@@ -45,7 +44,7 @@ func (m *MuxRouter) Handle(context context.Context, server *runtime.ServeMux, cl
 					stopper.WriteString("Middleware stopped by: ")
 					stopper.WriteString(reflect.TypeOf(middleware).Name())
 
-					m.Logger.Debug(context, stopper.String())
+					loggers.Logger.Debug(context, stopper.String())
 
 					return
 				}

@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/KejawenLab/bima/v3/configs"
+	"github.com/KejawenLab/bima/v3/loggers"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -17,7 +18,6 @@ import (
 type GRpc struct {
 	GRpcPort int
 	Debug    bool
-	Logger   *logrus.Logger
 }
 
 func (g *GRpc) Run(servers []configs.Server) {
@@ -40,8 +40,8 @@ func (g *GRpc) Run(servers []configs.Server) {
 		options := []grpc_logrus.Option{
 			grpc_logrus.WithLevels(grpc_logrus.DefaultCodeToLevel),
 		}
-		streams = append(streams, grpc_logrus.StreamServerInterceptor(logrus.NewEntry(g.Logger), options...))
-		unaries = append(unaries, grpc_logrus.UnaryServerInterceptor(logrus.NewEntry(g.Logger), options...))
+		streams = append(streams, grpc_logrus.StreamServerInterceptor(logrus.NewEntry(loggers.Logger.Engine), options...))
+		unaries = append(unaries, grpc_logrus.UnaryServerInterceptor(logrus.NewEntry(loggers.Logger.Engine), options...))
 	}
 
 	gRpc := grpc.NewServer(

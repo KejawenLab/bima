@@ -10,28 +10,39 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+var Logger *logger
+
 type (
 	LoggerExtension struct {
 		Extensions []logrus.Hook
 	}
 
-	Logger struct {
+	logger struct {
 		Verbose bool
 		Service configs.Service
-		Logger  *logrus.Logger
+		Engine  *logrus.Logger
 		Data    logrus.Fields
 	}
 )
+
+func Configure(debug bool, service configs.Service, engine *logrus.Logger) {
+	Logger = &logger{
+		Verbose: debug,
+		Service: service,
+		Engine:  engine,
+		Data:    logrus.Fields{},
+	}
+}
 
 func (l *LoggerExtension) Register(extensions []logrus.Hook) {
 	l.Extensions = extensions
 }
 
-func (l *Logger) Add(key string, value interface{}) {
+func (l *logger) Add(key string, value interface{}) {
 	l.Data[key] = value
 }
 
-func (l *Logger) Trace(ctx context.Context, message string) {
+func (l *logger) Trace(ctx context.Context, message string) {
 	var file, caller string
 	var line int
 
@@ -44,10 +55,10 @@ func (l *Logger) Trace(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Logger.WithFields(l.Data).Trace(message)
+	go l.Engine.WithFields(l.Data).Trace(message)
 }
 
-func (l *Logger) Debug(ctx context.Context, message string) {
+func (l *logger) Debug(ctx context.Context, message string) {
 	var file, caller string
 	var line int
 
@@ -60,10 +71,10 @@ func (l *Logger) Debug(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Logger.WithFields(l.Data).Debug(message)
+	go l.Engine.WithFields(l.Data).Debug(message)
 }
 
-func (l *Logger) Info(ctx context.Context, message string) {
+func (l *logger) Info(ctx context.Context, message string) {
 	var file, caller string
 	var line int
 
@@ -76,10 +87,10 @@ func (l *Logger) Info(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Logger.WithFields(l.Data).Info(message)
+	go l.Engine.WithFields(l.Data).Info(message)
 }
 
-func (l *Logger) Warning(ctx context.Context, message string) {
+func (l *logger) Warning(ctx context.Context, message string) {
 	var file, caller string
 	var line int
 
@@ -92,10 +103,10 @@ func (l *Logger) Warning(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Logger.WithFields(l.Data).Warning(message)
+	go l.Engine.WithFields(l.Data).Warning(message)
 }
 
-func (l *Logger) Error(ctx context.Context, message string) {
+func (l *logger) Error(ctx context.Context, message string) {
 	var file, caller string
 	var line int
 
@@ -108,10 +119,10 @@ func (l *Logger) Error(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Logger.WithFields(l.Data).Error(message)
+	go l.Engine.WithFields(l.Data).Error(message)
 }
 
-func (l *Logger) Fatal(ctx context.Context, message string) {
+func (l *logger) Fatal(ctx context.Context, message string) {
 	var file, caller string
 	var line int
 
@@ -124,10 +135,10 @@ func (l *Logger) Fatal(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Logger.WithFields(l.Data).Fatal(message)
+	go l.Engine.WithFields(l.Data).Fatal(message)
 }
 
-func (l *Logger) Panic(ctx context.Context, message string) {
+func (l *logger) Panic(ctx context.Context, message string) {
 	var file, caller string
 	var line int
 
@@ -140,10 +151,10 @@ func (l *Logger) Panic(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Logger.WithFields(l.Data).Panic(message)
+	go l.Engine.WithFields(l.Data).Panic(message)
 }
 
-func (l *Logger) fields(caller string, file string, line int) {
+func (l *logger) fields(caller string, file string, line int) {
 	workDir, _ := os.Getwd()
 	l.Data["debug"] = l.Verbose
 	l.Data["service"] = l.Service.ConnonicalName

@@ -17,7 +17,6 @@ type (
 	ElasticsearchAdapter struct {
 		Debug      bool
 		Service    string
-		Logger     *loggers.Logger
 		Client     *elastic.Client
 		Dispatcher *events.Dispatcher
 	}
@@ -33,7 +32,7 @@ type (
 
 func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator paginations.Pagination) paginator.Adapter {
 	if es.Client == nil {
-		es.Logger.Fatal(ctx, "Adapter not configured properly")
+		loggers.Logger.Fatal(ctx, "Adapter not configured properly")
 
 		return nil
 	}
@@ -49,7 +48,7 @@ func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator pag
 		log.WriteString("Dispatching ")
 		log.WriteString(events.PaginationEvent.String())
 
-		es.Logger.Debug(ctx, log.String())
+		loggers.Logger.Debug(ctx, log.String())
 	}
 
 	var index bytes.Buffer

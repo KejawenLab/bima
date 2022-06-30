@@ -20,7 +20,6 @@ const HelthPath = "/health"
 
 type Health struct {
 	client *grpc.ClientConn
-	Logger *loggers.Logger
 }
 
 func (h *Health) Path() string {
@@ -42,7 +41,7 @@ func (h *Health) SetClient(client *grpc.ClientConn) {
 func (h *Health) Handle(w http.ResponseWriter, r *http.Request, _ map[string]string) {
 	s := h.client.GetState()
 	if s != connectivity.Ready {
-		h.Logger.Error(context.WithValue(context.Background(), "scope", "health_route"), "gRPC server is down")
+		loggers.Logger.Error(context.WithValue(context.Background(), "scope", "health_route"), "gRPC server is down")
 		http.Error(w, "gRPC server is down", http.StatusBadGateway)
 
 		return

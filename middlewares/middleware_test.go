@@ -6,9 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/KejawenLab/bima/v3/loggers"
 	mocks "github.com/KejawenLab/bima/v3/mocks/middlewares"
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -37,11 +35,6 @@ func Test_Middleware_Debug_True_Without_Stop(t *testing.T) {
 
 	factory := Factory{
 		Debug: true,
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
 	}
 	factory.Register([]Middleware{
 		middleware1,
@@ -72,11 +65,6 @@ func Test_Middleware_Debug_True_Without_Stop_Method_Head(t *testing.T) {
 
 	factory := Factory{
 		Debug: true,
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
 	}
 	factory.Register([]Middleware{
 		middleware1,
@@ -106,11 +94,6 @@ func Test_Middleware_Debug_True_With_Stop(t *testing.T) {
 
 	factory := Factory{
 		Debug: true,
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
 	}
 	factory.Register([]Middleware{
 		middleware1,
@@ -141,11 +124,6 @@ func Test_Middleware_Debug_False_Without_Stop(t *testing.T) {
 
 	factory := Factory{
 		Debug: false,
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
 	}
 	factory.Register([]Middleware{
 		middleware1,
@@ -175,11 +153,6 @@ func Test_Middleware_Debug_False_With_Stop(t *testing.T) {
 
 	factory := Factory{
 		Debug: false,
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
 	}
 	factory.Register([]Middleware{
 		middleware1,
@@ -212,11 +185,6 @@ func Test_Middleware_Debug_True_Without_Stop_Return_3XX(t *testing.T) {
 
 	factory := Factory{
 		Debug: true,
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
 	}
 	factory.Register([]Middleware{
 		middleware1,
@@ -249,11 +217,6 @@ func Test_Middleware_Debug_True_Without_Stop_Return_4XX(t *testing.T) {
 
 	factory := Factory{
 		Debug: true,
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
 	}
 	factory.Register([]Middleware{
 		middleware1,
@@ -286,11 +249,6 @@ func Test_Middleware_Debug_True_Without_Stop_Return_5XX(t *testing.T) {
 
 	factory := Factory{
 		Debug: true,
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
 	}
 	factory.Register([]Middleware{
 		middleware1,
@@ -323,11 +281,6 @@ func Test_Middleware_Debug_True_Slow_Middleware(t *testing.T) {
 
 	factory := Factory{
 		Debug: true,
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
 	}
 	factory.Register([]Middleware{
 		middleware1,
@@ -361,11 +314,6 @@ func Test_Middleware_Debug_True_Slowest_Middleware(t *testing.T) {
 
 	factory := Factory{
 		Debug: true,
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
 	}
 	factory.Register([]Middleware{
 		middleware1,

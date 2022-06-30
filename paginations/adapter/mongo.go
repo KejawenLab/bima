@@ -16,7 +16,6 @@ import (
 type (
 	MongodbAdapter struct {
 		Debug      bool
-		Logger     *loggers.Logger
 		Dispatcher *events.Dispatcher
 	}
 
@@ -32,7 +31,7 @@ type (
 func (mg *MongodbAdapter) CreateAdapter(ctx context.Context, paginator paginations.Pagination) paginator.Adapter {
 	model, ok := paginator.Model.(mgm.Model)
 	if !ok {
-		mg.Logger.Fatal(ctx, "Adapter not configured properly")
+		loggers.Logger.Fatal(ctx, "Adapter not configured properly")
 
 		return nil
 	}
@@ -49,7 +48,7 @@ func (mg *MongodbAdapter) CreateAdapter(ctx context.Context, paginator paginatio
 		log.WriteString("Dispatching ")
 		log.WriteString(events.PaginationEvent.String())
 
-		mg.Logger.Debug(ctx, log.String())
+		loggers.Logger.Debug(ctx, log.String())
 	}
 
 	mg.Dispatcher.Dispatch(events.PaginationEvent.String(), &event)

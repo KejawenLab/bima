@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/status"
 
     "github.com/KejawenLab/bima/v3"
+	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/KejawenLab/bima/v3/paginations"
     "github.com/KejawenLab/bima/v3/utils"
 	"github.com/jinzhu/copier"
@@ -52,13 +53,13 @@ func (m *Module) Create(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
 	copier.Copy(&v, r)
 
 	if message, err := utils.Validate(&v); err != nil {
-		m.Logger.Error(ctx, string(message))
+		loggers.Logger.Error(ctx, string(message))
 
 		return nil, status.Error(codes.InvalidArgument, string(message))
 	}
 
 	if err := m.Handler.Create(&v); err != nil {
-		m.Logger.Error(ctx, err.Error())
+		loggers.Logger.Error(ctx, err.Error())
 
 		return nil, status.Error(codes.Internal, "Internal server error")
 	}
@@ -77,13 +78,13 @@ func (m *Module) Update(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
 	copier.Copy(&v, r)
 
 	if message, err := utils.Validate(&v); err != nil {
-		m.Logger.Error(ctx, string(message))
+		loggers.Logger.Error(ctx, string(message))
 
 		return nil, status.Error(codes.InvalidArgument, string(message))
 	}
 
 	if err := m.Handler.Bind(&hold, r.Id); err != nil {
-		m.Logger.Error(ctx, err.Error())
+		loggers.Logger.Error(ctx, err.Error())
 
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Data with ID '%s' not found.", r.Id))
 	}
@@ -91,7 +92,7 @@ func (m *Module) Update(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
     v.SetID(hold.GetID())
 	v.CreatedAt = hold.CreatedAt
 	if err := m.Handler.Update(&v, v.ID.Hex()); err != nil {
-		m.Logger.Error(ctx, err.Error())
+		loggers.Logger.Error(ctx, err.Error())
 
 		return nil, status.Error(codes.Internal, "Internal server error")
 	}
@@ -110,7 +111,7 @@ func (m *Module) Get(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Modul
 		v = data.({{.Module}})
 	} else {
 		if err := m.Handler.Bind(&v, r.Id); err != nil {
-			m.Logger.Error(ctx, err.Error())
+			loggers.Logger.Error(ctx, err.Error())
 
 			return nil, status.Error(codes.NotFound, fmt.Sprintf("Data with ID '%s' not found.", r.Id))
 		}
@@ -129,7 +130,7 @@ func (m *Module) Delete(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
     ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
 	v := {{.Module}}{}
 	if err := m.Handler.Bind(&v, r.Id); err != nil {
-		m.Logger.Error(ctx, err.Error())
+		loggers.Logger.Error(ctx, err.Error())
 
 		return nil, status.Error(codes.NotFound, fmt.Sprintf("Data with ID '%s' not found.", r.Id))
 	}

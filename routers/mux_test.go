@@ -6,13 +6,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/KejawenLab/bima/v3/middlewares"
 	middlewareMocks "github.com/KejawenLab/bima/v3/mocks/middlewares"
 	routeMocks "github.com/KejawenLab/bima/v3/mocks/routes"
 	"github.com/KejawenLab/bima/v3/routes"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc"
@@ -109,11 +107,6 @@ func Test_Mux_Router(t *testing.T) {
 
 	router = MuxRouter{
 		Debug: true,
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
 	}
 	router.Register([]routes.Route{route})
 
@@ -141,11 +134,6 @@ func Test_Mux_Router(t *testing.T) {
 
 	router = MuxRouter{
 		Debug: true,
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
 	}
 	router.Register([]routes.Route{route})
 

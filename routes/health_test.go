@@ -9,8 +9,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/KejawenLab/bima/v3/loggers"
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 )
@@ -35,13 +33,7 @@ func Test_Hello_Route_Success(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	health := Health{
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
-	}
+	health := Health{}
 
 	time.Sleep(100 * time.Millisecond)
 
@@ -69,13 +61,7 @@ func Test_Hello_Route_Down(t *testing.T) {
 	endpoint := "0.0.0.0:111"
 	conn, _ := grpc.DialContext(ctx, endpoint, grpc.WithInsecure())
 
-	health := Health{
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
-	}
+	health := Health{}
 
 	time.Sleep(100 * time.Millisecond)
 

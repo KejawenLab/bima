@@ -2,7 +2,6 @@ package bima
 
 import (
 	"github.com/KejawenLab/bima/v3/handlers"
-	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/KejawenLab/bima/v3/models"
 	"github.com/KejawenLab/bima/v3/paginations"
 	"github.com/KejawenLab/bima/v3/utils"
@@ -20,7 +19,6 @@ type (
 	Module struct {
 		Debug     bool
 		Handler   *handlers.Handler
-		Logger    *loggers.Logger
 		Cache     *utils.Cache
 		Paginator *paginations.Pagination
 	}

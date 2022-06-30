@@ -14,7 +14,6 @@ type Messenger struct {
 	Debug     bool
 	Publisher *amqp.Publisher
 	Consumer  *amqp.Subscriber
-	Logger    *loggers.Logger
 }
 
 func (m *Messenger) Publish(queueName string, data []byte) error {
@@ -25,12 +24,12 @@ func (m *Messenger) Publish(queueName string, data []byte) error {
 		log.WriteString("Publishing message to: ")
 		log.WriteString(queueName)
 
-		m.Logger.Debug(ctx, log.String())
+		loggers.Logger.Debug(ctx, log.String())
 	}
 
 	msg := message.NewMessage(watermill.NewUUID(), data)
 	if err := m.Publisher.Publish(queueName, msg); err != nil {
-		m.Logger.Error(ctx, err.Error())
+		loggers.Logger.Error(ctx, err.Error())
 
 		return err
 	}
@@ -46,12 +45,12 @@ func (m *Messenger) Consume(queueName string) (<-chan *message.Message, error) {
 		log.WriteString("Consuming: ")
 		log.WriteString(queueName)
 
-		m.Logger.Debug(ctx, log.String())
+		loggers.Logger.Debug(ctx, log.String())
 	}
 
 	messages, err := m.Consumer.Subscribe(context.Background(), queueName)
 	if err != nil {
-		m.Logger.Error(ctx, err.Error())
+		loggers.Logger.Error(ctx, err.Error())
 
 		return nil, err
 	}

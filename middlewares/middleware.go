@@ -28,7 +28,6 @@ type (
 	Factory struct {
 		Debug       bool
 		Middlewares []Middleware
-		Logger      *loggers.Logger
 	}
 
 	responseWrapper struct {
@@ -97,7 +96,7 @@ func (m *Factory) Attach(handler http.Handler) http.Handler {
 				stopper.WriteString("Middleware stopped by: ")
 				stopper.WriteString(reflect.TypeOf(middleware).Name())
 
-				m.Logger.Debug(ctx, stopper.String())
+				loggers.Logger.Debug(ctx, stopper.String())
 
 				return
 			}

@@ -8,7 +8,6 @@ import (
 )
 
 type RequestID struct {
-	Logger          *loggers.Logger
 	RequestIDHeader string
 }
 
@@ -19,7 +18,7 @@ func (r *RequestID) Attach(request *http.Request, response http.ResponseWriter) 
 	}
 
 	response.Header().Add(r.RequestIDHeader, reqID)
-	r.Logger.Add("request_id", reqID)
+	loggers.Logger.Add("request_id", reqID)
 
 	return false
 }

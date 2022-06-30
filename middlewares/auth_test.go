@@ -6,8 +6,6 @@ import (
 	"testing"
 
 	"github.com/KejawenLab/bima/v3/configs"
-	"github.com/KejawenLab/bima/v3/loggers"
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,11 +18,6 @@ func Test_Auth(t *testing.T) {
 				Role:  "",
 			},
 			Debug: true,
-		},
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
 		},
 	}
 
@@ -45,11 +38,6 @@ func Test_Auth(t *testing.T) {
 			},
 			Debug: true,
 		},
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
 	}
 
 	req = httptest.NewRequest("GET", "http://bima.framework/foo", nil)
@@ -69,11 +57,6 @@ func Test_Auth(t *testing.T) {
 				MinRole:   2,
 			},
 		},
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
-		},
 	}
 
 	req = httptest.NewRequest("GET", "http://bima.framework/foo", nil)
@@ -92,11 +75,6 @@ func Test_Auth(t *testing.T) {
 				Whitelist: "/not-secure",
 				MinRole:   2,
 			},
-		},
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
 		},
 	}
 
@@ -120,11 +98,6 @@ func Test_Auth(t *testing.T) {
 				Whitelist: "/not-secure",
 				MinRole:   2,
 			},
-		},
-		Logger: &loggers.Logger{
-			Verbose: true,
-			Logger:  logrus.New(),
-			Data:    logrus.Fields{},
 		},
 	}
 

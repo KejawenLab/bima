@@ -13,7 +13,6 @@ import (
 
 type Handler struct {
 	Debug      bool
-	Logger     *loggers.Logger
 	Dispatcher *events.Dispatcher
 	Repository repositories.Repository
 	Adapter    paginations.Adapter
@@ -24,7 +23,7 @@ func (h *Handler) Paginate(paginator paginations.Pagination, result interface{})
 
 	adapter := h.Adapter.CreateAdapter(ctx, paginator)
 	if adapter == nil {
-		h.Logger.Error(ctx, "Error when creating adapter")
+		loggers.Logger.Error(ctx, "Error when creating adapter")
 
 		return paginations.Metadata{}
 	}
@@ -37,7 +36,7 @@ func (h *Handler) Paginate(paginator paginations.Pagination, result interface{})
 		log.WriteString("Total result: ")
 		log.WriteString(strconv.Itoa(int(total64)))
 
-		h.Logger.Debug(ctx, log.String())
+		loggers.Logger.Debug(ctx, log.String())
 	}
 
 	var total = int(total64)
@@ -63,7 +62,7 @@ func (h *Handler) Create(v interface{}) error {
 			log.WriteString("Dispatching ")
 			log.WriteString(events.BeforeCreateEvent.String())
 
-			h.Logger.Debug(ctx, log.String())
+			loggers.Logger.Debug(ctx, log.String())
 		}
 
 		h.Dispatcher.Dispatch(events.BeforeCreateEvent.String(), &events.Model{
@@ -72,7 +71,7 @@ func (h *Handler) Create(v interface{}) error {
 		})
 
 		if err := r.Create(v); err != nil {
-			h.Logger.Error(ctx, "Error when creating resource(s), Rolling back")
+			loggers.Logger.Error(ctx, "Error when creating resource(s), Rolling back")
 
 			return err
 		}
@@ -81,7 +80,7 @@ func (h *Handler) Create(v interface{}) error {
 			log.WriteString("Dispatching ")
 			log.WriteString(events.AfterCreateEvent.String())
 
-			h.Logger.Debug(ctx, log.String())
+			loggers.Logger.Debug(ctx, log.String())
 		}
 
 		h.Dispatcher.Dispatch(events.AfterCreateEvent.String(), &events.Model{
@@ -101,7 +100,7 @@ func (h *Handler) Update(v interface{}, id string) error {
 			log.WriteString("Dispatching ")
 			log.WriteString(events.BeforeUpdateEvent.String())
 
-			h.Logger.Debug(ctx, log.String())
+			loggers.Logger.Debug(ctx, log.String())
 		}
 
 		h.Dispatcher.Dispatch(events.BeforeUpdateEvent.String(), &events.Model{
@@ -111,7 +110,7 @@ func (h *Handler) Update(v interface{}, id string) error {
 		})
 
 		if err := r.Update(v); err != nil {
-			h.Logger.Error(ctx, "Error when updating resource(s), Rolling back")
+			loggers.Logger.Error(ctx, "Error when updating resource(s), Rolling back")
 
 			return err
 		}
@@ -120,7 +119,7 @@ func (h *Handler) Update(v interface{}, id string) error {
 			log.WriteString("Dispatching ")
 			log.WriteString(events.AfterUpdateEvent.String())
 
-			h.Logger.Debug(ctx, log.String())
+			loggers.Logger.Debug(ctx, log.String())
 		}
 
 		h.Dispatcher.Dispatch(events.AfterUpdateEvent.String(), &events.Model{
@@ -149,7 +148,7 @@ func (h *Handler) Delete(v interface{}, id string) error {
 			log.WriteString("Dispatching ")
 			log.WriteString(events.BeforeDeleteEvent.String())
 
-			h.Logger.Debug(ctx, log.String())
+			loggers.Logger.Debug(ctx, log.String())
 		}
 
 		h.Dispatcher.Dispatch(events.BeforeDeleteEvent.String(), &events.Model{
@@ -159,7 +158,7 @@ func (h *Handler) Delete(v interface{}, id string) error {
 		})
 
 		if err := r.Delete(v, id); err != nil {
-			h.Logger.Error(ctx, "Error when deleting resource(s), Rolling back")
+			loggers.Logger.Error(ctx, "Error when deleting resource(s), Rolling back")
 
 			return err
 		}
@@ -169,7 +168,7 @@ func (h *Handler) Delete(v interface{}, id string) error {
 			log.WriteString("Dispatching ")
 			log.WriteString(events.AfterDeleteEvent.String())
 
-			h.Logger.Debug(ctx, log.String())
+			loggers.Logger.Debug(ctx, log.String())
 		}
 
 		h.Dispatcher.Dispatch(events.AfterDeleteEvent.String(), &events.Model{

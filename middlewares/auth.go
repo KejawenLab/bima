@@ -12,15 +12,14 @@ import (
 )
 
 type Auth struct {
-	Env    *configs.Env
-	Logger *loggers.Logger
+	Env *configs.Env
 }
 
 func (a *Auth) Attach(request *http.Request, response http.ResponseWriter) bool {
 	ctx := context.WithValue(context.Background(), "scope", "auth_middleware")
 	if a.Env.AuthHeader.Id == "" || a.Env.AuthHeader.Email == "" || a.Env.AuthHeader.Role == "" {
 		if a.Env.Debug {
-			a.Logger.Debug(ctx, "Auth header not set in environment variables")
+			loggers.Logger.Debug(ctx, "Auth header not set in environment variables")
 		}
 
 		return false
@@ -33,7 +32,7 @@ func (a *Auth) Attach(request *http.Request, response http.ResponseWriter) bool 
 			log.WriteString("Whitelisting url ")
 			log.WriteString(request.RequestURI)
 
-			a.Logger.Debug(ctx, log.String())
+			loggers.Logger.Debug(ctx, log.String())
 		}
 
 		return false
@@ -44,14 +43,14 @@ func (a *Auth) Attach(request *http.Request, response http.ResponseWriter) bool 
 	a.Env.User.Email = request.Header.Get(a.Env.AuthHeader.Email)
 	a.Env.User.Role, _ = strconv.Atoi(request.Header.Get(a.Env.AuthHeader.Role))
 	if a.Env.User.Id == "" || a.Env.User.Email == "" || a.Env.User.Role == 0 {
-		a.Logger.Error(ctx, "User is not provided")
+		loggers.Logger.Error(ctx, "User is not provided")
 		http.Error(response, "Unauthorization", http.StatusUnauthorized)
 
 		return true
 	}
 
 	if a.Env.User.Role < a.Env.AuthHeader.MinRole {
-		a.Logger.Error(ctx, "Insufficient role")
+		loggers.Logger.Error(ctx, "Insufficient role")
 		http.Error(response, "Unauthorization", http.StatusUnauthorized)
 
 		return true
