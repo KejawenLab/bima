@@ -42,6 +42,4 @@ Bima Framework utilize [gRPC Gateway](https://grpc-ecosystem.github.io/grpc-gate
 
 ## Todo
 
-- Testing testing testing
-
 - Documentation

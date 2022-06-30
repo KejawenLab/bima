@@ -4,12 +4,27 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/KejawenLab/bima/v3/loggers"
 	mocks "github.com/KejawenLab/bima/v3/mocks/middlewares"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/mock"
 )
+
+type SlowMiddleware struct {
+	hold int
+}
+
+func (a *SlowMiddleware) Attach(_ *http.Request, response http.ResponseWriter) bool {
+	time.Sleep(time.Duration(a.hold) * time.Second)
+
+	return false
+}
+
+func (a *SlowMiddleware) Priority() int {
+	return 0
+}
 
 func Test_Middleware_Debug_True_Without_Stop(t *testing.T) {
 	middleware1 := mocks.NewMiddleware(t)
@@ -263,11 +278,11 @@ func Test_Middleware_Debug_True_Without_Stop_Return_4XX(t *testing.T) {
 func Test_Middleware_Debug_True_Without_Stop_Return_5XX(t *testing.T) {
 	middleware1 := mocks.NewMiddleware(t)
 	middleware1.On("Attach", mock.Anything, mock.Anything).Return(false).Once()
-	middleware1.On("Priority").Return(1).Once()
+	middleware1.On("Priority").Return(1).Maybe()
 
 	middleware2 := mocks.NewMiddleware(t)
 	middleware2.On("Attach", mock.Anything, mock.Anything).Return(false).Once()
-	middleware2.On("Priority").Return(2).Once()
+	middleware2.On("Priority").Return(2).Maybe()
 
 	factory := Factory{
 		Debug: true,
@@ -280,6 +295,82 @@ func Test_Middleware_Debug_True_Without_Stop_Return_5XX(t *testing.T) {
 	factory.Register([]Middleware{
 		middleware1,
 		middleware2,
+	})
+
+	factory.Sort()
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusBadGateway)
+	})
+
+	req := httptest.NewRequest("DELETE", "http://bima.framework/foo", nil)
+	w := httptest.NewRecorder()
+
+	factory.Attach(handler).ServeHTTP(w, req)
+
+	middleware1.AssertExpectations(t)
+	middleware2.AssertExpectations(t)
+}
+
+func Test_Middleware_Debug_True_Slow_Middleware(t *testing.T) {
+	middleware1 := mocks.NewMiddleware(t)
+	middleware1.On("Attach", mock.Anything, mock.Anything).Return(false).Once()
+	middleware1.On("Priority").Return(1).Maybe()
+
+	middleware2 := mocks.NewMiddleware(t)
+	middleware2.On("Attach", mock.Anything, mock.Anything).Return(false).Once()
+	middleware2.On("Priority").Return(2).Maybe()
+
+	factory := Factory{
+		Debug: true,
+		Logger: &loggers.Logger{
+			Verbose: true,
+			Logger:  logrus.New(),
+			Data:    logrus.Fields{},
+		},
+	}
+	factory.Register([]Middleware{
+		middleware1,
+		middleware2,
+		&SlowMiddleware{hold: 3},
+	})
+
+	factory.Sort()
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusBadGateway)
+	})
+
+	req := httptest.NewRequest("DELETE", "http://bima.framework/foo", nil)
+	w := httptest.NewRecorder()
+
+	factory.Attach(handler).ServeHTTP(w, req)
+
+	middleware1.AssertExpectations(t)
+	middleware2.AssertExpectations(t)
+}
+
+func Test_Middleware_Debug_True_Slowest_Middleware(t *testing.T) {
+	middleware1 := mocks.NewMiddleware(t)
+	middleware1.On("Attach", mock.Anything, mock.Anything).Return(false).Once()
+	middleware1.On("Priority").Return(1).Maybe()
+
+	middleware2 := mocks.NewMiddleware(t)
+	middleware2.On("Attach", mock.Anything, mock.Anything).Return(false).Once()
+	middleware2.On("Priority").Return(2).Maybe()
+
+	factory := Factory{
+		Debug: true,
+		Logger: &loggers.Logger{
+			Verbose: true,
+			Logger:  logrus.New(),
+			Data:    logrus.Fields{},
+		},
+	}
+	factory.Register([]Middleware{
+		middleware1,
+		middleware2,
+		&SlowMiddleware{hold: 5},
 	})
 
 	factory.Sort()

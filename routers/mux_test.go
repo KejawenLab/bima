@@ -6,11 +6,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/KejawenLab/bima/v3/middlewares"
 	middlewareMocks "github.com/KejawenLab/bima/v3/mocks/middlewares"
 	routeMocks "github.com/KejawenLab/bima/v3/mocks/routes"
 	"github.com/KejawenLab/bima/v3/routes"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc"
@@ -82,6 +84,69 @@ func Test_Mux_Router(t *testing.T) {
 	route.On("Middlewares").Return([]middlewares.Middleware{middleware}).Once()
 
 	router = MuxRouter{}
+	router.Register([]routes.Route{route})
+
+	assert.Equal(t, -255, router.Priority())
+	assert.Equal(t, 1, len(router.routes))
+
+	router.Handle(context.TODO(), server, conn)
+
+	req = httptest.NewRequest("GET", "http://bima.framework/middleware-stop", nil)
+	w = httptest.NewRecorder()
+
+	server.ServeHTTP(w, req)
+
+	route.AssertExpectations(t)
+
+	middleware = middlewareMocks.NewMiddleware(t)
+	middleware.On("Attach", mock.Anything, mock.Anything).Return(true).Once()
+
+	route = routeMocks.NewRoute(t)
+	route.On("Path").Return("/middleware-stop").Once()
+	route.On("Method").Return(http.MethodGet).Once()
+	route.On("SetClient", mock.Anything).Once()
+	route.On("Middlewares").Return([]middlewares.Middleware{middleware}).Once()
+
+	router = MuxRouter{
+		Debug: true,
+		Logger: &loggers.Logger{
+			Verbose: true,
+			Logger:  logrus.New(),
+			Data:    logrus.Fields{},
+		},
+	}
+	router.Register([]routes.Route{route})
+
+	assert.Equal(t, -255, router.Priority())
+	assert.Equal(t, 1, len(router.routes))
+
+	router.Handle(context.TODO(), server, conn)
+
+	req = httptest.NewRequest("GET", "http://bima.framework/middleware-stop", nil)
+	w = httptest.NewRecorder()
+
+	server.ServeHTTP(w, req)
+
+	route.AssertExpectations(t)
+
+	middleware = middlewareMocks.NewMiddleware(t)
+	middleware.On("Attach", mock.Anything, mock.Anything).Return(false).Once()
+
+	route = routeMocks.NewRoute(t)
+	route.On("Path").Return("/middleware-stop").Once()
+	route.On("Method").Return(http.MethodGet).Once()
+	route.On("SetClient", mock.Anything).Once()
+	route.On("Middlewares").Return([]middlewares.Middleware{middleware}).Once()
+	route.On("Handle", mock.Anything, mock.Anything, mock.Anything).Once()
+
+	router = MuxRouter{
+		Debug: true,
+		Logger: &loggers.Logger{
+			Verbose: true,
+			Logger:  logrus.New(),
+			Data:    logrus.Fields{},
+		},
+	}
 	router.Register([]routes.Route{route})
 
 	assert.Equal(t, -255, router.Priority())

@@ -19,6 +19,7 @@ func Test_Auth(t *testing.T) {
 				Email: "",
 				Role:  "",
 			},
+			Debug: true,
 		},
 		Logger: &loggers.Logger{
 			Verbose: true,
@@ -42,6 +43,7 @@ func Test_Auth(t *testing.T) {
 				Role:      "X-User-Role",
 				Whitelist: "/foo",
 			},
+			Debug: true,
 		},
 		Logger: &loggers.Logger{
 			Verbose: true,
