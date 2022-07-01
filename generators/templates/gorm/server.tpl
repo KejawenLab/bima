@@ -7,6 +7,7 @@ import (
 	"{{.PackageName}}/protos/builds"
     "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
+	"gorm.io/gorm"
 )
 
 type Server struct {
@@ -14,22 +15,16 @@ type Server struct {
 	Module *Module
 }
 
-func (s *Server) RegisterGRpc(gs *grpc.Server) {
+func (s *Server) Register(gs *grpc.Server) {
 	grpcs.Register{{.Module}}sServer(gs, s.Module)
 }
 
-func (s *Server) GRpcHandler(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn) error {
+func (s *Server) Handle(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn) error {
 	return grpcs.Register{{.Module}}sHandler(context, server, client)
 }
 
-func (s *Server) RegisterAutoMigrate() {
-	if s.Database != nil && s.Debug {
-		s.Database.AutoMigrate(&{{.Module}}{})
+func (s *Server) Migrate(db *gorm.DB) {
+	if s.Debug {
+		db.AutoMigrate(&{{.Module}}{})
 	}
-}
-
-func (s *Server) RegisterQueueConsumer() {
-}
-
-func (s *Server) RepopulateData() {
 }

@@ -3,17 +3,20 @@ package configs
 import (
 	"context"
 
+	"github.com/KejawenLab/bima/v3/messengers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/olivere/elastic/v7"
 	"google.golang.org/grpc"
+	"gorm.io/gorm"
 )
 
 type (
 	Server interface {
-		RegisterGRpc(server *grpc.Server)
-		GRpcHandler(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn) error
-		RegisterAutoMigrate()
-		RegisterQueueConsumer()
-		RepopulateData()
+		Register(server *grpc.Server)
+		Handle(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn) error
+		Migrate(db *gorm.DB)
+		Consume(messenger *messengers.Messenger)
+		RepopulateData(client *elastic.Client)
 	}
 
 	User struct {

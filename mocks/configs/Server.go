@@ -5,7 +5,12 @@ package mocks
 import (
 	context "context"
 
+	elastic "github.com/olivere/elastic/v7"
+	gorm "gorm.io/gorm"
+
 	grpc "google.golang.org/grpc"
+
+	messengers "github.com/KejawenLab/bima/v3/messengers"
 
 	mock "github.com/stretchr/testify/mock"
 
@@ -17,8 +22,13 @@ type Server struct {
 	mock.Mock
 }
 
-// GRpcHandler provides a mock function with given fields: _a0, server, client
-func (_m *Server) GRpcHandler(_a0 context.Context, server *runtime.ServeMux, client *grpc.ClientConn) error {
+// Consume provides a mock function with given fields: messenger
+func (_m *Server) Consume(messenger *messengers.Messenger) {
+	_m.Called(messenger)
+}
+
+// Handle provides a mock function with given fields: _a0, server, client
+func (_m *Server) Handle(_a0 context.Context, server *runtime.ServeMux, client *grpc.ClientConn) error {
 	ret := _m.Called(_a0, server, client)
 
 	var r0 error
@@ -31,24 +41,19 @@ func (_m *Server) GRpcHandler(_a0 context.Context, server *runtime.ServeMux, cli
 	return r0
 }
 
-// RegisterAutoMigrate provides a mock function with given fields:
-func (_m *Server) RegisterAutoMigrate() {
-	_m.Called()
+// Migrate provides a mock function with given fields: db
+func (_m *Server) Migrate(db *gorm.DB) {
+	_m.Called(db)
 }
 
-// RegisterGRpc provides a mock function with given fields: server
-func (_m *Server) RegisterGRpc(server *grpc.Server) {
+// Register provides a mock function with given fields: server
+func (_m *Server) Register(server *grpc.Server) {
 	_m.Called(server)
 }
 
-// RegisterQueueConsumer provides a mock function with given fields:
-func (_m *Server) RegisterQueueConsumer() {
-	_m.Called()
-}
-
-// RepopulateData provides a mock function with given fields:
-func (_m *Server) RepopulateData() {
-	_m.Called()
+// RepopulateData provides a mock function with given fields: client
+func (_m *Server) RepopulateData(client *elastic.Client) {
+	_m.Called(client)
 }
 
 type mockConstructorTestingTNewServer interface {

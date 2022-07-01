@@ -50,7 +50,7 @@ func (g *GRpc) Run(servers []configs.Server) {
 	)
 
 	for _, server := range servers {
-		server.RegisterGRpc(gRpc)
+		server.Register(gRpc)
 	}
 
 	gRpc.Serve(listen)

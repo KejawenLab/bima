@@ -2,14 +2,16 @@ package bima
 
 import (
 	"github.com/KejawenLab/bima/v3/handlers"
+	"github.com/KejawenLab/bima/v3/messengers"
 	"github.com/KejawenLab/bima/v3/models"
 	"github.com/KejawenLab/bima/v3/paginations"
 	"github.com/KejawenLab/bima/v3/utils"
+	"github.com/olivere/elastic/v7"
 	"gorm.io/gorm"
 )
 
 const (
-	Version = "v3.1.1"
+	Version = "v3.1.2"
 
 	HighestPriority = 255
 	LowestPriority  = -255
@@ -28,7 +30,15 @@ type (
 	}
 
 	Server struct {
-		Debug    bool
-		Database *gorm.DB
+		Debug bool
 	}
 )
+
+func (s *Server) Consume(messenger *messengers.Messenger) {
+}
+
+func (s *Server) RepopulateData(client *elastic.Client) {
+}
+
+func (s *Server) Migrate(db *gorm.DB) {
+}

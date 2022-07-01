@@ -18,7 +18,7 @@ func (g *GRpcGateway) Register(servers []configs.Server) {
 
 func (g *GRpcGateway) Handle(ctx context.Context, server *runtime.ServeMux, client *grpc.ClientConn) {
 	for _, handler := range g.servers {
-		handler.GRpcHandler(ctx, server, client)
+		handler.Handle(ctx, server, client)
 	}
 }
 

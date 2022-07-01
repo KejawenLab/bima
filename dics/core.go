@@ -17,6 +17,7 @@ import (
 	"github.com/KejawenLab/bima/v3/handlers"
 	"github.com/KejawenLab/bima/v3/interfaces"
 	"github.com/KejawenLab/bima/v3/loggers"
+	"github.com/KejawenLab/bima/v3/messengers"
 	"github.com/KejawenLab/bima/v3/middlewares"
 	"github.com/KejawenLab/bima/v3/models"
 	paginations "github.com/KejawenLab/bima/v3/paginations"
@@ -245,10 +246,16 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:interface:database",
 		Build: (*interfaces.Database)(nil),
+		Params: dingo.Params{
+			"Db": dingo.Service("bima:database"),
+		},
 	},
 	{
 		Name:  "bima:interface:elasticsearch",
 		Build: (*interfaces.Elasticsearch)(nil),
+		Params: dingo.Params{
+			"Client": dingo.Service("bima:elasticsearch:client"),
+		},
 	},
 	{
 		Name: "bima:interface:grpc",
@@ -265,6 +272,9 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:interface:queue",
 		Build: (*interfaces.Queue)(nil),
+		Params: dingo.Params{
+			"Messenger": dingo.Service("bima:messenger"),
+		},
 	},
 	{
 		Name: "bima:interface:rest",
@@ -292,8 +302,8 @@ var Container = []dingo.Def{
 			env *configs.Env,
 			publisher *amqp.Publisher,
 			consumer *amqp.Subscriber,
-		) (*handlers.Messenger, error) {
-			return &handlers.Messenger{
+		) (*messengers.Messenger, error) {
+			return &messengers.Messenger{
 				Debug:     env.Debug,
 				Publisher: publisher,
 				Consumer:  consumer,
@@ -393,7 +403,7 @@ var Container = []dingo.Def{
 		Build: func(env *configs.Env, config amqp.Config) (*amqp.Publisher, error) {
 			publisher, err := amqp.NewPublisher(config, watermill.NewStdLogger(env.Debug, env.Debug))
 			if err != nil {
-				return nil, err
+				return nil, nil
 			}
 
 			return publisher, nil
@@ -408,7 +418,7 @@ var Container = []dingo.Def{
 		Build: func(env *configs.Env, config amqp.Config) (*amqp.Subscriber, error) {
 			consumer, err := amqp.NewSubscriber(config, watermill.NewStdLogger(env.Debug, env.Debug))
 			if err != nil {
-				return nil, err
+				return nil, nil
 			}
 
 			return consumer, nil
@@ -508,15 +518,13 @@ var Container = []dingo.Def{
 	},
 	{
 		Name: "bima:server",
-		Build: func(env *configs.Env, db *gorm.DB) (*bima.Server, error) {
+		Build: func(env *configs.Env) (*bima.Server, error) {
 			return &bima.Server{
-				Debug:    env.Debug,
-				Database: db,
+				Debug: env.Debug,
 			}, nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:database"),
 		},
 	},
 	{

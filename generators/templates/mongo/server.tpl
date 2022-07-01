@@ -14,22 +14,10 @@ type Server struct {
 	Module *Module
 }
 
-func (s *Server) RegisterGRpc(gs *grpc.Server) {
+func (s *Server) Register(gs *grpc.Server) {
 	grpcs.Register{{.Module}}sServer(gs, s.Module)
 }
 
-func (s *Server) GRpcHandler(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn) error {
+func (s *Server) Handle(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn) error {
 	return grpcs.Register{{.Module}}sHandler(context, server, client)
-}
-
-func (s *Server) RegisterAutoMigrate() {
-	if s.Database != nil && s.Debug {
-		s.Database.AutoMigrate(&{{.Module}}{})
-	}
-}
-
-func (s *Server) RegisterQueueConsumer() {
-}
-
-func (s *Server) RepopulateData() {
 }
