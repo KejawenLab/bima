@@ -151,7 +151,7 @@ var Container = []dingo.Def{
 		Build: (*loggers.LoggerExtension)(nil),
 	},
 	{
-		Name: "bima:connection:database",
+		Name: "bima:database",
 		Build: func(env *configs.Env) (*gorm.DB, error) {
 			util := color.New(color.FgCyan, color.Bold)
 			var db drivers.Driver
@@ -214,7 +214,7 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name: "bima:connection:elasticsearch",
+		Name: "bima:elasticsearch:client",
 		Build: func(env *configs.Env) (*elastic.Client, error) {
 			var dsn bytes.Buffer
 
@@ -301,8 +301,8 @@ var Container = []dingo.Def{
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:message:publisher"),
-			"2": dingo.Service("bima:message:consumer"),
+			"1": dingo.Service("bima:publisher"),
+			"2": dingo.Service("bima:consumer"),
 		},
 	},
 	{
@@ -366,7 +366,7 @@ var Container = []dingo.Def{
 		Build: (*routes.Health)(nil),
 	},
 	{
-		Name: "bima:message:config",
+		Name: "bima:messenger:config",
 		Build: func(env *configs.Env) (amqp.Config, error) {
 			color.New(color.FgCyan, color.Bold).Print("✓ ")
 			fmt.Println("Pub/Sub configured")
@@ -389,7 +389,7 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name: "bima:message:publisher",
+		Name: "bima:publisher",
 		Build: func(env *configs.Env, config amqp.Config) (*amqp.Publisher, error) {
 			publisher, err := amqp.NewPublisher(config, watermill.NewStdLogger(env.Debug, env.Debug))
 			if err != nil {
@@ -400,11 +400,11 @@ var Container = []dingo.Def{
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:message:config"),
+			"1": dingo.Service("bima:messenger:config"),
 		},
 	},
 	{
-		Name: "bima:message:consumer",
+		Name: "bima:consumer",
 		Build: func(env *configs.Env, config amqp.Config) (*amqp.Subscriber, error) {
 			consumer, err := amqp.NewSubscriber(config, watermill.NewStdLogger(env.Debug, env.Debug))
 			if err != nil {
@@ -415,7 +415,7 @@ var Container = []dingo.Def{
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:message:config"),
+			"1": dingo.Service("bima:messenger:config"),
 		},
 	},
 	{
@@ -433,7 +433,7 @@ var Container = []dingo.Def{
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:connection:database"),
+			"1": dingo.Service("bima:database"),
 			"2": dingo.Service("bima:event:dispatcher"),
 		},
 	},
@@ -449,7 +449,7 @@ var Container = []dingo.Def{
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:connection:elasticsearch"),
+			"1": dingo.Service("bima:elasticsearch:client"),
 			"2": dingo.Service("bima:event:dispatcher"),
 		},
 	},
@@ -467,14 +467,14 @@ var Container = []dingo.Def{
 		},
 	},
 	{
-		Name:  "bima:service:repository:gorm",
+		Name:  "bima:repository:gorm",
 		Build: (*repositories.GormRepository)(nil),
 		Params: dingo.Params{
-			"Database": dingo.Service("bima:connection:database"),
+			"Database": dingo.Service("bima:database"),
 		},
 	},
 	{
-		Name:  "bima:service:repository:mongo",
+		Name:  "bima:repository:mongo",
 		Build: (*repositories.MongoRepository)(nil),
 	},
 	{
@@ -516,7 +516,7 @@ var Container = []dingo.Def{
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:connection:database"),
+			"1": dingo.Service("bima:database"),
 		},
 	},
 	{
