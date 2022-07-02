@@ -15,7 +15,7 @@ func (e *Elasticsearch) Run(servers []configs.Server) {
 	}
 
 	for _, server := range servers {
-		go server.RepopulateData(e.Client)
+		go server.Sync(e.Client)
 	}
 }
 

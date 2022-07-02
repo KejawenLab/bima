@@ -16,7 +16,7 @@ type (
 		Handle(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn) error
 		Migrate(db *gorm.DB)
 		Consume(messenger *messengers.Messenger)
-		RepopulateData(client *elastic.Client)
+		Sync(client *elastic.Client)
 	}
 
 	Service struct {

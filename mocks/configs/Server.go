@@ -51,8 +51,8 @@ func (_m *Server) Register(server *grpc.Server) {
 	_m.Called(server)
 }
 
-// RepopulateData provides a mock function with given fields: client
-func (_m *Server) RepopulateData(client *elastic.Client) {
+// Sync provides a mock function with given fields: client
+func (_m *Server) Sync(client *elastic.Client) {
 	_m.Called(client)
 }
 

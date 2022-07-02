@@ -37,7 +37,7 @@ type (
 func (s *Server) Consume(messenger *messengers.Messenger) {
 }
 
-func (s *Server) RepopulateData(client *elastic.Client) {
+func (s *Server) Sync(client *elastic.Client) {
 }
 
 func (s *Server) Migrate(db *gorm.DB) {
