@@ -106,7 +106,7 @@ func (m *Module) Update(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
 
 func (m *Module) Get(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
     ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
-	var v {{.Module}}
+	v := *m.Model
 	if data, found := m.Cache.Get(r.Id); found {
 		v = data.({{.Module}})
 	} else {
