@@ -46,14 +46,6 @@ type (
 		Password string `json:"password" yaml:"password"`
 	}
 
-	AuthHeader struct {
-		Id        string `json:"id" yaml:"id"`
-		Email     string `json:"email" yaml:"email"`
-		Role      string `json:"role" yaml:"role"`
-		Whitelist string `json:"whitelist" yaml:"whitelist"`
-		MinRole   int    `json:"min_role" yaml:"min_role"`
-	}
-
 	Env struct {
 		Debug           bool          `json:"debug" yaml:"debug"`
 		Secret          string        `json:"secret" yaml:"secret"`
@@ -64,7 +56,6 @@ type (
 		Db              Db            `json:"database" yaml:"database"`
 		Elasticsearch   Elasticsearch `json:"elasticsearch" yaml:"elasticsearch"`
 		Amqp            Amqp          `json:"queue" yaml:"queue"`
-		AuthHeader      AuthHeader    `json:"auth_header" yaml:"auth_header"`
 		RequestIDHeader string        `json:"request_id_header" yaml:"request_id_header"`
 		CacheLifetime   int           `json:"cache_lifetime" yaml:"cache_lifetime"`
 		User            string
