@@ -1,24 +1,40 @@
 package middlewares
 
 import (
+	"bytes"
 	"context"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"github.com/KejawenLab/bima/v3/configs"
 	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/KejawenLab/bima/v3/utils"
-	"github.com/golang-jwt/jwt/v4"
 )
 
 type Jwt struct {
-	Secret string
-	Method string
-	User   *configs.User
+	Debug         bool
+	Secret        string
+	SigningMethod string
+	Whitelist     string
+	Env           *configs.Env
 }
 
 func (j *Jwt) Attach(request *http.Request, response http.ResponseWriter) bool {
-	ctx := context.WithValue(context.Background(), "scope", "auth_middleware")
+	ctx := context.WithValue(context.Background(), "scope", "jwt_middleware")
+	match, _ := regexp.MatchString(j.Whitelist, request.RequestURI)
+	if match {
+		if j.Debug {
+			var log bytes.Buffer
+			log.WriteString("whitelisting url ")
+			log.WriteString(request.RequestURI)
+
+			loggers.Logger.Debug(ctx, log.String())
+		}
+
+		return false
+	}
+
 	bearerToken := strings.Split(strings.TrimSpace(request.Header.Get("Authorization")), " ")
 	if len(bearerToken) != 2 {
 		loggers.Logger.Error(ctx, "token not provided")
@@ -27,7 +43,7 @@ func (j *Jwt) Attach(request *http.Request, response http.ResponseWriter) bool {
 		return true
 	}
 
-	token, err := utils.ValidateToken(j.Secret, j.Method, bearerToken[1])
+	claims, err := utils.ValidateToken(j.Secret, j.SigningMethod, bearerToken[1])
 	if err != nil {
 		loggers.Logger.Error(ctx, err.Error())
 		http.Error(response, "unauthorization", http.StatusUnauthorized)
@@ -35,20 +51,17 @@ func (j *Jwt) Attach(request *http.Request, response http.ResponseWriter) bool {
 		return true
 	}
 
-	claims, _ := token.(jwt.MapClaims)
-	if id, ok := claims["id"]; ok {
-		j.User.Id = id.(string)
+	if user, ok := claims["user"]; ok {
+		j.Env.User = user.(string)
+		request.Header.Add("user", j.Env.User)
+
+		return false
 	}
 
-	if email, ok := claims["email"]; ok {
-		j.User.Email = email.(string)
-	}
+	loggers.Logger.Error(ctx, "user not provided")
+	http.Error(response, "unauthorization", http.StatusUnauthorized)
 
-	if role, ok := claims["role"]; ok {
-		j.User.Role = int(role.(float64))
-	}
-
-	return false
+	return true
 }
 
 func (j *Jwt) Priority() int {

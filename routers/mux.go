@@ -42,7 +42,7 @@ func (m *MuxRouter) Handle(context context.Context, server *runtime.ServeMux, cl
 				if stop := middleware.Attach(r, w); stop {
 					var stopper bytes.Buffer
 					stopper.WriteString("middleware stopped by: ")
-					stopper.WriteString(reflect.TypeOf(middleware).Name())
+					stopper.WriteString(reflect.TypeOf(middleware).Elem().Name())
 
 					loggers.Logger.Debug(context, stopper.String())
 

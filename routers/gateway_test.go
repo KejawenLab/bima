@@ -23,7 +23,7 @@ func Test_Gateway_Router(t *testing.T) {
 	server := runtime.NewServeMux()
 
 	grpc := mocks.NewServer(t)
-	grpc.On("GRpcHandler", mock.Anything, mock.Anything, mock.Anything).Return(nil).Once()
+	grpc.On("Handle", mock.Anything, mock.Anything, mock.Anything).Return(nil).Once()
 
 	router := GRpcGateway{}
 	router.Register([]configs.Server{grpc})

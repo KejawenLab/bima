@@ -3,7 +3,6 @@ package dics
 import (
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -154,6 +153,10 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:database",
 		Build: func(env *configs.Env) (*gorm.DB, error) {
+			if env.Db.Driver == "" {
+				return nil, nil
+			}
+
 			util := color.New(color.FgCyan, color.Bold)
 			var db drivers.Driver
 
@@ -198,7 +201,7 @@ var Container = []dingo.Def{
 
 				return nil, err
 			default:
-				return nil, errors.New("Unknown database driver")
+				return nil, nil
 			}
 
 			return db.Connect(
@@ -217,6 +220,10 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:elasticsearch:client",
 		Build: func(env *configs.Env) (*elastic.Client, error) {
+			if env.Elasticsearch.Host == "" {
+				return nil, nil
+			}
+
 			var dsn bytes.Buffer
 
 			dsn.WriteString(env.Elasticsearch.Host)
@@ -303,6 +310,13 @@ var Container = []dingo.Def{
 			publisher *amqp.Publisher,
 			consumer *amqp.Subscriber,
 		) (*messengers.Messenger, error) {
+			if consumer == nil || publisher == nil {
+				return nil, nil
+			}
+
+			color.New(color.FgCyan, color.Bold).Print("✓ ")
+			fmt.Println("Pub/Sub configured")
+
 			return &messengers.Messenger{
 				Debug:     env.Debug,
 				Publisher: publisher,
@@ -378,9 +392,6 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:messenger:config",
 		Build: func(env *configs.Env) (amqp.Config, error) {
-			color.New(color.FgCyan, color.Bold).Print("✓ ")
-			fmt.Println("Pub/Sub configured")
-
 			var dsn bytes.Buffer
 
 			dsn.WriteString("amqp://")

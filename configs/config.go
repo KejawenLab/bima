@@ -19,12 +19,6 @@ type (
 		RepopulateData(client *elastic.Client)
 	}
 
-	User struct {
-		Id    string
-		Email string
-		Role  int
-	}
-
 	Service struct {
 		Name           string `json:"name" yaml:"name"`
 		ConnonicalName string
@@ -73,6 +67,6 @@ type (
 		AuthHeader      AuthHeader    `json:"auth_header" yaml:"auth_header"`
 		RequestIDHeader string        `json:"request_id_header" yaml:"request_id_header"`
 		CacheLifetime   int           `json:"cache_lifetime" yaml:"cache_lifetime"`
-		User            *User
+		User            string
 	}
 )

@@ -13,9 +13,9 @@ import (
 type (
 	GormModel interface {
 		TableName() string
-		SetCreatedBy(user *configs.User)
-		SetUpdatedBy(user *configs.User)
-		SetDeletedBy(user *configs.User)
+		SetCreatedBy(user string)
+		SetUpdatedBy(user string)
+		SetDeletedBy(user string)
 		SetCreatedAt(time time.Time)
 		SetUpdatedAt(time time.Time)
 		SetSyncedAt(time time.Time)
@@ -45,22 +45,16 @@ type (
 	}
 )
 
-func (b *GormBase) SetCreatedBy(user *configs.User) {
-	if user != nil {
-		b.CreatedBy = sql.NullString{String: user.Id, Valid: true}
-	}
+func (b *GormBase) SetCreatedBy(user string) {
+	b.CreatedBy = sql.NullString{String: user, Valid: true}
 }
 
-func (b *GormBase) SetUpdatedBy(user *configs.User) {
-	if user != nil {
-		b.UpdatedBy = sql.NullString{String: user.Id, Valid: true}
-	}
+func (b *GormBase) SetUpdatedBy(user string) {
+	b.UpdatedBy = sql.NullString{String: user, Valid: true}
 }
 
-func (b *GormBase) SetDeletedBy(user *configs.User) {
-	if user != nil {
-		b.DeletedBy = sql.NullString{String: user.Id, Valid: true}
-	}
+func (b *GormBase) SetDeletedBy(user string) {
+	b.DeletedBy = sql.NullString{String: user, Valid: true}
 }
 
 func (b *GormBase) SetCreatedAt(time time.Time) {

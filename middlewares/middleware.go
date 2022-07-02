@@ -94,7 +94,7 @@ func (m *Factory) Attach(handler http.Handler) http.Handler {
 			if stop := middleware.Attach(request, response); stop {
 				var stopper bytes.Buffer
 				stopper.WriteString("Middleware stopped by: ")
-				stopper.WriteString(reflect.TypeOf(middleware).Name())
+				stopper.WriteString(reflect.TypeOf(middleware).Elem().Name())
 
 				loggers.Logger.Debug(ctx, stopper.String())
 

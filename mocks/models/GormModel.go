@@ -3,7 +3,6 @@
 package mocks
 
 import (
-	configs "github.com/KejawenLab/bima/v3/configs"
 	mock "github.com/stretchr/testify/mock"
 
 	time "time"
@@ -34,7 +33,7 @@ func (_m *GormModel) SetCreatedAt(_a0 time.Time) {
 }
 
 // SetCreatedBy provides a mock function with given fields: user
-func (_m *GormModel) SetCreatedBy(user *configs.User) {
+func (_m *GormModel) SetCreatedBy(user string) {
 	_m.Called(user)
 }
 
@@ -44,7 +43,7 @@ func (_m *GormModel) SetDeletedAt(_a0 time.Time) {
 }
 
 // SetDeletedBy provides a mock function with given fields: user
-func (_m *GormModel) SetDeletedBy(user *configs.User) {
+func (_m *GormModel) SetDeletedBy(user string) {
 	_m.Called(user)
 }
 
@@ -59,7 +58,7 @@ func (_m *GormModel) SetUpdatedAt(_a0 time.Time) {
 }
 
 // SetUpdatedBy provides a mock function with given fields: user
-func (_m *GormModel) SetUpdatedBy(user *configs.User) {
+func (_m *GormModel) SetUpdatedBy(user string) {
 	_m.Called(user)
 }
 
