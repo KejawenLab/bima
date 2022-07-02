@@ -25,6 +25,7 @@ type (
 		context    context.Context
 		client     *elastic.Client
 		index      string
+		model      interface{}
 		pageQuery  *elastic.BoolQuery
 		totalQuery *elastic.BoolQuery
 	}
@@ -57,20 +58,23 @@ func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator pag
 	index.WriteString("_")
 	index.WriteString(paginator.Table)
 
-	return newElasticsearchPaginator(ctx, es.Client, index.String(), event.Query)
+	es.Dispatcher.Dispatch(events.PaginationEvent.String(), &event)
+
+	return newElasticsearchPaginator(ctx, es.Client, index.String(), paginator.Model, event.Query)
 }
 
-func newElasticsearchPaginator(context context.Context, client *elastic.Client, index string, query *elastic.BoolQuery) paginator.Adapter {
-	var totalQuery *elastic.BoolQuery
-	*totalQuery = *query
-
-	return &elasticsearchPaginator{
+func newElasticsearchPaginator(context context.Context, client *elastic.Client, index string, model interface{}, query *elastic.BoolQuery) paginator.Adapter {
+	totalQuery := query
+	paginator := elasticsearchPaginator{
 		context:    context,
 		client:     client,
 		index:      index,
+		model:      model,
 		pageQuery:  query,
 		totalQuery: totalQuery,
 	}
+
+	return &paginator
 }
 
 func (es *elasticsearchPaginator) Nums() (int64, error) {
@@ -88,12 +92,14 @@ func (es *elasticsearchPaginator) Slice(offset int, length int, data interface{}
 		return err
 	}
 
-	records := data.(*[]map[string]interface{})
+	records := []map[string]interface{}{}
 	var record map[string]interface{}
 	for _, hit := range result.Hits.Hits {
 		json.Unmarshal(hit.Source, &record)
-		*records = append(*records, record)
+		records = append(records, record)
 	}
 
-	return nil
+	temp, _ := json.Marshal(records)
+
+	return json.Unmarshal(temp, data)
 }

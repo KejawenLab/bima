@@ -20,7 +20,6 @@ import (
 	"github.com/KejawenLab/bima/v3/middlewares"
 	"github.com/KejawenLab/bima/v3/models"
 	paginations "github.com/KejawenLab/bima/v3/paginations"
-	"github.com/KejawenLab/bima/v3/paginations/adapter"
 	"github.com/KejawenLab/bima/v3/repositories"
 	"github.com/KejawenLab/bima/v3/routers"
 	"github.com/KejawenLab/bima/v3/routes"
@@ -437,54 +436,6 @@ var Container = []dingo.Def{
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:messenger:config"),
-		},
-	},
-	{
-		Name: "bima:pagination:adapter:gorm",
-		Build: func(
-			env *configs.Env,
-			db *gorm.DB,
-			dispatcher *events.Dispatcher,
-		) (*adapter.GormAdapter, error) {
-			return &adapter.GormAdapter{
-				Debug:      env.Debug,
-				Database:   db,
-				Dispatcher: dispatcher,
-			}, nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:database"),
-			"2": dingo.Service("bima:event:dispatcher"),
-		},
-	},
-	{
-		Name: "bima:pagination:adapter:elasticsearch",
-		Build: func(env *configs.Env, client *elastic.Client, dispatcher *events.Dispatcher) (*adapter.ElasticsearchAdapter, error) {
-			return &adapter.ElasticsearchAdapter{
-				Debug:      env.Debug,
-				Service:    env.Service.ConnonicalName,
-				Client:     client,
-				Dispatcher: dispatcher,
-			}, nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:elasticsearch:client"),
-			"2": dingo.Service("bima:event:dispatcher"),
-		},
-	},
-	{
-		Name: "bima:pagination:adapter:mongo",
-		Build: func(env *configs.Env, dispatcher *events.Dispatcher) (*adapter.MongodbAdapter, error) {
-			return &adapter.MongodbAdapter{
-				Debug:      env.Debug,
-				Dispatcher: dispatcher,
-			}, nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:event:dispatcher"),
 		},
 	},
 	{

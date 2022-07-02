@@ -78,6 +78,7 @@ func (b *GormBase) BeforeCreate(tx *gorm.DB) (err error) {
 
 	b.SetCreatedBy(b.Env.User)
 	b.SetCreatedAt(time.Now())
+	b.SetSyncedAt(time.Now())
 
 	return nil
 }
