@@ -53,7 +53,7 @@ func (j *Jwt) Attach(request *http.Request, response http.ResponseWriter) bool {
 
 	if user, ok := claims["user"]; ok {
 		j.Env.User = user.(string)
-		request.Header.Add("user", j.Env.User)
+		request.Header.Add("X-Bima-User", j.Env.User)
 
 		return false
 	}
