@@ -24,11 +24,10 @@ type Module struct {
 
 func (m *Module) GetPaginated(ctx context.Context, r *grpcs.Pagination) (*grpcs.{{.Module}}PaginatedResponse, error) {
 	records := []*grpcs.{{.Module}}{}
-	model := {{.Module}}{}
 	reqeust := paginations.Request{}
 
-	m.Paginator.Model = model
-	m.Paginator.Table = model.TableName()
+	m.Paginator.Model = *m.Model
+	m.Paginator.Table = m.Model.TableName()
 
     copier.Copy(&reqeust, r)
 	m.Paginator.Handle(reqeust)
