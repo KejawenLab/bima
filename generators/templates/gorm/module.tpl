@@ -90,7 +90,7 @@ func (m *Module) Update(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
 	}
 
     v.Id = r.Id
-	v.SetCreatedBy(&configs.User{Id: hold.CreatedBy.String})
+	v.SetCreatedBy(hold.CreatedBy.String)
 	v.SetCreatedAt(hold.CreatedAt.Time)
 	if err := m.Handler.Update(v, v.Id); err != nil {
 		loggers.Logger.Error(ctx, err.Error())
