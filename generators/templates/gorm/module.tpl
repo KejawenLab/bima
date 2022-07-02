@@ -8,7 +8,6 @@ import (
 	"google.golang.org/grpc/status"
 
     "github.com/KejawenLab/bima/v3"
-	"github.com/KejawenLab/bima/v3/configs"
 	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/KejawenLab/bima/v3/paginations"
 	"github.com/KejawenLab/bima/v3/utils"
