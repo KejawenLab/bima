@@ -12,20 +12,28 @@ import (
 )
 
 type Messenger struct {
-	Debug     bool
-	Publisher *amqp.Publisher
-	Consumer  *amqp.Subscriber
+	debug     bool
+	publisher *amqp.Publisher
+	consumer  *amqp.Subscriber
+}
+
+func New(debug bool, publisher *amqp.Publisher, consumer *amqp.Subscriber) *Messenger {
+	return &Messenger{
+		debug:     debug,
+		publisher: publisher,
+		consumer:  consumer,
+	}
 }
 
 func (m *Messenger) Publish(queueName string, data []byte) error {
 	ctx := context.WithValue(context.Background(), "scope", "messenger")
-	if m.Publisher == nil {
+	if m.publisher == nil {
 		loggers.Logger.Fatal(ctx, "publisher not configured properly")
 
 		return errors.New("publisher not configured properly")
 	}
 
-	if m.Debug {
+	if m.debug {
 		var log bytes.Buffer
 		log.WriteString("publishing message to: ")
 		log.WriteString(queueName)
@@ -34,7 +42,7 @@ func (m *Messenger) Publish(queueName string, data []byte) error {
 	}
 
 	msg := message.NewMessage(watermill.NewUUID(), data)
-	if err := m.Publisher.Publish(queueName, msg); err != nil {
+	if err := m.publisher.Publish(queueName, msg); err != nil {
 		loggers.Logger.Error(ctx, err.Error())
 
 		return err
@@ -45,13 +53,13 @@ func (m *Messenger) Publish(queueName string, data []byte) error {
 
 func (m *Messenger) Consume(queueName string) (<-chan *message.Message, error) {
 	ctx := context.WithValue(context.Background(), "scope", "messenger")
-	if m.Publisher == nil {
+	if m.consumer == nil {
 		loggers.Logger.Fatal(ctx, "consumer not configured properly")
 
 		return nil, errors.New("consumer not configured properly")
 	}
 
-	if m.Debug {
+	if m.debug {
 		var log bytes.Buffer
 		log.WriteString("consuming: ")
 		log.WriteString(queueName)
@@ -59,7 +67,7 @@ func (m *Messenger) Consume(queueName string) (<-chan *message.Message, error) {
 		loggers.Logger.Debug(ctx, log.String())
 	}
 
-	messages, err := m.Consumer.Subscribe(context.Background(), queueName)
+	messages, err := m.consumer.Subscribe(context.Background(), queueName)
 	if err != nil {
 		loggers.Logger.Error(ctx, err.Error())
 

@@ -304,11 +304,7 @@ var Container = []dingo.Def{
 			color.New(color.FgCyan, color.Bold).Print("✓ ")
 			fmt.Println("Pub/Sub configured")
 
-			return &messengers.Messenger{
-				Debug:     env.Debug,
-				Publisher: publisher,
-				Consumer:  consumer,
-			}, nil
+			return messengers.New(env.Debug, publisher, consumer), nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
