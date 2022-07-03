@@ -1,10 +1,10 @@
 package generators
 
 import (
-	"bytes"
 	"net/url"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/goccy/go-json"
@@ -15,7 +15,7 @@ type Swagger struct {
 
 func (g *Swagger) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
 	workDir, _ := os.Getwd()
-	var path bytes.Buffer
+	var path strings.Builder
 
 	path.WriteString(workDir)
 	path.WriteString("/")

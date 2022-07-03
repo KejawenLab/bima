@@ -1,8 +1,8 @@
 package updates
 
 import (
-	"bytes"
 	"context"
+	"strings"
 	"time"
 
 	"github.com/goccy/go-json"
@@ -26,7 +26,7 @@ func (u *Elasticsearch) Handle(event interface{}) interface{} {
 
 	m := e.Data.(models.GormModel)
 
-	var index bytes.Buffer
+	var index strings.Builder
 
 	index.WriteString(u.Service)
 	index.WriteString("_")

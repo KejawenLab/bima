@@ -6,12 +6,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_Validator(t *testing.T) {
-	type Data struct {
-		ID   string `validate:"required"`
-		Name string `validate:"required"`
-	}
+type Data struct {
+	ID   string `validate:"required"`
+	Name string `validate:"required"`
+}
 
+func Test_Validator(t *testing.T) {
 	data1 := Data{
 		ID: "test",
 	}

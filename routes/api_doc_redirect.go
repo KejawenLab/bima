@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"bytes"
 	"net/http"
+	"strings"
 
 	"github.com/KejawenLab/bima/v3/middlewares"
 	"google.golang.org/grpc"
@@ -26,7 +26,7 @@ func (a *ApiDocRedirect) Middlewares() []middlewares.Middleware {
 }
 
 func (a *ApiDocRedirect) Handle(w http.ResponseWriter, r *http.Request, _ map[string]string) {
-	var path bytes.Buffer
+	var path strings.Builder
 	path.WriteString(r.URL.RequestURI())
 	path.WriteString("/")
 

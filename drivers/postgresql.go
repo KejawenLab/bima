@@ -1,10 +1,10 @@
 package drivers
 
 import (
-	"bytes"
 	"log"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -18,7 +18,7 @@ type PostgreSql struct {
 func (_ PostgreSql) Connect(host string, port int, user string, password string, dbname string, debug bool) *gorm.DB {
 	var db *gorm.DB
 	var err error
-	var dsn bytes.Buffer
+	var dsn strings.Builder
 
 	dsn.WriteString("host=")
 	dsn.WriteString(host)

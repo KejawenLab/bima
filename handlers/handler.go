@@ -1,9 +1,8 @@
 package handlers
 
 import (
-	"bytes"
 	"context"
-	"strconv"
+	"strings"
 
 	"github.com/KejawenLab/bima/v3/events"
 	"github.com/KejawenLab/bima/v3/loggers"
@@ -31,14 +30,6 @@ func (h *Handler) Paginate(paginator paginations.Pagination, result interface{})
 	var total64 int64
 	paginator.Paginate(adapter, result, &total64)
 
-	if h.Debug {
-		var log bytes.Buffer
-		log.WriteString("total result: ")
-		log.WriteString(strconv.Itoa(int(total64)))
-
-		loggers.Logger.Debug(ctx, log.String())
-	}
-
 	var total = int(total64)
 	next := paginator.Page + 1
 	if paginator.Page*paginator.Limit > int(total) {
@@ -56,7 +47,7 @@ func (h *Handler) Paginate(paginator paginations.Pagination, result interface{})
 
 func (h *Handler) Create(v interface{}) error {
 	return h.Repository.Transaction(func(r repositories.Repository) error {
-		var log bytes.Buffer
+		var log strings.Builder
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 		if h.Debug {
 			log.WriteString("dispatching ")
@@ -94,7 +85,7 @@ func (h *Handler) Create(v interface{}) error {
 
 func (h *Handler) Update(v interface{}, id string) error {
 	return h.Repository.Transaction(func(r repositories.Repository) error {
-		var log bytes.Buffer
+		var log strings.Builder
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 		if h.Debug {
 			log.WriteString("dispatching ")
@@ -142,7 +133,7 @@ func (h *Handler) All(v interface{}) error {
 
 func (h *Handler) Delete(v interface{}, id string) error {
 	return h.Repository.Transaction(func(r repositories.Repository) error {
-		var log bytes.Buffer
+		var log strings.Builder
 		ctx := context.WithValue(context.Background(), "scope", "handler")
 		if h.Debug {
 			log.WriteString("dispatching ")

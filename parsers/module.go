@@ -1,9 +1,9 @@
 package parsers
 
 import (
-	"bytes"
 	"log"
 	"os"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 )
@@ -15,7 +15,7 @@ type module struct {
 }
 
 func ParseModule(dir string) []string {
-	var path bytes.Buffer
+	var path strings.Builder
 	path.WriteString(dir)
 	path.WriteString("/")
 	path.WriteString(ModulePath)

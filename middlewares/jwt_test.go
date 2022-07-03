@@ -73,6 +73,6 @@ func Test_Jwt(t *testing.T) {
 
 	assert.Equal(t, 257, middleware.Priority())
 	assert.Equal(t, false, middleware.Attach(req, w))
-	assert.NotEmpty(t, req.Header.Get("user"))
-	assert.Equal(t, req.Header.Get("user"), config.User)
+	assert.NotEmpty(t, req.Header.Get("X-Bima-User"))
+	assert.Equal(t, req.Header.Get("X-Bima-User"), config.User)
 }

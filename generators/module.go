@@ -1,8 +1,8 @@
 package generators
 
 import (
-	"bytes"
 	"os"
+	"strings"
 	engine "text/template"
 
 	"github.com/KejawenLab/bima/v3/parsers"
@@ -14,7 +14,7 @@ type Module struct {
 }
 
 func (g *Module) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
-	var str bytes.Buffer
+	var str strings.Builder
 	str.WriteString(packagePath)
 	str.WriteString("/")
 	str.WriteString(templatePath)

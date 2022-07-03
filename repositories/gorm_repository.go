@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"bytes"
+	"strings"
 
 	"github.com/KejawenLab/bima/v3/configs"
 	"github.com/KejawenLab/bima/v3/models"
@@ -53,7 +53,7 @@ func (r *GormRepository) All(v interface{}) error {
 
 func (r *GormRepository) FindBy(v interface{}, filters ...Filter) error {
 	db := configs.Database
-	var filter bytes.Buffer
+	var filter strings.Builder
 	for _, f := range filters {
 		filter.Reset()
 		filter.WriteString(f.Field)

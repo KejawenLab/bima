@@ -1,8 +1,8 @@
 package deletes
 
 import (
-	"bytes"
 	"context"
+	"strings"
 	"time"
 
 	"github.com/KejawenLab/bima/v3"
@@ -24,7 +24,7 @@ func (d *Elasticsearch) Handle(event interface{}) interface{} {
 
 	m := e.Data.(models.GormModel)
 
-	var index bytes.Buffer
+	var index strings.Builder
 
 	index.WriteString(d.Service)
 	index.WriteString("_")

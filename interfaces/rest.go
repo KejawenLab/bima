@@ -1,11 +1,11 @@
 package interfaces
 
 import (
-	"bytes"
 	"context"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/KejawenLab/bima/v3/configs"
 	"github.com/KejawenLab/bima/v3/middlewares"
@@ -32,7 +32,7 @@ func (r *Rest) Run(servers []configs.Server) {
 		grpc.WithDefaultCallOptions(grpc.UseCompressor(gzip.Name)),
 	}
 
-	var gRpcAddress bytes.Buffer
+	var gRpcAddress strings.Builder
 	gRpcAddress.WriteString("0.0.0.0:")
 	gRpcAddress.WriteString(strconv.Itoa(r.GRpcPort))
 
@@ -51,7 +51,7 @@ func (r *Rest) Run(servers []configs.Server) {
 	r.Middleware.Sort()
 	r.Router.Sort()
 
-	var httpAddress bytes.Buffer
+	var httpAddress strings.Builder
 	httpAddress.WriteString(":")
 	httpAddress.WriteString(strconv.Itoa(r.HttpPort))
 

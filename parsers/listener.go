@@ -1,9 +1,9 @@
 package parsers
 
 import (
-	"bytes"
 	"log"
 	"os"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 )
@@ -13,7 +13,7 @@ type listener struct {
 }
 
 func ParseListener(dir string) []string {
-	var path bytes.Buffer
+	var path strings.Builder
 	path.WriteString(dir)
 	path.WriteString("/")
 	path.WriteString("configs/listeners.yaml")

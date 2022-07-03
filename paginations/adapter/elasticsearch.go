@@ -1,8 +1,8 @@
 package adapter
 
 import (
-	"bytes"
 	"context"
+	"strings"
 
 	"github.com/goccy/go-json"
 
@@ -45,14 +45,14 @@ func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator pag
 	}
 
 	if es.Debug {
-		var log bytes.Buffer
+		var log strings.Builder
 		log.WriteString("dispatching ")
 		log.WriteString(events.PaginationEvent.String())
 
 		loggers.Logger.Debug(ctx, log.String())
 	}
 
-	var index bytes.Buffer
+	var index strings.Builder
 
 	index.WriteString(es.Service)
 	index.WriteString("_")
@@ -92,11 +92,15 @@ func (es *elasticsearchPaginator) Slice(offset int, length int, data interface{}
 		return err
 	}
 
-	records := []map[string]interface{}{}
+	if result.Hits == nil {
+		return nil
+	}
+
+	records := make([]map[string]interface{}, result.TotalHits())
 	var record map[string]interface{}
-	for _, hit := range result.Hits.Hits {
+	for k, hit := range result.Hits.Hits {
 		json.Unmarshal(hit.Source, &record)
-		records = append(records, record)
+		records[k] = record
 	}
 
 	temp, _ := json.Marshal(records)

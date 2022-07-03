@@ -1,8 +1,8 @@
 package generators
 
 import (
-	"bytes"
 	"os"
+	"strings"
 	engine "text/template"
 )
 
@@ -10,7 +10,7 @@ type Dic struct {
 }
 
 func (g *Dic) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
-	var path bytes.Buffer
+	var path strings.Builder
 
 	path.WriteString(packagePath)
 	path.WriteString("/")

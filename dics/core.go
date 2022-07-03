@@ -1,11 +1,11 @@
 package dics
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/KejawenLab/bima/v3"
@@ -68,7 +68,7 @@ var Container = []dingo.Def{
 			case "postgresql":
 				db = drivers.PostgreSql{}
 			case "mongo":
-				var dsn bytes.Buffer
+				var dsn strings.Builder
 
 				dsn.WriteString("mongodb://")
 				dsn.WriteString(env.Db.User)
@@ -192,9 +192,7 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:middleware:factory",
 		Build: func(env *configs.Env) (*middlewares.Factory, error) {
-			middleware := middlewares.Factory{
-				Debug: env.Debug,
-			}
+			middleware := middlewares.Factory{Debug: env.Debug}
 			middleware.Add(&middlewares.Header{})
 
 			return &middleware, nil
@@ -214,7 +212,7 @@ var Container = []dingo.Def{
 				return nil, nil
 			}
 
-			var dsn bytes.Buffer
+			var dsn strings.Builder
 
 			dsn.WriteString(env.Elasticsearch.Host)
 			dsn.WriteString(":")
@@ -315,12 +313,7 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:router:factory",
 		Build: func(gateway routers.Router, mux routers.Router) (*routers.Factory, error) {
-			return &routers.Factory{
-				Routers: []routers.Router{
-					gateway,
-					mux,
-				},
-			}, nil
+			return &routers.Factory{Routers: []routers.Router{gateway, mux}}, nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:router:gateway"),
@@ -335,9 +328,7 @@ var Container = []dingo.Def{
 			apiDocRedirection routes.Route,
 			health routes.Route,
 		) (*routers.MuxRouter, error) {
-			routers := routers.MuxRouter{
-				Debug: env.Debug,
-			}
+			routers := routers.MuxRouter{Debug: env.Debug}
 			routers.Register([]routes.Route{apiDoc, apiDocRedirection, health})
 
 			return &routers, nil
@@ -356,9 +347,7 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:route:api-doc",
 		Build: func(env *configs.Env) (*routes.ApiDoc, error) {
-			return &routes.ApiDoc{
-				Debug: env.Debug,
-			}, nil
+			return &routes.ApiDoc{Debug: env.Debug}, nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
@@ -375,7 +364,7 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:messenger:config",
 		Build: func(env *configs.Env) (amqp.Config, error) {
-			var dsn bytes.Buffer
+			var dsn strings.Builder
 
 			dsn.WriteString("amqp://")
 			dsn.WriteString(env.Amqp.User)
@@ -454,9 +443,7 @@ var Container = []dingo.Def{
 	{
 		Name: "bima:server",
 		Build: func(env *configs.Env) (*bima.Server, error) {
-			return &bima.Server{
-				Debug: env.Debug,
-			}, nil
+			return &bima.Server{Debug: env.Debug}, nil
 		},
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
@@ -466,9 +453,7 @@ var Container = []dingo.Def{
 		Name: "bima:model",
 		Build: func(env *configs.Env) (*bima.GormModel, error) {
 			return &bima.GormModel{
-				GormBase: models.GormBase{
-					Env: env,
-				},
+				GormBase: models.GormBase{Env: env},
 			}, nil
 		},
 		Params: dingo.Params{

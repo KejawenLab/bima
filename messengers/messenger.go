@@ -1,9 +1,9 @@
 package messengers
 
 import (
-	"bytes"
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/ThreeDotsLabs/watermill"
@@ -34,7 +34,7 @@ func (m *Messenger) Publish(queueName string, data []byte) error {
 	}
 
 	if m.debug {
-		var log bytes.Buffer
+		var log strings.Builder
 		log.WriteString("publishing message to: ")
 		log.WriteString(queueName)
 
@@ -60,7 +60,7 @@ func (m *Messenger) Consume(queueName string) (<-chan *message.Message, error) {
 	}
 
 	if m.debug {
-		var log bytes.Buffer
+		var log strings.Builder
 		log.WriteString("consuming: ")
 		log.WriteString(queueName)
 

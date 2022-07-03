@@ -1,10 +1,10 @@
 package generators
 
 import (
-	"bytes"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/gertd/go-pluralize"
 	"github.com/iancoleman/strcase"
@@ -71,7 +71,7 @@ func (f *Factory) Generate(module ModuleTemplate) {
 	modulePlural := f.Pluralizer.Plural(module.Name)
 	modulePluralLowercase := strcase.ToDelimited(modulePlural, '_')
 
-	var modulePath bytes.Buffer
+	var modulePath strings.Builder
 
 	modulePath.WriteString(workDir)
 	modulePath.WriteString("/")
@@ -85,7 +85,7 @@ func (f *Factory) Generate(module ModuleTemplate) {
 	f.Template.ModulePluralLowercase = modulePluralLowercase
 	f.Template.Columns = module.Fields
 
-	var templatePath bytes.Buffer
+	var templatePath strings.Builder
 
 	templatePath.WriteString("templates")
 	switch f.Driver {
@@ -102,7 +102,7 @@ func (f *Factory) Generate(module ModuleTemplate) {
 }
 
 func (f *Factory) packageName(workDir string) string {
-	var path bytes.Buffer
+	var path strings.Builder
 
 	path.WriteString(workDir)
 	path.WriteString("/go.mod")

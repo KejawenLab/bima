@@ -1,13 +1,13 @@
 package middlewares
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"net/http"
 	"net/url"
 	"reflect"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/KejawenLab/bima/v3/loggers"
@@ -80,7 +80,7 @@ func (m *Factory) Attach(handler http.Handler) http.Handler {
 
 			elapsed := time.Since(start)
 
-			var execution bytes.Buffer
+			var execution strings.Builder
 			execution.WriteString("Execution time: ")
 			execution.WriteString(elapsed.String())
 
@@ -92,7 +92,7 @@ func (m *Factory) Attach(handler http.Handler) http.Handler {
 		wrapper := responseWrapper{ResponseWriter: response}
 		for _, middleware := range m.Middlewares {
 			if stop := middleware.Attach(request, response); stop {
-				var stopper bytes.Buffer
+				var stopper strings.Builder
 				stopper.WriteString("Middleware stopped by: ")
 				stopper.WriteString(reflect.TypeOf(middleware).Elem().Name())
 
@@ -145,7 +145,7 @@ func (m *Factory) Attach(handler http.Handler) http.Handler {
 			elapsedString = color.New(color.FgRed, color.Bold).Sprint(elapsed)
 		}
 
-		var stdLog bytes.Buffer
+		var stdLog strings.Builder
 		stdLog.WriteString("\t")
 		stdLog.WriteString(statusCode)
 		stdLog.WriteString("\t")

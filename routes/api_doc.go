@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"bytes"
 	"net/http"
 	"regexp"
+	"strings"
 
 	"github.com/KejawenLab/bima/v3/middlewares"
 	"google.golang.org/grpc"
@@ -16,7 +16,7 @@ type ApiDoc struct {
 }
 
 func (a *ApiDoc) Path() string {
-	var path bytes.Buffer
+	var path strings.Builder
 	path.WriteString(ApiDocPath)
 	path.WriteString("/{path}")
 
@@ -40,7 +40,7 @@ func (a *ApiDoc) Handle(w http.ResponseWriter, r *http.Request, _ map[string]str
 		return
 	}
 
-	var path bytes.Buffer
+	var path strings.Builder
 	path.WriteString(ApiDocPath)
 	path.WriteString("/")
 

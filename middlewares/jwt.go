@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"bytes"
 	"context"
 	"net/http"
 	"regexp"
@@ -25,7 +24,7 @@ func (j *Jwt) Attach(request *http.Request, response http.ResponseWriter) bool {
 	match, _ := regexp.MatchString(j.Whitelist, request.RequestURI)
 	if match {
 		if j.Debug {
-			var log bytes.Buffer
+			var log strings.Builder
 			log.WriteString("whitelisting url ")
 			log.WriteString(request.RequestURI)
 
@@ -35,7 +34,7 @@ func (j *Jwt) Attach(request *http.Request, response http.ResponseWriter) bool {
 		return false
 	}
 
-	bearerToken := strings.Split(strings.TrimSpace(request.Header.Get("Authorization")), " ")
+	bearerToken := strings.Split(request.Header.Get("Authorization"), " ")
 	if len(bearerToken) != 2 {
 		loggers.Logger.Error(ctx, "token not provided")
 		http.Error(response, "unauthorization", http.StatusUnauthorized)
@@ -43,7 +42,7 @@ func (j *Jwt) Attach(request *http.Request, response http.ResponseWriter) bool {
 		return true
 	}
 
-	claims, err := utils.ValidateToken(j.Secret, j.SigningMethod, bearerToken[1])
+	claims, err := utils.ValidateToken(j.Secret, j.SigningMethod, strings.TrimSpace(bearerToken[1]))
 	if err != nil {
 		loggers.Logger.Error(ctx, err.Error())
 		http.Error(response, "unauthorization", http.StatusUnauthorized)

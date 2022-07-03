@@ -1,7 +1,7 @@
 package paginations
 
 import (
-	"bytes"
+	"strings"
 
 	"github.com/KejawenLab/bima/v3/events"
 )
@@ -15,8 +15,8 @@ func (p *GormFilter) Handle(event interface{}) interface{} {
 		return event
 	}
 
-	var likeClausal bytes.Buffer
-	var likeValue bytes.Buffer
+	var likeClausal strings.Builder
+	var likeValue strings.Builder
 	for _, v := range e.Filters {
 		likeClausal.Reset()
 		likeClausal.WriteString(v.Field)

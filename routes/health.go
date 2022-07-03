@@ -1,11 +1,11 @@
 package routes
 
 import (
-	"bytes"
 	"context"
 	"net/http"
 	"runtime"
 	"strconv"
+	"strings"
 
 	"github.com/goccy/go-json"
 
@@ -48,9 +48,9 @@ func (h *Health) Handle(w http.ResponseWriter, r *http.Request, _ map[string]str
 	}
 
 	var m runtime.MemStats
-	var alloc bytes.Buffer
-	var totalAlloc bytes.Buffer
-	var system bytes.Buffer
+	var alloc strings.Builder
+	var totalAlloc strings.Builder
+	var system strings.Builder
 
 	runtime.ReadMemStats(&m)
 

@@ -22,7 +22,6 @@ type Module struct {
 }
 
 func (m *Module) GetPaginated(ctx context.Context, r *grpcs.Pagination) (*grpcs.{{.Module}}PaginatedResponse, error) {
-	records := []*grpcs.{{.Module}}{}
 	reqeust := paginations.Request{}
 
 	m.Paginator.Model = *m.Model
@@ -31,6 +30,7 @@ func (m *Module) GetPaginated(ctx context.Context, r *grpcs.Pagination) (*grpcs.
     copier.Copy(&reqeust, r)
 	m.Paginator.Handle(reqeust)
 
+    records := make([]*grpcs.{{.Module}}, m.Paginator.Limit)
 	metadata := m.Handler.Paginate(*m.Paginator, &records)
 
 	return &grpcs.{{.Module}}PaginatedResponse{

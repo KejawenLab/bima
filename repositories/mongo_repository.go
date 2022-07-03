@@ -59,12 +59,12 @@ func (r *MongoRepository) All(v interface{}) error {
 }
 
 func (r *MongoRepository) FindBy(v interface{}, filters ...Filter) error {
-	bFilters := bson.D{}
-	for _, f := range filters {
-		bFilters = append(bFilters, bson.E{
+	bFilters := make(bson.D, len(filters))
+	for k, f := range filters {
+		bFilters[k] = bson.E{
 			Key:   f.Field,
 			Value: bson.M{f.Operator: f.Value},
-		})
+		}
 	}
 
 	return mgm.CollectionByName(r.model).SimpleFind(v, bFilters)

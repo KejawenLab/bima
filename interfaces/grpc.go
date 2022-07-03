@@ -1,10 +1,10 @@
 package interfaces
 
 import (
-	"bytes"
 	"log"
 	"net"
 	"strconv"
+	"strings"
 
 	"github.com/KejawenLab/bima/v3/configs"
 	"github.com/KejawenLab/bima/v3/loggers"
@@ -21,7 +21,7 @@ type GRpc struct {
 }
 
 func (g *GRpc) Run(servers []configs.Server) {
-	var gRpcAddress bytes.Buffer
+	var gRpcAddress strings.Builder
 	gRpcAddress.WriteString(":")
 	gRpcAddress.WriteString(strconv.Itoa(g.GRpcPort))
 
@@ -30,18 +30,17 @@ func (g *GRpc) Run(servers []configs.Server) {
 		log.Fatalf("Port %d is not available. %v", g.GRpcPort, err)
 	}
 
-	streams := []grpc.StreamServerInterceptor{
-		grpc_recovery.StreamServerInterceptor(),
-	}
-	unaries := []grpc.UnaryServerInterceptor{
-		grpc_recovery.UnaryServerInterceptor(),
-	}
+	streams := make([]grpc.StreamServerInterceptor, 2)
+	unaries := make([]grpc.UnaryServerInterceptor, 2)
+
+	streams[0] = grpc_recovery.StreamServerInterceptor()
+	unaries[0] = grpc_recovery.UnaryServerInterceptor()
 	if g.Debug {
 		options := []grpc_logrus.Option{
 			grpc_logrus.WithLevels(grpc_logrus.DefaultCodeToLevel),
 		}
-		streams = append(streams, grpc_logrus.StreamServerInterceptor(logrus.NewEntry(loggers.Logger.Engine), options...))
-		unaries = append(unaries, grpc_logrus.UnaryServerInterceptor(logrus.NewEntry(loggers.Logger.Engine), options...))
+		streams[1] = grpc_logrus.StreamServerInterceptor(logrus.NewEntry(loggers.Logger.Engine), options...)
+		unaries[1] = grpc_logrus.UnaryServerInterceptor(logrus.NewEntry(loggers.Logger.Engine), options...)
 	}
 
 	gRpc := grpc.NewServer(

@@ -1,7 +1,7 @@
 package paginations
 
 import (
-	"bytes"
+	"strings"
 
 	"github.com/KejawenLab/bima/v3/events"
 	"github.com/olivere/elastic/v7"
@@ -16,7 +16,7 @@ func (p *ElasticsearchFilter) Handle(event interface{}) interface{} {
 		return event
 	}
 
-	var wildCard bytes.Buffer
+	var wildCard strings.Builder
 	for _, v := range e.Filters {
 		wildCard.Reset()
 		wildCard.WriteString("*")

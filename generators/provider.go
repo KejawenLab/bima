@@ -1,7 +1,6 @@
 package generators
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"strings"
@@ -16,7 +15,7 @@ type Provider struct {
 func (p *Provider) Generate(template *Template, modulePath string, packagePath string, templatePath string) {
 	workDir, _ := os.Getwd()
 
-	var path bytes.Buffer
+	var path strings.Builder
 	path.WriteString(workDir)
 	path.WriteString("/configs/provider.go")
 

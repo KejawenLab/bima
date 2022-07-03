@@ -1,10 +1,10 @@
 package routers
 
 import (
-	"bytes"
 	"context"
 	"net/http"
 	"reflect"
+	"strings"
 
 	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/KejawenLab/bima/v3/routes"
@@ -17,8 +17,11 @@ type MuxRouter struct {
 	routes []routes.Route
 }
 
-func (m *MuxRouter) Register(routes []routes.Route) {
-	m.routes = append(m.routes, routes...)
+func (m *MuxRouter) Register(muxs []routes.Route) {
+	m.routes = make([]routes.Route, len(muxs))
+	for k, mux := range muxs {
+		m.routes[k] = mux
+	}
 }
 
 func (m *MuxRouter) Handle(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn) {
@@ -40,7 +43,7 @@ func (m *MuxRouter) Handle(context context.Context, server *runtime.ServeMux, cl
 
 			for _, middleware := range route.Middlewares() {
 				if stop := middleware.Attach(r, w); stop {
-					var stopper bytes.Buffer
+					var stopper strings.Builder
 					stopper.WriteString("middleware stopped by: ")
 					stopper.WriteString(reflect.TypeOf(middleware).Elem().Name())
 

@@ -1,9 +1,9 @@
 package events
 
 import (
-	"bytes"
 	"errors"
 	"sort"
+	"strings"
 )
 
 type (
@@ -24,18 +24,18 @@ func (d *Dispatcher) Register(listeners []Listener) {
 		return listeners[i].Priority() > listeners[j].Priority()
 	})
 
-	for _, listener := range listeners {
+	for k, listener := range listeners {
 		if _, ok := d.Events[listener.Listen()]; !ok {
-			d.Events[listener.Listen()] = []Listener{}
+			d.Events[listener.Listen()] = make([]Listener, len(listeners))
 		}
 
-		d.Events[listener.Listen()] = append(d.Events[listener.Listen()], listener)
+		d.Events[listener.Listen()][k] = listener
 	}
 }
 
 func (d *Dispatcher) Dispatch(event string, payload interface{}) error {
 	if _, ok := d.Events[event]; !ok {
-		var message bytes.Buffer
+		var message strings.Builder
 		message.WriteString("event '")
 		message.WriteString(event)
 		message.WriteString("' not registered")
