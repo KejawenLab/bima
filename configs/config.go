@@ -10,6 +10,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var Database *gorm.DB
+
 type (
 	Server interface {
 		Register(server *grpc.Server)

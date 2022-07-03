@@ -17,10 +17,10 @@ type (
 	}
 
 	logger struct {
-		Verbose bool
-		Service string
+		verbose bool
+		service string
+		data    logrus.Fields
 		Engine  *logrus.Logger
-		Data    logrus.Fields
 	}
 )
 
@@ -29,24 +29,24 @@ func Default(service string) {
 }
 
 func Configure(debug bool, service string, extensions LoggerExtension) {
-	engine := logrus.New()
+	Engine := logrus.New()
 	if debug {
-		engine.SetLevel(logrus.DebugLevel)
+		Engine.SetLevel(logrus.DebugLevel)
 	}
 
-	engine.SetFormatter(&logrus.TextFormatter{
+	Engine.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp: true,
 	})
 
 	for _, e := range extensions.Extensions {
-		engine.AddHook(e)
+		Engine.AddHook(e)
 	}
 
 	Logger = &logger{
-		Verbose: debug,
-		Service: service,
-		Engine:  engine,
-		Data:    logrus.Fields{},
+		verbose: debug,
+		service: service,
+		Engine:  Engine,
+		data:    logrus.Fields{},
 	}
 }
 
@@ -55,7 +55,7 @@ func (l *LoggerExtension) Register(extensions []logrus.Hook) {
 }
 
 func (l *logger) Add(key string, value interface{}) {
-	l.Data[key] = value
+	l.data[key] = value
 }
 
 func (l *logger) Trace(ctx context.Context, message string) {
@@ -71,7 +71,7 @@ func (l *logger) Trace(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Engine.WithFields(l.Data).Trace(message)
+	go l.Engine.WithFields(l.data).Trace(message)
 }
 
 func (l *logger) Debug(ctx context.Context, message string) {
@@ -87,7 +87,7 @@ func (l *logger) Debug(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Engine.WithFields(l.Data).Debug(message)
+	go l.Engine.WithFields(l.data).Debug(message)
 }
 
 func (l *logger) Info(ctx context.Context, message string) {
@@ -103,7 +103,7 @@ func (l *logger) Info(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Engine.WithFields(l.Data).Info(message)
+	go l.Engine.WithFields(l.data).Info(message)
 }
 
 func (l *logger) Warning(ctx context.Context, message string) {
@@ -119,7 +119,7 @@ func (l *logger) Warning(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Engine.WithFields(l.Data).Warning(message)
+	go l.Engine.WithFields(l.data).Warning(message)
 }
 
 func (l *logger) Error(ctx context.Context, message string) {
@@ -135,7 +135,7 @@ func (l *logger) Error(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Engine.WithFields(l.Data).Error(message)
+	go l.Engine.WithFields(l.data).Error(message)
 }
 
 func (l *logger) Fatal(ctx context.Context, message string) {
@@ -151,7 +151,7 @@ func (l *logger) Fatal(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Engine.WithFields(l.Data).Fatal(message)
+	go l.Engine.WithFields(l.data).Fatal(message)
 }
 
 func (l *logger) Panic(ctx context.Context, message string) {
@@ -167,14 +167,14 @@ func (l *logger) Panic(ctx context.Context, message string) {
 	l.Add("scope", ctx.Value("scope"))
 	l.fields(caller, file, line)
 
-	go l.Engine.WithFields(l.Data).Panic(message)
+	go l.Engine.WithFields(l.data).Panic(message)
 }
 
 func (l *logger) fields(caller string, file string, line int) {
 	workDir, _ := os.Getwd()
-	l.Data["debug"] = l.Verbose
-	l.Data["service"] = l.Service
-	l.Data["trace"] = map[string]interface{}{
+	l.data["debug"] = l.verbose
+	l.data["service"] = l.service
+	l.data["trace"] = map[string]interface{}{
 		"caller": caller,
 		"file":   strings.Replace(file, workDir, ".", 1),
 		"line":   line,

@@ -2,20 +2,18 @@ package interfaces
 
 import (
 	"github.com/KejawenLab/bima/v3/configs"
-	"gorm.io/gorm"
 )
 
 type Database struct {
-	Db *gorm.DB
 }
 
 func (d *Database) Run(servers []configs.Server) {
-	if d.Db == nil {
+	if configs.Database == nil {
 		return
 	}
 
 	for _, server := range servers {
-		go server.Migrate(d.Db)
+		go server.Migrate(configs.Database)
 	}
 }
 

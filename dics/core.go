@@ -20,7 +20,6 @@ import (
 	"github.com/KejawenLab/bima/v3/middlewares"
 	"github.com/KejawenLab/bima/v3/models"
 	paginations "github.com/KejawenLab/bima/v3/paginations"
-	"github.com/KejawenLab/bima/v3/repositories"
 	"github.com/KejawenLab/bima/v3/routers"
 	"github.com/KejawenLab/bima/v3/routes"
 	"github.com/KejawenLab/bima/v3/utils"
@@ -33,10 +32,96 @@ import (
 	"github.com/sarulabs/dingo/v4"
 	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"gorm.io/gorm"
 )
 
 var Container = []dingo.Def{
+	{
+		Name: "bima:application",
+		Build: func(
+			env *configs.Env,
+			extension *loggers.LoggerExtension,
+			database interfaces.Application,
+			elasticsearch interfaces.Application,
+			grpc interfaces.Application,
+			queue interfaces.Application,
+			rest interfaces.Application,
+		) (*interfaces.Factory, error) {
+			loggers.Configure(env.Debug, env.Service.ConnonicalName, *extension)
+			factory := interfaces.Factory{
+				Applications: []interfaces.Application{database, elasticsearch, grpc, queue, rest},
+			}
+			if env.Db.Driver == "" {
+				return &factory, nil
+			}
+
+			util := color.New(color.FgCyan, color.Bold)
+			var db drivers.Driver
+
+			util.Print("✓ ")
+			fmt.Print("Database configured using ")
+			util.Print(env.Db.Driver)
+			fmt.Println(" driver")
+
+			switch env.Db.Driver {
+			case "mysql":
+				db = drivers.Mysql{}
+			case "postgresql":
+				db = drivers.PostgreSql{}
+			case "mongo":
+				var dsn bytes.Buffer
+
+				dsn.WriteString("mongodb://")
+				dsn.WriteString(env.Db.User)
+				dsn.WriteString(":")
+				dsn.WriteString(env.Db.Password)
+				dsn.WriteString("@")
+				dsn.WriteString(env.Db.Host)
+				dsn.WriteString(":")
+				dsn.WriteString(strconv.Itoa(env.Db.Port))
+
+				err := mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(dsn.String()).SetMonitor(&event.CommandMonitor{
+					Started: func(_ context.Context, evt *event.CommandStartedEvent) {
+						log.Print(evt.Command)
+					},
+				}))
+				if err != nil {
+					dsn.Reset()
+					dsn.WriteString("mongodb://")
+					dsn.WriteString(env.Db.Host)
+
+					err = mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(dsn.String()).SetMonitor(&event.CommandMonitor{
+						Started: func(_ context.Context, evt *event.CommandStartedEvent) {
+							log.Print(evt.Command)
+						},
+					}))
+				}
+
+				return &factory, nil
+			default:
+				return &factory, nil
+			}
+
+			configs.Database = db.Connect(
+				env.Db.Host,
+				env.Db.Port,
+				env.Db.User,
+				env.Db.Password,
+				env.Db.Name,
+				env.Debug,
+			)
+
+			return &factory, nil
+		},
+		Params: dingo.Params{
+			"0": dingo.Service("bima:config"),
+			"1": dingo.Service("bima:logger:extension"),
+			"2": dingo.Service("bima:interface:database"),
+			"3": dingo.Service("bima:interface:elasticsearch"),
+			"4": dingo.Service("bima:interface:grpc"),
+			"5": dingo.Service("bima:interface:queue"),
+			"6": dingo.Service("bima:interface:rest"),
+		},
+	},
 	{
 		Name:  "bima:config",
 		Build: (*configs.Env)(nil),
@@ -101,33 +186,6 @@ var Container = []dingo.Def{
 		Build: (*generators.Swagger)(nil),
 	},
 	{
-		Name: "bima:application",
-		Build: func(
-			env *configs.Env,
-			extension *loggers.LoggerExtension,
-			database interfaces.Application,
-			elasticsearch interfaces.Application,
-			grpc interfaces.Application,
-			queue interfaces.Application,
-			rest interfaces.Application,
-		) (*interfaces.Factory, error) {
-			loggers.Configure(env.Debug, env.Service.ConnonicalName, *extension)
-
-			return &interfaces.Factory{
-				Applications: []interfaces.Application{database, elasticsearch, grpc, queue, rest},
-			}, nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:logger:extension"),
-			"2": dingo.Service("bima:interface:database"),
-			"3": dingo.Service("bima:interface:elasticsearch"),
-			"4": dingo.Service("bima:interface:grpc"),
-			"5": dingo.Service("bima:interface:queue"),
-			"6": dingo.Service("bima:interface:rest"),
-		},
-	},
-	{
 		Name:  "bima:event:dispatcher",
 		Build: (*events.Dispatcher)(nil),
 	},
@@ -148,73 +206,6 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:logger:extension",
 		Build: (*loggers.LoggerExtension)(nil),
-	},
-	{
-		Name: "bima:database",
-		Build: func(env *configs.Env) (*gorm.DB, error) {
-			if env.Db.Driver == "" {
-				return nil, nil
-			}
-
-			util := color.New(color.FgCyan, color.Bold)
-			var db drivers.Driver
-
-			util.Print("✓ ")
-			fmt.Print("Database configured using ")
-			util.Print(env.Db.Driver)
-			fmt.Println(" driver")
-
-			switch env.Db.Driver {
-			case "mysql":
-				db = drivers.Mysql{}
-			case "postgresql":
-				db = drivers.PostgreSql{}
-			case "mongo":
-				var dsn bytes.Buffer
-
-				dsn.WriteString("mongodb://")
-				dsn.WriteString(env.Db.User)
-				dsn.WriteString(":")
-				dsn.WriteString(env.Db.Password)
-				dsn.WriteString("@")
-				dsn.WriteString(env.Db.Host)
-				dsn.WriteString(":")
-				dsn.WriteString(strconv.Itoa(env.Db.Port))
-
-				err := mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(dsn.String()).SetMonitor(&event.CommandMonitor{
-					Started: func(_ context.Context, evt *event.CommandStartedEvent) {
-						log.Print(evt.Command)
-					},
-				}))
-				if err != nil {
-					dsn.Reset()
-					dsn.WriteString("mongodb://")
-					dsn.WriteString(env.Db.Host)
-
-					err = mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(dsn.String()).SetMonitor(&event.CommandMonitor{
-						Started: func(_ context.Context, evt *event.CommandStartedEvent) {
-							log.Print(evt.Command)
-						},
-					}))
-				}
-
-				return nil, err
-			default:
-				return nil, nil
-			}
-
-			return db.Connect(
-				env.Db.Host,
-				env.Db.Port,
-				env.Db.User,
-				env.Db.Password,
-				env.Db.Name,
-				env.Debug,
-			), nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-		},
 	},
 	{
 		Name: "bima:elasticsearch:client",
@@ -252,9 +243,6 @@ var Container = []dingo.Def{
 	{
 		Name:  "bima:interface:database",
 		Build: (*interfaces.Database)(nil),
-		Params: dingo.Params{
-			"Db": dingo.Service("bima:database"),
-		},
 	},
 	{
 		Name:  "bima:interface:elasticsearch",
@@ -437,17 +425,6 @@ var Container = []dingo.Def{
 			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:messenger:config"),
 		},
-	},
-	{
-		Name:  "bima:repository:gorm",
-		Build: (*repositories.GormRepository)(nil),
-		Params: dingo.Params{
-			"Database": dingo.Service("bima:database"),
-		},
-	},
-	{
-		Name:  "bima:repository:mongo",
-		Build: (*repositories.MongoRepository)(nil),
 	},
 	{
 		Name: "bima:cache:memory",

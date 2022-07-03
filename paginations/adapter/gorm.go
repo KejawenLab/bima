@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 
+	"github.com/KejawenLab/bima/v3/configs"
 	"github.com/KejawenLab/bima/v3/events"
 	"github.com/KejawenLab/bima/v3/loggers"
 	"github.com/KejawenLab/bima/v3/paginations"
@@ -15,7 +16,6 @@ type (
 	GormAdapter struct {
 		Debug      bool
 		Dispatcher *events.Dispatcher
-		Database   *gorm.DB
 	}
 
 	gormPaginator struct {
@@ -25,13 +25,13 @@ type (
 )
 
 func (g *GormAdapter) CreateAdapter(ctx context.Context, paginator paginations.Pagination) paginator.Adapter {
-	if g.Database == nil {
+	if configs.Database == nil {
 		loggers.Logger.Fatal(ctx, "adapter not configured properly")
 
 		return nil
 	}
 
-	query := g.Database.Model(paginator.Model)
+	query := configs.Database.Model(paginator.Model)
 	event := events.GormPagination{
 		Query:   query,
 		Filters: paginator.Filters,
