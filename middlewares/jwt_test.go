@@ -24,19 +24,19 @@ func Test_Jwt(t *testing.T) {
 		Whitelist:     "/bar",
 	}
 
-	req := httptest.NewRequest("GET", "http://bima.framework/foo", nil)
+	req := httptest.NewRequest("POST", "http://bima.framework/foo", nil)
 	w := httptest.NewRecorder()
 
 	assert.Equal(t, 257, middleware.Priority())
 	assert.Equal(t, true, middleware.Attach(req, w))
 
-	req = httptest.NewRequest("GET", "http://bima.framework/bar", nil)
+	req = httptest.NewRequest("POST", "http://bima.framework/bar", nil)
 	w = httptest.NewRecorder()
 
 	assert.Equal(t, 257, middleware.Priority())
 	assert.Equal(t, false, middleware.Attach(req, w))
 
-	req = httptest.NewRequest("GET", "http://bima.framework/foo", nil)
+	req = httptest.NewRequest("POST", "http://bima.framework/foo", nil)
 	req.Header.Add("Authorization", "Bearer invalid")
 	w = httptest.NewRecorder()
 
@@ -51,7 +51,7 @@ func Test_Jwt(t *testing.T) {
 
 	assert.Nil(t, err)
 
-	req = httptest.NewRequest("GET", "http://bima.framework/foo", nil)
+	req = httptest.NewRequest("POST", "http://bima.framework/foo", nil)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
 	w = httptest.NewRecorder()
 
@@ -67,7 +67,7 @@ func Test_Jwt(t *testing.T) {
 
 	assert.Nil(t, err)
 
-	req = httptest.NewRequest("GET", "http://bima.framework/foo", nil)
+	req = httptest.NewRequest("POST", "http://bima.framework/foo", nil)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
 	w = httptest.NewRecorder()
 
