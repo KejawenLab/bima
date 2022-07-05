@@ -6,7 +6,6 @@ require (
 	github.com/CAFxX/httpcompression v0.0.8
 	github.com/ThreeDotsLabs/watermill v1.2.0-rc.11
 	github.com/ThreeDotsLabs/watermill-amqp v1.1.4
-	github.com/ThreeDotsLabs/watermill-googlecloud v1.0.13
 	github.com/ThreeDotsLabs/watermill-kafka/v2 v2.2.2
 	github.com/fatih/color v1.13.0
 	github.com/gadelkareem/cachita v0.2.3
@@ -40,7 +39,9 @@ require (
 	golang.org/x/net v0.0.0-20220630215102-69896b714898 // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
 	golang.org/x/sys v0.0.0-20220704084225-05e143d24a9e // indirect
+	golang.org/x/tools v0.1.5 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
+	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20220630174209-ad1d48641aa7 // indirect
 	google.golang.org/grpc v1.47.0
 	gopkg.in/yaml.v2 v2.4.0

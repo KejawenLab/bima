@@ -3,6 +3,7 @@ package brokers
 import (
 	"context"
 
+	"github.com/KejawenLab/bima/v4/messengers"
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
 	"github.com/ThreeDotsLabs/watermill/message"
@@ -11,6 +12,10 @@ import (
 type Amqp struct {
 	publisher *amqp.Publisher
 	consumer  *amqp.Subscriber
+}
+
+func NewAmqp(publisher *amqp.Publisher, consumer *amqp.Subscriber) messengers.Broker {
+	return &Amqp{publisher: publisher, consumer: consumer}
 }
 
 func (b *Amqp) Publish(queueName string, payload message.Payload) error {
