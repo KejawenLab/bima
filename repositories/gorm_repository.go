@@ -3,8 +3,8 @@ package repositories
 import (
 	"strings"
 
-	"github.com/KejawenLab/bima/v3/configs"
-	"github.com/KejawenLab/bima/v3/models"
+	"github.com/KejawenLab/bima/v4/configs"
+	"github.com/KejawenLab/bima/v4/models"
 	"gorm.io/gorm"
 )
 

@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	configs "github.com/KejawenLab/bima/v3/configs"
+	configs "github.com/KejawenLab/bima/v4/configs"
 
 	mock "github.com/stretchr/testify/mock"
 )

@@ -6,9 +6,9 @@ import (
 
 	"github.com/goccy/go-json"
 
-	"github.com/KejawenLab/bima/v3/loggers"
-	"github.com/KejawenLab/bima/v3/middlewares"
-	"github.com/KejawenLab/bima/v3/utils"
+	"github.com/KejawenLab/bima/v4/loggers"
+	"github.com/KejawenLab/bima/v4/middlewares"
+	"github.com/KejawenLab/bima/v4/utils"
 	"google.golang.org/grpc"
 )
 

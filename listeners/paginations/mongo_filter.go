@@ -3,7 +3,7 @@ package paginations
 import (
 	"strings"
 
-	"github.com/KejawenLab/bima/v3/events"
+	"github.com/KejawenLab/bima/v4/events"
 	"github.com/kamva/mgm/v3/operator"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"context"
 	"net/http"
 	"runtime"
 	"strconv"
@@ -9,17 +8,14 @@ import (
 
 	"github.com/goccy/go-json"
 
-	"github.com/KejawenLab/bima/v3"
-	"github.com/KejawenLab/bima/v3/loggers"
-	"github.com/KejawenLab/bima/v3/middlewares"
+	"github.com/KejawenLab/bima/v4"
+	"github.com/KejawenLab/bima/v4/middlewares"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/connectivity"
 )
 
 const HelthPath = "/health"
 
 type Health struct {
-	client *grpc.ClientConn
 }
 
 func (h *Health) Path() string {
@@ -35,18 +31,9 @@ func (h *Health) Middlewares() []middlewares.Middleware {
 }
 
 func (h *Health) SetClient(client *grpc.ClientConn) {
-	h.client = client
 }
 
 func (h *Health) Handle(w http.ResponseWriter, r *http.Request, _ map[string]string) {
-	s := h.client.GetState()
-	if s != connectivity.Ready {
-		loggers.Logger.Error(context.WithValue(context.Background(), "scope", "health_route"), "gRPC server is down")
-		http.Error(w, "gRPC server is down", http.StatusBadGateway)
-
-		return
-	}
-
 	var m runtime.MemStats
 	var alloc strings.Builder
 	var totalAlloc strings.Builder

@@ -5,7 +5,7 @@ import (
 	"strings"
 	engine "text/template"
 
-	"github.com/KejawenLab/bima/v3/parsers"
+	"github.com/KejawenLab/bima/v4/parsers"
 	"gopkg.in/yaml.v2"
 )
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/KejawenLab/bima/v3/loggers"
+	"github.com/KejawenLab/bima/v4/loggers"
 )
 
 type (

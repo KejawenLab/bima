@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	paginations "github.com/KejawenLab/bima/v3/paginations"
+	paginations "github.com/KejawenLab/bima/v4/paginations"
 	mock "github.com/stretchr/testify/mock"
 
 	paginator "github.com/vcraescu/go-paginator/v2"

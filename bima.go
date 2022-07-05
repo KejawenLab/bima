@@ -1,17 +1,17 @@
 package bima
 
 import (
-	"github.com/KejawenLab/bima/v3/handlers"
-	"github.com/KejawenLab/bima/v3/messengers"
-	"github.com/KejawenLab/bima/v3/models"
-	"github.com/KejawenLab/bima/v3/paginations"
-	"github.com/KejawenLab/bima/v3/utils"
+	"github.com/KejawenLab/bima/v4/handlers"
+	"github.com/KejawenLab/bima/v4/messengers"
+	"github.com/KejawenLab/bima/v4/models"
+	"github.com/KejawenLab/bima/v4/paginations"
+	"github.com/KejawenLab/bima/v4/utils"
 	"github.com/olivere/elastic/v7"
 	"gorm.io/gorm"
 )
 
 const (
-	Version = "v3.2.12"
+	Version = "v4.0.0"
 
 	HighestPriority = 255
 	LowestPriority  = -255

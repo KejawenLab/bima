@@ -5,32 +5,35 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/KejawenLab/bima/v3/loggers"
-	"github.com/ThreeDotsLabs/watermill"
-	"github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
+	"github.com/KejawenLab/bima/v4/loggers"
 	"github.com/ThreeDotsLabs/watermill/message"
 )
 
-type Messenger struct {
-	debug     bool
-	publisher *amqp.Publisher
-	consumer  *amqp.Subscriber
-}
+type (
+	Broker interface {
+		Publish(queueName string, payload message.Payload) error
+		Consume(queueName string) (<-chan *message.Message, error)
+	}
 
-func New(debug bool, publisher *amqp.Publisher, consumer *amqp.Subscriber) *Messenger {
+	Messenger struct {
+		debug  bool
+		broker Broker
+	}
+)
+
+func New(debug bool, broker Broker) *Messenger {
 	return &Messenger{
-		debug:     debug,
-		publisher: publisher,
-		consumer:  consumer,
+		debug:  debug,
+		broker: broker,
 	}
 }
 
 func (m *Messenger) Publish(queueName string, data []byte) error {
 	ctx := context.WithValue(context.Background(), "scope", "messenger")
-	if m.publisher == nil {
-		loggers.Logger.Fatal(ctx, "publisher not configured properly")
+	if m.broker == nil {
+		loggers.Logger.Error(ctx, "broker not configured properly")
 
-		return errors.New("publisher not configured properly")
+		return errors.New("broker not configured properly")
 	}
 
 	if m.debug {
@@ -41,8 +44,7 @@ func (m *Messenger) Publish(queueName string, data []byte) error {
 		loggers.Logger.Debug(ctx, log.String())
 	}
 
-	msg := message.NewMessage(watermill.NewUUID(), data)
-	if err := m.publisher.Publish(queueName, msg); err != nil {
+	if err := m.broker.Publish(queueName, data); err != nil {
 		loggers.Logger.Error(ctx, err.Error())
 
 		return err
@@ -53,10 +55,10 @@ func (m *Messenger) Publish(queueName string, data []byte) error {
 
 func (m *Messenger) Consume(queueName string) (<-chan *message.Message, error) {
 	ctx := context.WithValue(context.Background(), "scope", "messenger")
-	if m.consumer == nil {
-		loggers.Logger.Fatal(ctx, "consumer not configured properly")
+	if m.broker == nil {
+		loggers.Logger.Error(ctx, "broker not configured properly")
 
-		return nil, errors.New("consumer not configured properly")
+		return nil, errors.New("broker not configured properly")
 	}
 
 	if m.debug {
@@ -67,7 +69,7 @@ func (m *Messenger) Consume(queueName string) (<-chan *message.Message, error) {
 		loggers.Logger.Debug(ctx, log.String())
 	}
 
-	messages, err := m.consumer.Subscribe(context.Background(), queueName)
+	messages, err := m.broker.Consume(queueName)
 	if err != nil {
 		loggers.Logger.Error(ctx, err.Error())
 

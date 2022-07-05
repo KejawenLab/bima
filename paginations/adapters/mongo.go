@@ -1,12 +1,12 @@
-package adapter
+package adapters
 
 import (
 	"context"
 	"strings"
 
-	"github.com/KejawenLab/bima/v3/events"
-	"github.com/KejawenLab/bima/v3/loggers"
-	"github.com/KejawenLab/bima/v3/paginations"
+	"github.com/KejawenLab/bima/v4/events"
+	"github.com/KejawenLab/bima/v4/loggers"
+	"github.com/KejawenLab/bima/v4/paginations"
 	"github.com/kamva/mgm/v3"
 	"github.com/vcraescu/go-paginator/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -31,7 +31,7 @@ type (
 func (mg *MongodbAdapter) CreateAdapter(ctx context.Context, paginator paginations.Pagination) paginator.Adapter {
 	model, ok := paginator.Model.(mgm.Model)
 	if !ok {
-		loggers.Logger.Fatal(ctx, "adapter not configured properly")
+		loggers.Logger.Error(ctx, "adapter not configured properly")
 
 		return nil
 	}

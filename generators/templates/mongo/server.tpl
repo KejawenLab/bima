@@ -3,7 +3,7 @@ package {{.ModulePluralLowercase}}
 import (
     "context"
 
-	"github.com/KejawenLab/bima/v3"
+	"github.com/KejawenLab/bima/v4"
 	"{{.PackageName}}/protos/builds"
     "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"

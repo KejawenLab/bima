@@ -4,10 +4,10 @@ import (
 	"context"
 	"strings"
 
-	"github.com/KejawenLab/bima/v3/events"
-	"github.com/KejawenLab/bima/v3/loggers"
-	"github.com/KejawenLab/bima/v3/paginations"
-	"github.com/KejawenLab/bima/v3/repositories"
+	"github.com/KejawenLab/bima/v4/events"
+	"github.com/KejawenLab/bima/v4/loggers"
+	"github.com/KejawenLab/bima/v4/paginations"
+	"github.com/KejawenLab/bima/v4/repositories"
 )
 
 type Handler struct {

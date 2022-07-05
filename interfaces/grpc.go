@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/KejawenLab/bima/v3/configs"
-	"github.com/KejawenLab/bima/v3/loggers"
+	"github.com/KejawenLab/bima/v4/configs"
+	"github.com/KejawenLab/bima/v4/loggers"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"

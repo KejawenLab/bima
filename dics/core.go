@@ -8,97 +8,27 @@ import (
 	"strings"
 	"time"
 
-	"github.com/KejawenLab/bima/v3"
-	"github.com/KejawenLab/bima/v3/configs"
-	"github.com/KejawenLab/bima/v3/drivers"
-	"github.com/KejawenLab/bima/v3/events"
-	"github.com/KejawenLab/bima/v3/generators"
-	"github.com/KejawenLab/bima/v3/handlers"
-	"github.com/KejawenLab/bima/v3/interfaces"
-	"github.com/KejawenLab/bima/v3/loggers"
-	"github.com/KejawenLab/bima/v3/messengers"
-	"github.com/KejawenLab/bima/v3/middlewares"
-	"github.com/KejawenLab/bima/v3/models"
-	paginations "github.com/KejawenLab/bima/v3/paginations"
-	"github.com/KejawenLab/bima/v3/routers"
-	"github.com/KejawenLab/bima/v3/routes"
-	"github.com/KejawenLab/bima/v3/utils"
-	"github.com/ThreeDotsLabs/watermill"
-	"github.com/ThreeDotsLabs/watermill-amqp/pkg/amqp"
+	"github.com/KejawenLab/bima/v4"
+	"github.com/KejawenLab/bima/v4/configs"
+	"github.com/KejawenLab/bima/v4/drivers"
+	"github.com/KejawenLab/bima/v4/events"
+	"github.com/KejawenLab/bima/v4/generators"
+	"github.com/KejawenLab/bima/v4/handlers"
+	"github.com/KejawenLab/bima/v4/interfaces"
+	"github.com/KejawenLab/bima/v4/loggers"
+	"github.com/KejawenLab/bima/v4/middlewares"
+	"github.com/KejawenLab/bima/v4/models"
+	paginations "github.com/KejawenLab/bima/v4/paginations"
+	"github.com/KejawenLab/bima/v4/routers"
+	"github.com/KejawenLab/bima/v4/routes"
+	"github.com/KejawenLab/bima/v4/utils"
 	"github.com/fatih/color"
 	"github.com/gertd/go-pluralize"
 	"github.com/kamva/mgm/v3"
-	"github.com/olivere/elastic/v7"
 	"github.com/sarulabs/dingo/v4"
 	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-var Generator = []dingo.Def{
-	{
-		Name:  "bima:module:generator",
-		Scope: bima.Generator,
-		Build: func(
-			dic generators.Generator,
-			model generators.Generator,
-			module generators.Generator,
-			proto generators.Generator,
-			provider generators.Generator,
-			server generators.Generator,
-			swagger generators.Generator,
-		) (*generators.Factory, error) {
-			return &generators.Factory{
-				Pluralizer: pluralize.NewClient(),
-				Template:   &generators.Template{},
-				Generators: []generators.Generator{dic, model, module, proto, provider, server, swagger},
-			}, nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:generator:dic"),
-			"1": dingo.Service("bima:generator:model"),
-			"2": dingo.Service("bima:generator:module"),
-			"3": dingo.Service("bima:generator:proto"),
-			"4": dingo.Service("bima:generator:provider"),
-			"5": dingo.Service("bima:generator:server"),
-			"6": dingo.Service("bima:generator:swagger"),
-		},
-	},
-	{
-		Name:  "bima:generator:dic",
-		Scope: bima.Generator,
-		Build: (*generators.Dic)(nil),
-	},
-	{
-		Name:  "bima:generator:model",
-		Scope: bima.Generator,
-		Build: (*generators.Model)(nil),
-	},
-	{
-		Name:  "bima:generator:module",
-		Scope: bima.Generator,
-		Build: (*generators.Module)(nil),
-	},
-	{
-		Name:  "bima:generator:proto",
-		Scope: bima.Generator,
-		Build: (*generators.Proto)(nil),
-	},
-	{
-		Name:  "bima:generator:provider",
-		Scope: bima.Generator,
-		Build: (*generators.Provider)(nil),
-	},
-	{
-		Name:  "bima:generator:server",
-		Scope: bima.Generator,
-		Build: (*generators.Server)(nil),
-	},
-	{
-		Name:  "bima:generator:swagger",
-		Scope: bima.Generator,
-		Build: (*generators.Swagger)(nil),
-	},
-}
 
 var Application = []dingo.Def{
 	{
@@ -107,16 +37,9 @@ var Application = []dingo.Def{
 		Build: func(
 			env *configs.Env,
 			extension *loggers.LoggerExtension,
-			database interfaces.Application,
-			elasticsearch interfaces.Application,
-			grpc interfaces.Application,
-			queue interfaces.Application,
-			rest interfaces.Application,
 		) (*interfaces.Factory, error) {
 			loggers.Configure(env.Debug, env.Service.ConnonicalName, *extension)
-			factory := interfaces.Factory{
-				Applications: []interfaces.Application{database, elasticsearch, grpc, queue, rest},
-			}
+			factory := interfaces.Factory{}
 			if env.Db.Driver == "" {
 				return &factory, nil
 			}
@@ -182,11 +105,6 @@ var Application = []dingo.Def{
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:logger:extension"),
-			"2": dingo.Service("bima:interface:database"),
-			"3": dingo.Service("bima:interface:elasticsearch"),
-			"4": dingo.Service("bima:interface:grpc"),
-			"5": dingo.Service("bima:interface:queue"),
-			"6": dingo.Service("bima:interface:rest"),
 		},
 	},
 	{
@@ -218,74 +136,6 @@ var Application = []dingo.Def{
 		Build: (*loggers.LoggerExtension)(nil),
 	},
 	{
-		Name:  "bima:elasticsearch:client",
-		Scope: bima.Application,
-		Build: func(env *configs.Env) (*elastic.Client, error) {
-			if env.Elasticsearch.Host == "" {
-				return nil, nil
-			}
-
-			var dsn strings.Builder
-
-			dsn.WriteString(env.Elasticsearch.Host)
-			dsn.WriteString(":")
-			dsn.WriteString(strconv.Itoa(env.Elasticsearch.Port))
-
-			client, err := elastic.NewClient(
-				elastic.SetURL(dsn.String()),
-				elastic.SetSniff(false),
-				elastic.SetHealthcheck(false),
-				elastic.SetGzip(true),
-			)
-
-			if err != nil {
-				return nil, nil
-			}
-
-			color.New(color.FgCyan, color.Bold).Print("✓ ")
-			fmt.Println("Elasticsearch configured")
-
-			return client, nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-		},
-	},
-	{
-		Name:  "bima:interface:database",
-		Scope: bima.Application,
-		Build: (*interfaces.Database)(nil),
-	},
-	{
-		Name:  "bima:interface:elasticsearch",
-		Scope: bima.Application,
-		Build: (*interfaces.Elasticsearch)(nil),
-		Params: dingo.Params{
-			"Client": dingo.Service("bima:elasticsearch:client"),
-		},
-	},
-	{
-		Name:  "bima:interface:grpc",
-		Scope: bima.Application,
-		Build: func(env *configs.Env) (*interfaces.GRpc, error) {
-			return &interfaces.GRpc{
-				GRpcPort: env.RpcPort,
-				Debug:    env.Debug,
-			}, nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-		},
-	},
-	{
-		Name:  "bima:interface:queue",
-		Scope: bima.Application,
-		Build: (*interfaces.Queue)(nil),
-		Params: dingo.Params{
-			"Messenger": dingo.Service("bima:messenger"),
-		},
-	},
-	{
 		Name:  "bima:interface:rest",
 		Scope: bima.Application,
 		Build: func(
@@ -294,7 +144,6 @@ var Application = []dingo.Def{
 			router *routers.Factory,
 		) (*interfaces.Rest, error) {
 			return &interfaces.Rest{
-				GRpcPort:   env.RpcPort,
 				HttpPort:   env.HttpPort,
 				Middleware: middleware,
 				Router:     router,
@@ -304,29 +153,6 @@ var Application = []dingo.Def{
 			"0": dingo.Service("bima:config"),
 			"1": dingo.Service("bima:middleware:factory"),
 			"2": dingo.Service("bima:router:factory"),
-		},
-	},
-	{
-		Name:  "bima:messenger",
-		Scope: bima.Application,
-		Build: func(
-			env *configs.Env,
-			publisher *amqp.Publisher,
-			consumer *amqp.Subscriber,
-		) (*messengers.Messenger, error) {
-			if consumer == nil || publisher == nil {
-				return nil, nil
-			}
-
-			color.New(color.FgCyan, color.Bold).Print("✓ ")
-			fmt.Println("Pub/Sub configured")
-
-			return messengers.New(env.Debug, publisher, consumer), nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:publisher"),
-			"2": dingo.Service("bima:consumer"),
 		},
 	},
 	{
@@ -387,59 +213,6 @@ var Application = []dingo.Def{
 		Build: (*routes.Health)(nil),
 	},
 	{
-		Name:  "bima:messenger:config",
-		Scope: bima.Application,
-		Build: func(env *configs.Env) (amqp.Config, error) {
-			var dsn strings.Builder
-
-			dsn.WriteString("amqp://")
-			dsn.WriteString(env.Amqp.User)
-			dsn.WriteString(":")
-			dsn.WriteString(env.Amqp.Password)
-			dsn.WriteString("@")
-			dsn.WriteString(env.Amqp.Host)
-			dsn.WriteString(":")
-			dsn.WriteString(strconv.Itoa(env.Amqp.Port))
-
-			return amqp.NewDurableQueueConfig(dsn.String()), nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-		},
-	},
-	{
-		Name:  "bima:publisher",
-		Scope: bima.Application,
-		Build: func(env *configs.Env, config amqp.Config) (*amqp.Publisher, error) {
-			publisher, err := amqp.NewPublisher(config, watermill.NewStdLogger(env.Debug, env.Debug))
-			if err != nil {
-				return nil, nil
-			}
-
-			return publisher, nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:messenger:config"),
-		},
-	},
-	{
-		Name:  "bima:consumer",
-		Scope: bima.Application,
-		Build: func(env *configs.Env, config amqp.Config) (*amqp.Subscriber, error) {
-			consumer, err := amqp.NewSubscriber(config, watermill.NewStdLogger(env.Debug, env.Debug))
-			if err != nil {
-				return nil, nil
-			}
-
-			return consumer, nil
-		},
-		Params: dingo.Params{
-			"0": dingo.Service("bima:config"),
-			"1": dingo.Service("bima:messenger:config"),
-		},
-	},
-	{
 		Name:  "bima:cache:memory",
 		Scope: bima.Application,
 		Build: func(env *configs.Env) (*utils.Cache, error) {
@@ -491,5 +264,71 @@ var Application = []dingo.Def{
 		Params: dingo.Params{
 			"0": dingo.Service("bima:config"),
 		},
+	},
+}
+
+var Generator = []dingo.Def{
+	{
+		Name:  "bima:module:generator",
+		Scope: bima.Generator,
+		Build: func(
+			dic generators.Generator,
+			model generators.Generator,
+			module generators.Generator,
+			proto generators.Generator,
+			provider generators.Generator,
+			server generators.Generator,
+			swagger generators.Generator,
+		) (*generators.Factory, error) {
+			return &generators.Factory{
+				Pluralizer: pluralize.NewClient(),
+				Template:   &generators.Template{},
+				Generators: []generators.Generator{dic, model, module, proto, provider, server, swagger},
+			}, nil
+		},
+		Params: dingo.Params{
+			"0": dingo.Service("bima:generator:dic"),
+			"1": dingo.Service("bima:generator:model"),
+			"2": dingo.Service("bima:generator:module"),
+			"3": dingo.Service("bima:generator:proto"),
+			"4": dingo.Service("bima:generator:provider"),
+			"5": dingo.Service("bima:generator:server"),
+			"6": dingo.Service("bima:generator:swagger"),
+		},
+	},
+	{
+		Name:  "bima:generator:dic",
+		Scope: bima.Generator,
+		Build: (*generators.Dic)(nil),
+	},
+	{
+		Name:  "bima:generator:model",
+		Scope: bima.Generator,
+		Build: (*generators.Model)(nil),
+	},
+	{
+		Name:  "bima:generator:module",
+		Scope: bima.Generator,
+		Build: (*generators.Module)(nil),
+	},
+	{
+		Name:  "bima:generator:proto",
+		Scope: bima.Generator,
+		Build: (*generators.Proto)(nil),
+	},
+	{
+		Name:  "bima:generator:provider",
+		Scope: bima.Generator,
+		Build: (*generators.Provider)(nil),
+	},
+	{
+		Name:  "bima:generator:server",
+		Scope: bima.Generator,
+		Build: (*generators.Server)(nil),
+	},
+	{
+		Name:  "bima:generator:swagger",
+		Scope: bima.Generator,
+		Build: (*generators.Swagger)(nil),
 	},
 }

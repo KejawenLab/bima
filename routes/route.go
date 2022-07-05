@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 
-	"github.com/KejawenLab/bima/v3/middlewares"
+	"github.com/KejawenLab/bima/v4/middlewares"
 	"google.golang.org/grpc"
 )
 

@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"github.com/KejawenLab/bima/v3/configs"
+	"github.com/KejawenLab/bima/v4/configs"
 )
 
 type Database struct {

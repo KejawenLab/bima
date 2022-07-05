@@ -4,7 +4,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/KejawenLab/bima/v3/configs"
+	"github.com/KejawenLab/bima/v4/configs"
 )
 
 type (
@@ -15,16 +15,26 @@ type (
 	}
 
 	Factory struct {
-		Applications []Application
+		applications []Application
 	}
 )
 
-func (a *Factory) Run(servers []configs.Server) {
-	sort.Slice(a.Applications, func(i int, j int) bool {
-		return a.Applications[i].Priority() > a.Applications[j].Priority()
+func (f *Factory) Register(applications ...Application) {
+	for _, application := range applications {
+		f.Add(application)
+	}
+}
+
+func (f *Factory) Add(application Application) {
+	f.applications = append(f.applications, application)
+}
+
+func (f *Factory) Run(servers []configs.Server) {
+	sort.Slice(f.applications, func(i int, j int) bool {
+		return f.applications[i].Priority() > f.applications[j].Priority()
 	})
 
-	for _, application := range a.Applications {
+	for _, application := range f.applications {
 		if application.IsBackground() {
 			go application.Run(servers)
 		} else {

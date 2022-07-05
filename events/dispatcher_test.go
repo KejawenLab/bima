@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	mocks "github.com/KejawenLab/bima/v3/mocks/events"
+	mocks "github.com/KejawenLab/bima/v4/mocks/events"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

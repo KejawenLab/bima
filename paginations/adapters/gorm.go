@@ -1,13 +1,13 @@
-package adapter
+package adapters
 
 import (
 	"context"
 	"strings"
 
-	"github.com/KejawenLab/bima/v3/configs"
-	"github.com/KejawenLab/bima/v3/events"
-	"github.com/KejawenLab/bima/v3/loggers"
-	"github.com/KejawenLab/bima/v3/paginations"
+	"github.com/KejawenLab/bima/v4/configs"
+	"github.com/KejawenLab/bima/v4/events"
+	"github.com/KejawenLab/bima/v4/loggers"
+	"github.com/KejawenLab/bima/v4/paginations"
 	"github.com/vcraescu/go-paginator/v2"
 	"gorm.io/gorm"
 )
@@ -26,7 +26,7 @@ type (
 
 func (g *GormAdapter) CreateAdapter(ctx context.Context, paginator paginations.Pagination) paginator.Adapter {
 	if configs.Database == nil {
-		loggers.Logger.Fatal(ctx, "adapter not configured properly")
+		loggers.Logger.Error(ctx, "adapter not configured properly")
 
 		return nil
 	}

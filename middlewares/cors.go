@@ -18,5 +18,5 @@ func (c *Cors) Attach(request *http.Request, response http.ResponseWriter) bool 
 }
 
 func (c *Cors) Priority() int {
-	return 0
+	return -255
 }

@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/KejawenLab/bima/v3/loggers"
+	"github.com/KejawenLab/bima/v4/loggers"
 	"github.com/goccy/go-json"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/stretchr/testify/assert"

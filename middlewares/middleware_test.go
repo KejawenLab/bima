@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	mocks "github.com/KejawenLab/bima/v3/mocks/middlewares"
+	mocks "github.com/KejawenLab/bima/v4/mocks/middlewares"
 	"github.com/stretchr/testify/mock"
 )
 

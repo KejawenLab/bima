@@ -1,4 +1,4 @@
-package adapter
+package adapters
 
 import (
 	"context"
@@ -6,9 +6,9 @@ import (
 
 	"github.com/goccy/go-json"
 
-	"github.com/KejawenLab/bima/v3/events"
-	"github.com/KejawenLab/bima/v3/loggers"
-	"github.com/KejawenLab/bima/v3/paginations"
+	"github.com/KejawenLab/bima/v4/events"
+	"github.com/KejawenLab/bima/v4/loggers"
+	"github.com/KejawenLab/bima/v4/paginations"
 	"github.com/olivere/elastic/v7"
 	"github.com/vcraescu/go-paginator/v2"
 )
@@ -33,7 +33,7 @@ type (
 
 func (es *ElasticsearchAdapter) CreateAdapter(ctx context.Context, paginator paginations.Pagination) paginator.Adapter {
 	if es.Client == nil {
-		loggers.Logger.Fatal(ctx, "adapter not configured properly")
+		loggers.Logger.Error(ctx, "adapter not configured properly")
 
 		return nil
 	}

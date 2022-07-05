@@ -1,7 +1,7 @@
 package {{.ModulePluralLowercase}}
 
 import (
-	"github.com/KejawenLab/bima/v3"
+	"github.com/KejawenLab/bima/v4"
     "github.com/sarulabs/dingo/v4"
 )
 

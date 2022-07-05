@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/KejawenLab/bima/v3/loggers"
-	"github.com/KejawenLab/bima/v3/middlewares"
-	"github.com/KejawenLab/bima/v3/utils"
+	"github.com/KejawenLab/bima/v4/loggers"
+	"github.com/KejawenLab/bima/v4/middlewares"
+	"github.com/KejawenLab/bima/v4/utils"
 	"github.com/goccy/go-json"
 	"github.com/golang-jwt/jwt/v4"
 	"google.golang.org/grpc"

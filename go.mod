@@ -1,4 +1,4 @@
-module github.com/KejawenLab/bima/v3
+module github.com/KejawenLab/bima/v4
 
 go 1.16
 
@@ -6,18 +6,19 @@ require (
 	github.com/CAFxX/httpcompression v0.0.8
 	github.com/ThreeDotsLabs/watermill v1.2.0-rc.11
 	github.com/ThreeDotsLabs/watermill-amqp v1.1.4
+	github.com/ThreeDotsLabs/watermill-googlecloud v1.0.13
+	github.com/ThreeDotsLabs/watermill-kafka/v2 v2.2.2
 	github.com/fatih/color v1.13.0
 	github.com/gadelkareem/cachita v0.2.3
 	github.com/gertd/go-pluralize v0.1.7
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/goccy/go-json v0.9.7
+	github.com/goddtriffin/helmet v1.0.2
 	github.com/golang-jwt/jwt/v4 v4.4.2
-	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.3
-	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/iancoleman/strcase v0.2.0
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/kamva/mgm/v3 v3.4.1
@@ -35,13 +36,11 @@ require (
 	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
 	go.mongodb.org/mongo-driver v1.9.1
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
-	golang.org/x/mod v0.4.1
+	golang.org/x/mod v0.4.2
 	golang.org/x/net v0.0.0-20220630215102-69896b714898 // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
 	golang.org/x/sys v0.0.0-20220704084225-05e143d24a9e // indirect
-	golang.org/x/tools v0.1.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
-	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20220630174209-ad1d48641aa7 // indirect
 	google.golang.org/grpc v1.47.0
 	gopkg.in/yaml.v2 v2.4.0

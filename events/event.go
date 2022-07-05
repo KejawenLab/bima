@@ -1,8 +1,8 @@
 package events
 
 import (
-	"github.com/KejawenLab/bima/v3/paginations"
-	"github.com/KejawenLab/bima/v3/repositories"
+	"github.com/KejawenLab/bima/v4/paginations"
+	"github.com/KejawenLab/bima/v4/repositories"
 	"github.com/kamva/mgm/v3"
 	"github.com/olivere/elastic/v7"
 	"go.mongodb.org/mongo-driver/bson"

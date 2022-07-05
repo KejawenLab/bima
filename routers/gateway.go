@@ -3,7 +3,7 @@ package routers
 import (
 	"context"
 
-	"github.com/KejawenLab/bima/v3/configs"
+	"github.com/KejawenLab/bima/v4/configs"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )

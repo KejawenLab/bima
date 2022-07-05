@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-    "github.com/KejawenLab/bima/v3/configs"
+    "github.com/KejawenLab/bima/v4/configs"
 )
 
 type {{.Module}} struct {

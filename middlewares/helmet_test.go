@@ -4,12 +4,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/rs/cors"
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_Cors(t *testing.T) {
-	middleware := Cors{Options: cors.Options{}}
+func Test_Helmet(t *testing.T) {
+	middleware := Helmet{}
 
 	req := httptest.NewRequest("GET", "http://bima.framework/foo", nil)
 	w := httptest.NewRecorder()
