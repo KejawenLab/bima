@@ -84,6 +84,9 @@ var Application = []dingo.Def{
 							log.Print(evt.Command)
 						},
 					}))
+					if err != nil {
+						log.Fatalln(err.Error())
+					}
 				}
 
 				return &factory, nil
