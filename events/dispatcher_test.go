@@ -4,12 +4,14 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/KejawenLab/bima/v4/loggers"
 	mocks "github.com/KejawenLab/bima/v4/mocks/events"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
 
 func Test_Dispatcher(t *testing.T) {
+	loggers.Default("test")
 	listener1 := mocks.NewListener(t)
 	listener1.On("Priority").Return(0).Maybe()
 	listener1.On("Listen").Return("test_other").Maybe()

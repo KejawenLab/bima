@@ -96,7 +96,7 @@ func (es *elasticsearchPaginator) Slice(offset int, length int, data interface{}
 		return nil
 	}
 
-	records := make([]map[string]interface{}, result.TotalHits())
+	records := make([]map[string]interface{}, 0, result.TotalHits())
 	var record map[string]interface{}
 	for k, hit := range result.Hits.Hits {
 		json.Unmarshal(hit.Source, &record)

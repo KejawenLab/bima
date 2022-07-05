@@ -8,7 +8,7 @@ import (
 )
 
 func Test_Cache_Ttl(t *testing.T) {
-	cache := NewCache(time.Second * 1)
+	cache := NewCache(time.Millisecond * 100)
 	cache.Set("test", []byte("a"))
 
 	data, found := cache.Get("test")
@@ -16,7 +16,7 @@ func Test_Cache_Ttl(t *testing.T) {
 	assert.True(t, found)
 	assert.Equal(t, string(data), "a")
 
-	time.Sleep(1 * time.Second)
+	time.Sleep(3 * time.Second)
 
 	data, found = cache.Get("test")
 

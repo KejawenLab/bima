@@ -31,7 +31,7 @@ func (m *Module) GetPaginated(ctx context.Context, r *grpcs.Pagination) (*grpcs.
     copier.Copy(&reqeust, r)
 	m.Paginator.Handle(reqeust)
 
-    records := make([]*grpcs.{{.Module}}, m.Paginator.Limit)
+    records := make([]*grpcs.{{.Module}}, 0, m.Paginator.Limit)
 	metadata := m.Handler.Paginate(*m.Paginator, &records)
 
 	return &grpcs.{{.Module}}PaginatedResponse{

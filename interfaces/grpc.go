@@ -30,8 +30,8 @@ func (g *GRpc) Run(servers []configs.Server) {
 		log.Fatalf("Port %d is not available. %v", g.GRpcPort, err)
 	}
 
-	streams := make([]grpc.StreamServerInterceptor, 2)
-	unaries := make([]grpc.UnaryServerInterceptor, 2)
+	streams := make([]grpc.StreamServerInterceptor, 0, 2)
+	unaries := make([]grpc.UnaryServerInterceptor, 0, 2)
 
 	streams[0] = grpc_recovery.StreamServerInterceptor()
 	unaries[0] = grpc_recovery.UnaryServerInterceptor()

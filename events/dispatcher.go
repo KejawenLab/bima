@@ -24,12 +24,12 @@ func (d *Dispatcher) Register(listeners []Listener) {
 		return listeners[i].Priority() > listeners[j].Priority()
 	})
 
-	for k, listener := range listeners {
+	for _, listener := range listeners {
 		if _, ok := d.Events[listener.Listen()]; !ok {
-			d.Events[listener.Listen()] = make([]Listener, len(listeners))
+			d.Events[listener.Listen()] = make([]Listener, 0, len(listeners))
 		}
 
-		d.Events[listener.Listen()][k] = listener
+		d.Events[listener.Listen()] = append(d.Events[listener.Listen()], listener)
 	}
 }
 
