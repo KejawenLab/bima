@@ -75,11 +75,7 @@ var Application = []dingo.Def{
 					},
 				}))
 				if err != nil {
-					dsn.Reset()
-					dsn.WriteString("mongodb://")
-					dsn.WriteString(env.Db.Host)
-
-					err = mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(dsn.String()).SetMonitor(&event.CommandMonitor{
+					err = mgm.SetDefaultConfig(nil, env.Db.Name, options.Client().ApplyURI(env.Db.Host).SetMonitor(&event.CommandMonitor{
 						Started: func(_ context.Context, evt *event.CommandStartedEvent) {
 							log.Print(evt.Command)
 						},
