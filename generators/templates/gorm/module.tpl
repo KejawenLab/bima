@@ -11,6 +11,7 @@ import (
 	"github.com/KejawenLab/bima/v4/loggers"
 	"github.com/KejawenLab/bima/v4/paginations"
 	"github.com/KejawenLab/bima/v4/utils"
+	"github.com/goccy/go-json"
 	"github.com/jinzhu/copier"
 	"{{.PackageName}}/protos/builds"
 )
@@ -45,7 +46,7 @@ func (m *Module) GetPaginated(ctx context.Context, r *grpcs.Pagination) (*grpcs.
 	}, nil
 }
 
-func (m *Module) Create(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
+func (m *Module) Create(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}, error) {
     ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
 	v := m.Model
 	copier.Copy(v, r)
@@ -64,12 +65,10 @@ func (m *Module) Create(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
 
 	r.Id = v.Id
 
-	return &grpcs.{{.Module}}Response{
-		{{.Module}}: r,
-	}, nil
+	return r, nil
 }
 
-func (m *Module) Update(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
+func (m *Module) Update(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}, error) {
     ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
 	v := m.Model
     hold := *v
@@ -98,34 +97,36 @@ func (m *Module) Update(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
 
     m.Cache.Invalidate(r.Id)
 
-	return &grpcs.{{.Module}}Response{
-		{{.Module}}: r,
-	}, nil
+	return r, nil
 }
 
-func (m *Module) Get(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
+func (m *Module) Get(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}, error) {
     ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
 	v := *m.Model
 	if data, found := m.Cache.Get(r.Id); found {
-		v = data.({{.Module}})
+		err := json.Unmarshal(data, r)
+		if err == nil {
+			return r, nil
+		}
 	} else {
 		if err := m.Handler.Bind(&v, r.Id); err != nil {
 			loggers.Logger.Error(ctx, err.Error())
 
 			return nil, status.Error(codes.NotFound, fmt.Sprintf("Data with ID '%s' not found.", r.Id))
 		}
-
-		m.Cache.Set(r.Id, v)
 	}
 
 	copier.Copy(r, &v)
 
-	return &grpcs.{{.Module}}Response{
-		{{.Module}}: r,
-	}, nil
+    data, err := json.Marshal(r)
+	if err == nil {
+		m.Cache.Set(r.Id, data)
+	}
+
+	return r, nil
 }
 
-func (m *Module) Delete(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}Response, error) {
+func (m *Module) Delete(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Module}}, error) {
     ctx = context.WithValue(ctx, "scope", "{{.ModuleLowercase}}")
 	v := m.Model
 	if err := m.Handler.Bind(v, r.Id); err != nil {
@@ -137,7 +138,5 @@ func (m *Module) Delete(ctx context.Context, r *grpcs.{{.Module}}) (*grpcs.{{.Mo
     m.Handler.Delete(v, r.Id)
     m.Cache.Invalidate(r.Id)
 
-	return &grpcs.{{.Module}}Response{
-		{{.Module}}: nil,
-	}, nil
+	return nil, nil
 }

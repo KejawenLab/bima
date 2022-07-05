@@ -22,10 +22,6 @@ message {{.Module}} {
 {{end}}
 }
 
-message {{.Module}}Response {
-    {{.Module}} {{.ModuleLowercase}} = 1;
-}
-
 message {{.Module}}PaginatedResponse {
     repeated {{.Module}} data = 1;
     PaginationMetadata meta = 2;
@@ -38,14 +34,14 @@ service {{.Module}}s {
         };
     }
 
-    rpc Create ({{.Module}}) returns ({{.Module}}Response) {
+    rpc Create ({{.Module}}) returns ({{.Module}}) {
         option (google.api.http) = {
             post: "/api/{{.ApiVersion}}/{{.ModulePluralLowercase}}"
             body: "*"
         };
     }
 
-    rpc Update ({{.Module}}) returns ({{.Module}}Response) {
+    rpc Update ({{.Module}}) returns ({{.Module}}) {
         option (google.api.http) = {
             put: "/api/{{.ApiVersion}}/{{.ModulePluralLowercase}}/{id}"
             body: "*"
@@ -57,13 +53,13 @@ service {{.Module}}s {
         };
     }
 
-    rpc Get ({{.Module}}) returns ({{.Module}}Response) {
+    rpc Get ({{.Module}}) returns ({{.Module}}) {
         option (google.api.http) = {
             get: "/api/{{.ApiVersion}}/{{.ModulePluralLowercase}}/{id}"
         };
     }
 
-    rpc Delete ({{.Module}}) returns ({{.Module}}Response) {
+    rpc Delete ({{.Module}}) returns ({{.Module}}) {
         option (google.api.http) = {
             delete: "/api/{{.ApiVersion}}/{{.ModulePluralLowercase}}/{id}"
         };
