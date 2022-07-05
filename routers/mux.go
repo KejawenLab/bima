@@ -18,10 +18,13 @@ type MuxRouter struct {
 }
 
 func (m *MuxRouter) Register(muxs []routes.Route) {
-	m.routes = make([]routes.Route, len(muxs))
-	for k, mux := range muxs {
-		m.routes[k] = mux
+	for _, mux := range muxs {
+		m.Add(mux)
 	}
+}
+
+func (m *MuxRouter) Add(route routes.Route) {
+	m.routes = append(m.routes, route)
 }
 
 func (m *MuxRouter) Handle(context context.Context, server *runtime.ServeMux, client *grpc.ClientConn) {

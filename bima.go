@@ -11,10 +11,13 @@ import (
 )
 
 const (
-	Version = "v3.2.10"
+	Version = "v3.2.11"
 
 	HighestPriority = 255
 	LowestPriority  = -255
+
+	Application = "application"
+	Generator   = "generator"
 )
 
 type (
