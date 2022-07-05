@@ -9,12 +9,12 @@ import (
 type Header struct {
 }
 
-func (a *Header) Attach(_ *http.Request, response http.ResponseWriter) bool {
+func (h *Header) Attach(_ *http.Request, response http.ResponseWriter) bool {
 	response.Header().Add("X-Bima-Version", bima.Version)
 
 	return false
 }
 
-func (a *Header) Priority() int {
+func (h *Header) Priority() int {
 	return -257
 }
