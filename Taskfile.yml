@@ -1,0 +1,16 @@
+version: '3'
+tasks:
+    commit:
+        cmds:
+            - git commit -am "{{.CLI_ARGS}}"
+            - git push
+    release:
+        cmds:
+            - git commit -am "release {{.CLI_ARGS}}"
+            - git tag -a {{.CLI_ARGS}} -m "release {{.CLI_ARGS}}"
+    clean:
+        cmds:
+            - go mod tidy
+    update:
+        cmds:
+            - go get -u
