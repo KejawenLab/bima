@@ -16,7 +16,7 @@ Bima Framework utilize [gRPC Gateway](https://grpc-ecosystem.github.io/grpc-gate
 
 - Soft Deletable (only for RDBMS)
 
-- Support [Elasticsearch](https://github.com/olivere/elastic) and [AMQP (Queue)](https://github.com/ThreeDotsLabs/watermill) Out of The Box
+- Support [Elasticsearch](https://github.com/olivere/elastic) and [Pub/Sub](https://github.com/ThreeDotsLabs/watermill) Out of The Box
 
 - [Event Dispatcher](https://en.wikipedia.org/wiki/Observer_pattern)
 
