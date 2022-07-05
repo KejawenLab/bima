@@ -6,8 +6,8 @@ tasks:
             - git push
     release:
         cmds:
-            - git commit -am "release {{.CLI_ARGS}}"
             - git tag -a {{.CLI_ARGS}} -m "release {{.CLI_ARGS}}"
+            - git push origin {{.CLI_ARGS}}
     clean:
         cmds:
             - go mod tidy
